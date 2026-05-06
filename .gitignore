@@ -28,3 +28,13 @@ code/Properties/*
 Exports/
 *.user
 *.slnx
+
+# Backend API (Node)
+Api/node_modules/
+Api/dist/
+Api/.env
+Api/.env.*
+!Api/.env.example
+Api/*.log
+Api/coverage/
+Api/*.tsbuildinfo
