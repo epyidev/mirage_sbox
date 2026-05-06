@@ -6,6 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **Language: English everywhere.** Variables, identifiers, type names, comments, doc strings, README, CLAUDE.md, commit messages, file names, log strings. The user converses in French, so reply to the user in French in chat, but every written artifact that lands in the repo or in git history is English.
 - **Never use long dashes.** No em dash (`—`, U+2014). No en dash (`–`, U+2013). Use the ASCII hyphen-minus `-` only, and only where a hyphen genuinely fits (compound words, ranges in code). When you would have reached for an em dash for a parenthetical or a clause break, rewrite with a comma, period, colon, semicolon, or parentheses instead. This rule is absolute and applies to code, comments, docs, commit messages, and chat replies.
+- **Author header on every new code file.** Any code file you create must start with an `@author Epyi` header in the file's native comment syntax. TS/JS/C#/Razor: `/** @author Epyi */`. SQL/Python: `-- @author Epyi` (or `# @author Epyi`). Shell/Dockerfile/yaml: `# @author Epyi`. Skip on JSON (no comments) and Markdown (renders as text). Only on files you create, do not retrofit upstream Facepunch Sandbox files unless explicitly asked.
 
 ## Project
 
@@ -39,6 +40,7 @@ C# uses **tabs** (size 4), **CRLF**, final newline. Braces always go on a new li
 - `Editor/`: editor-only code, not shipped.
 - `Assets/`: scenes, prefabs, materials, sounds, UI textures, weapon defs, etc. `Assets/scenes/sandbox.scene` is the entry scene.
 - `Localization/`, `ProjectSettings/`: engine-managed.
+- `Api/`: Node.js + TypeScript backend (Fastify + MariaDB). See "Backend API" section below. Not part of the s&box build, not bundled when publishing.
 
 Within `Code/`, the major subsystems are: `Player/`, `GameLoop/` (GameManager etc.), `Game/` (Weapon base classes, Entity types, BanSystem, ControlSystem, PostProcessing, Sound), `Weapons/` (concrete weapons), `Spawner/`, `Items/`, `Cleanup/`, `Save/`, `Map/`, `Npcs/`, `UI/` (Razor), `Utility/`, `FreeCam/`.
 
@@ -100,6 +102,19 @@ UI is **Razor** (`.razor` + `.razor.scss` + optional `.razor.cs`) under `Code/UI
 ### Console vars and commands
 
 Tunables use `[ConVar( "sb.something", ConVarFlags... )]` on a static property; commands use `[ConCmd( "name" )]` on a static method. `ConVarFlags.Replicated | ConVarFlags.Server | ConVarFlags.GameSetting` is the standard for server-side gameplay limits. Cheat/dev commands use `ConVarFlags.Cheat`. `Player.ConsoleCommands.cs` and `*.ConVars.cs` files are the conventional homes.
+
+## Backend API (`Api/`)
+
+The s&box code sandbox blocks raw SQL drivers and sockets, so the gamemode cannot speak SQL directly. Persistent state for RP features (money, inventory, position, jobs, properties) lives behind an HTTP API in `Api/`, written in Node.js + TypeScript with Fastify and MariaDB. The s&box host calls it via `Sandbox.Http`. The API is meant to run as a sidecar process next to the s&box dedicated server.
+
+- **Not in the gamemode build.** `Code/mirage.csproj` only scans `Code/`, so `Api/` is invisible to the s&box compiler. Publishing the gamemode does not bundle `Api/` either (the `Resources` globs in `mirage.sbproj` do not match it).
+- **Stack.** Node 20+, TypeScript strict, Fastify 5, `fastify-type-provider-zod`, `mysql2/promise`, plain SQL migrations. No ORM. Repository, service, route layers separated.
+- **Auth.** Single shared bearer token (`API_BEARER_TOKEN` env var). The s&box host sends `Authorization: Bearer <token>` on every call. Constant-time comparison. The API is meant to bind on a private interface (`127.0.0.1`) and stay behind the firewall.
+- **Idempotency.** Mutating endpoints accept a `transactionId` UUID. The `transactions` table primary-keys on it, so replays after a network blip return the original outcome instead of double-charging.
+- **Atomicity.** Money, inventory, and audit writes happen inside a single MariaDB transaction with `SELECT ... FOR UPDATE` on the player row to serialise concurrent requests for the same player.
+- **Source of truth.** When a gameplay system needs persistent state, the API is authoritative. The host holds an in-memory cache of an online player's profile, syncs it back via the API on transactions, and flushes on disconnect. Do not invent parallel local-file persistence.
+
+See `Api/README.md` for setup, run, endpoints, and deployment notes.
 
 ## Commit conventions
 
