@@ -1,0 +1,62 @@
+// @author Epyi
+@import "/UI/Theme.scss";
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MirageHeader
+{
+    flex-direction: row;
+    align-items: center;
+    padding: $mirage-space-2 $mirage-space-4;
+    border-bottom: 1px solid $mirage-border;
+    gap: $mirage-space-3;
+    flex-shrink: 0;
+    width: 100%;
+
+    .title
+    {
+        font-size: $mirage-font-md;
+        font-weight: 700;
+        color: $mirage-text-primary;
+        line-height: 1.1em;
+        font-family: $title-font;
+        flex-grow: 1;
+    }
+
+    .extras
+    {
+        flex-direction: row;
+        align-items: center;
+        gap: $mirage-space-2;
+    }
+
+    .close
+    {
+        width: 22px;
+        height: 22px;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+        border: 1px solid $mirage-border;
+        @include mirage-clickable;
+
+        Label
+        {
+            font-size: $mirage-font-sm;
+            font-weight: 700;
+            color: $mirage-text-secondary;
+            line-height: 1em;
+        }
+
+        &:hover
+        {
+            background-color: rgba( 220, 80, 80, 0.18 );
+            border-color: $mirage-border-danger;
+            Label { color: rgba( 255, 200, 200, 1.0 ); }
+        }
+
+        &:active
+        {
+            background-color: rgba( 220, 80, 80, 0.32 );
+        }
+    }
+}

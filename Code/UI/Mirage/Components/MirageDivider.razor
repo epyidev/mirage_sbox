@@ -1,0 +1,16 @@
+@*
+    @author Epyi
+*@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits Panel
+@namespace Sandbox
+
+<root class="mirage-divider mirage-divider--@(Direction.ToString().ToLower())"></root>
+
+@code
+{
+    public enum DividerDirection { Horizontal, Vertical }
+
+    [Parameter] public DividerDirection Direction { get; set; } = DividerDirection.Horizontal;
+}

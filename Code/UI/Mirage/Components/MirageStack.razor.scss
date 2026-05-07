@@ -1,0 +1,30 @@
+// @author Epyi
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MirageStack
+{
+    flex-shrink: 0;
+    align-self: stretch;
+    position: relative;
+
+    &.mirage-stack--vertical   { flex-direction: column; align-items: stretch; }
+    &.mirage-stack--horizontal { flex-direction: row; align-items: center; }
+
+    &.mirage-stack--align-start    { align-items: flex-start; }
+    &.mirage-stack--align-center   { align-items: center; }
+    &.mirage-stack--align-end      { align-items: flex-end; }
+    &.mirage-stack--align-stretch  { align-items: stretch; }
+
+    &.mirage-stack--justify-start         { justify-content: flex-start; }
+    &.mirage-stack--justify-center        { justify-content: center; }
+    &.mirage-stack--justify-end           { justify-content: flex-end; }
+    &.mirage-stack--justify-spacebetween  { justify-content: space-between; }
+    &.mirage-stack--justify-spacearound   { justify-content: space-around; }
+
+    &.mirage-stack--gap-none { gap: 0; }
+    &.mirage-stack--gap-xs   { gap: $mirage-space-1; }
+    &.mirage-stack--gap-sm   { gap: $mirage-space-2; }
+    &.mirage-stack--gap-md   { gap: $mirage-space-3; }
+    &.mirage-stack--gap-lg   { gap: $mirage-space-5; }
+    &.mirage-stack--gap-xl   { gap: $mirage-space-6; }
+}

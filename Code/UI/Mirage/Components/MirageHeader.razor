@@ -1,0 +1,44 @@
+@*
+    @author Epyi
+
+    Slim window header with a title and an optional close button.
+    Wrap extra controls in a <Body> slot to add them to the right of the
+    title (before the close button).
+*@
+@using Sandbox
+@using Sandbox.UI
+@inherits Panel
+@namespace Sandbox
+
+<root class="mirage-header @(Closable ? "mirage-header--closable" : "")">
+
+    @if ( !string.IsNullOrEmpty( Title ) )
+    {
+        <Label class="title" Text="@Title" />
+    }
+
+    <div class="extras">
+        @Body
+    </div>
+
+    @if ( Closable )
+    {
+        <div class="close" @onclick="@OnRootCloseClicked">
+            <Label Text="✕" />
+        </div>
+    }
+
+</root>
+
+@code
+{
+    [Parameter] public string Title { get; set; }
+    [Parameter] public bool Closable { get; set; } = true;
+    [Parameter] public Action OnClose { get; set; }
+    [Parameter] public RenderFragment Body { get; set; }
+
+    private void OnRootCloseClicked()
+    {
+        OnClose?.Invoke();
+    }
+}

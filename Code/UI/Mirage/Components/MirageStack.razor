@@ -1,0 +1,25 @@
+@*
+    @author Epyi
+*@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits Panel
+@namespace Sandbox
+
+<root class="mirage-stack mirage-stack--@(Direction.ToString().ToLower()) mirage-stack--align-@(Align.ToString().ToLower()) mirage-stack--justify-@(Justify.ToString().ToLower()) mirage-stack--gap-@(Gap.ToString().ToLower())">
+    @Body
+</root>
+
+@code
+{
+    public enum StackDirection { Vertical, Horizontal }
+    public enum StackAlign { Start, Center, End, Stretch }
+    public enum StackJustify { Start, Center, End, SpaceBetween, SpaceAround }
+    public enum StackGap { None, Xs, Sm, Md, Lg, Xl }
+
+    [Parameter] public StackDirection Direction { get; set; } = StackDirection.Vertical;
+    [Parameter] public StackAlign Align { get; set; } = StackAlign.Stretch;
+    [Parameter] public StackJustify Justify { get; set; } = StackJustify.Start;
+    [Parameter] public StackGap Gap { get; set; } = StackGap.Md;
+    [Parameter] public RenderFragment Body { get; set; }
+}

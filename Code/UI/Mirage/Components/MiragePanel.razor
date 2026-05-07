@@ -1,0 +1,20 @@
+@*
+    @author Epyi
+*@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits Panel
+@namespace Sandbox
+
+<root class="mirage-panel mirage-panel--@(Variant.ToString().ToLower()) @(Padded ? "mirage-panel--padded" : "")">
+    @Body
+</root>
+
+@code
+{
+    public enum PanelVariant { Default, Elevated, Bare }
+
+    [Parameter] public PanelVariant Variant { get; set; } = PanelVariant.Default;
+    [Parameter] public bool Padded { get; set; } = true;
+    [Parameter] public RenderFragment Body { get; set; }
+}

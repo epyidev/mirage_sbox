@@ -1,0 +1,32 @@
+// @author Epyi
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MiragePanel
+{
+    flex-direction: column;
+    flex-shrink: 0;
+    align-self: stretch;
+    align-items: stretch;
+    position: relative;
+
+    &.mirage-panel--default
+    {
+        @include mirage-surface;
+    }
+
+    &.mirage-panel--elevated
+    {
+        @include mirage-surface-elevated;
+    }
+
+    &.mirage-panel--bare
+    {
+        background-color: transparent;
+        border: 0;
+    }
+
+    &.mirage-panel--padded
+    {
+        padding: $mirage-space-5 $mirage-space-5;
+    }
+}
