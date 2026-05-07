@@ -4,16 +4,17 @@
 MirageTooltip
 {
     position: relative;
+    flex-direction: row;
 
     .bubble
     {
         position: absolute;
+        z-index: 9999;
         @include mirage-surface-elevated;
         padding: $mirage-space-1 $mirage-space-3;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.12s ease, transform 0.12s ease;
-        z-index: 200;
+        transition: opacity 0.18s ease;
         white-space: nowrap;
 
         Label
@@ -21,46 +22,41 @@ MirageTooltip
             font-size: $mirage-font-sm;
             color: $mirage-text-primary;
             line-height: 1.3em;
+            font-family: $mirage-font-family;
         }
 
         &.bubble--top
         {
             bottom: 100%;
             left: 50%;
-            margin-bottom: 6px;
-            transform: translateX( -50% ) translateY( 4px );
+            margin-bottom: 8px;
+            transform: translateX( -50% );
         }
         &.bubble--bottom
         {
             top: 100%;
             left: 50%;
-            margin-top: 6px;
-            transform: translateX( -50% ) translateY( -4px );
+            margin-top: 8px;
+            transform: translateX( -50% );
         }
         &.bubble--left
         {
             right: 100%;
             top: 50%;
-            margin-right: 6px;
-            transform: translateY( -50% ) translateX( 4px );
+            margin-right: 8px;
+            transform: translateY( -50% );
         }
         &.bubble--right
         {
             left: 100%;
             top: 50%;
-            margin-left: 6px;
-            transform: translateY( -50% ) translateX( -4px );
+            margin-left: 8px;
+            transform: translateY( -50% );
         }
     }
 
     &:hover .bubble
     {
         opacity: 1;
-        transform: translateX( -50% ) translateY( 0 );
-    }
-    &:hover .bubble.bubble--left,
-    &:hover .bubble.bubble--right
-    {
-        transform: translateY( -50% ) translateX( 0 );
     }
 }
