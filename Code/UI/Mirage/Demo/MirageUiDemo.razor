@@ -1,0 +1,336 @@
+@*
+    @author Epyi
+*@
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.Mirage.UI;
+@inherits PanelComponent
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-ui-demo">
+
+    <div class="backdrop"></div>
+
+    <div class="frame">
+
+        <MirageHeader Title="Bibliothèque de composants"
+                      Closable="@(true)"
+                      OnClose="@Close" />
+
+        <MirageScrollPanel>
+            <Body>
+
+                @* ----- Panels ----- *@
+                <div class="section">
+                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="Surfaces" />
+                    <MirageStack Direction="@(MirageStack.StackDirection.Horizontal)" Gap="@(MirageStack.StackGap.Md)">
+                        <Body>
+                            <MiragePanel>
+                                <Body>
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Subtitle)" Text="MiragePanel" />
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)" Color="@(MirageLabel.LabelColor.Secondary)" Text="Surface principale, noir 50% + flou + bordure 2px." />
+                                </Body>
+                            </MiragePanel>
+                            <MiragePanel Variant="@(MiragePanel.PanelVariant.Elevated)">
+                                <Body>
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Subtitle)" Text="Elevated" />
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)" Color="@(MirageLabel.LabelColor.Secondary)" Text="Plus opaque, pour les popups et menus déroulants." />
+                                </Body>
+                            </MiragePanel>
+                            <MiragePanel Variant="@(MiragePanel.PanelVariant.Bare)">
+                                <Body>
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Subtitle)" Text="Bare" />
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)" Color="@(MirageLabel.LabelColor.Secondary)" Text="Sans fond ni bordure, juste un conteneur." />
+                                </Body>
+                            </MiragePanel>
+                        </Body>
+                    </MirageStack>
+                </div>
+
+                @* ----- Typography ----- *@
+                <div class="section">
+                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="Typographie" />
+                    <MiragePanel>
+                        <Body>
+                            <MirageStack Gap="@(MirageStack.StackGap.Sm)">
+                                <Body>
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Display)" Text="Display 52" />
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Title)" Text="Title 36" />
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Heading)" Text="Heading 26" />
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Subtitle)" Text="Subtitle 19" />
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)" Text="Body 15, le corps de texte standard." />
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Text="Caption 13, infos secondaires." />
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Text="EYEBROW 11, étiquette de section" />
+                                </Body>
+                            </MirageStack>
+                        </Body>
+                    </MiragePanel>
+                </div>
+
+                @* ----- Buttons ----- *@
+                <div class="section">
+                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="Boutons" />
+                    <MiragePanel>
+                        <Body>
+                            <MirageStack Direction="@(MirageStack.StackDirection.Horizontal)" Gap="@(MirageStack.StackGap.Sm)">
+                                <Body>
+                                    <MirageButton Text="Primary" Variant="@(MirageButton.ButtonVariant.Primary)" ClickAction="@NotifyPrimary" />
+                                    <MirageButton Text="Secondary" Variant="@(MirageButton.ButtonVariant.Secondary)" ClickAction="@NotifySecondary" />
+                                    <MirageButton Text="Ghost" Variant="@(MirageButton.ButtonVariant.Ghost)" ClickAction="@NotifyGhost" />
+                                    <MirageButton Text="Danger" Variant="@(MirageButton.ButtonVariant.Danger)" ClickAction="@NotifyDanger" />
+                                    <MirageButton Text="Désactivé" Variant="@(MirageButton.ButtonVariant.Secondary)" Disabled="@(true)" />
+                                </Body>
+                            </MirageStack>
+                            <MirageDivider />
+                            <MirageStack Direction="@(MirageStack.StackDirection.Horizontal)" Gap="@(MirageStack.StackGap.Sm)" Align="@(MirageStack.StackAlign.Center)">
+                                <Body>
+                                    <MirageButton Text="Small" Size="@(MirageButton.ButtonSize.Small)" />
+                                    <MirageButton Text="Medium" Size="@(MirageButton.ButtonSize.Medium)" />
+                                    <MirageButton Text="Large" Size="@(MirageButton.ButtonSize.Large)" />
+                                </Body>
+                            </MirageStack>
+                        </Body>
+                    </MiragePanel>
+                </div>
+
+                @* ----- Badges ----- *@
+                <div class="section">
+                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="Badges" />
+                    <MiragePanel>
+                        <Body>
+                            <MirageStack Direction="@(MirageStack.StackDirection.Horizontal)" Gap="@(MirageStack.StackGap.Sm)">
+                                <Body>
+                                    <MirageBadge Text="Default" />
+                                    <MirageBadge Text="Info" Variant="@(MirageBadge.BadgeVariant.Info)" />
+                                    <MirageBadge Text="Success" Variant="@(MirageBadge.BadgeVariant.Success)" />
+                                    <MirageBadge Text="Warning" Variant="@(MirageBadge.BadgeVariant.Warning)" />
+                                    <MirageBadge Text="Danger" Variant="@(MirageBadge.BadgeVariant.Danger)" />
+                                    <MirageBadge Text="Outline" Variant="@(MirageBadge.BadgeVariant.Outline)" />
+                                </Body>
+                            </MirageStack>
+                        </Body>
+                    </MiragePanel>
+                </div>
+
+                @* ----- Text inputs ----- *@
+                <div class="section">
+                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="Saisie texte" />
+                    <MiragePanel>
+                        <Body>
+                            <MirageStack Gap="@(MirageStack.StackGap.Md)">
+                                <Body>
+                                    <MirageTextInput LabelText="Prénom" Placeholder="Jean" HelpText="Nom utilisé en jeu" OnChange="@OnFirstNameChange" />
+                                    <MirageTextInput LabelText="Email" Placeholder="vous@exemple.com" Error="Format invalide." />
+                                    <MirageTextInput LabelText="Code" Placeholder="0000" Numeric="@(true)" MaxLength="@(4)" />
+                                    <MirageTextArea LabelText="Bio RP" Placeholder="Quelques lignes sur votre personnage..." Rows="@(4)" />
+                                </Body>
+                            </MirageStack>
+                        </Body>
+                    </MiragePanel>
+                </div>
+
+                @* ----- Checkboxes & toggles ----- *@
+                <div class="section">
+                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="Sélections" />
+                    <MiragePanel>
+                        <Body>
+                            <MirageStack Gap="@(MirageStack.StackGap.Md)">
+                                <Body>
+                                    <MirageStack Direction="@(MirageStack.StackDirection.Horizontal)" Gap="@(MirageStack.StackGap.Lg)">
+                                        <Body>
+                                            <MirageCheckbox LabelText="Activer le HUD" Checked="@_hudEnabled" OnChange="@OnHudChange" />
+                                            <MirageCheckbox LabelText="Notifications" Checked="@_notif" OnChange="@OnNotifChange" />
+                                            <MirageCheckbox LabelText="Désactivé" Disabled="@(true)" />
+                                        </Body>
+                                    </MirageStack>
+
+                                    <MirageStack Direction="@(MirageStack.StackDirection.Horizontal)" Gap="@(MirageStack.StackGap.Sm)">
+                                        <Body>
+                                            <MirageToggleButton Text="Solo" Active="@(_party == "solo")" OnChange="@OnPickSolo" />
+                                            <MirageToggleButton Text="Duo" Active="@(_party == "duo")" OnChange="@OnPickDuo" />
+                                            <MirageToggleButton Text="Groupe" Active="@(_party == "groupe")" OnChange="@OnPickGroupe" />
+                                        </Body>
+                                    </MirageStack>
+
+                                    <MirageSegmented Items="@_segItems" Value="@_genre" OnChange="@OnGenreChange" />
+                                </Body>
+                            </MirageStack>
+                        </Body>
+                    </MiragePanel>
+                </div>
+
+                @* ----- Slider & dropdown ----- *@
+                <div class="section">
+                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="Sliders et dropdowns" />
+                    <MiragePanel>
+                        <Body>
+                            <MirageStack Gap="@(MirageStack.StackGap.Md)">
+                                <Body>
+                                    <MirageSlider LabelText="Volume" Min="@(0f)" Max="@(100f)" Step="@(1f)" ValueFormat="0" Value="@_volume" OnChange="@OnVolumeChange" />
+                                    <MirageSlider LabelText="Sensibilité" Min="@(0.1f)" Max="@(5f)" Step="@(0.05f)" Value="@_sensitivity" OnChange="@OnSensChange" />
+                                    <MirageDropdown LabelText="Ville de naissance" Items="@_cityItems" Value="@_city" OnChange="@OnCityChange" />
+                                </Body>
+                            </MirageStack>
+                        </Body>
+                    </MiragePanel>
+                </div>
+
+                @* ----- Color picker ----- *@
+                <div class="section">
+                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="Sélection de couleur" />
+                    <MiragePanel>
+                        <Body>
+                            <MirageColorPicker LabelText="Couleur d'accent" Value="@_color" OnChange="@OnColorChange" />
+                        </Body>
+                    </MiragePanel>
+                </div>
+
+                @* ----- Tooltip & key hints & popups ----- *@
+                <div class="section">
+                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="Indications et popups" />
+                    <MiragePanel>
+                        <Body>
+                            <MirageStack Direction="@(MirageStack.StackDirection.Horizontal)" Gap="@(MirageStack.StackGap.Md)" Align="@(MirageStack.StackAlign.Center)">
+                                <Body>
+                                    <MirageTooltip Text="Survolez-moi pour voir une bulle d'aide.">
+                                        <Body>
+                                            <MirageButton Text="Tooltip" Variant="@(MirageButton.ButtonVariant.Secondary)" />
+                                        </Body>
+                                    </MirageTooltip>
+
+                                    <MirageButton Text="Afficher KeyHint (3s)" ClickAction="@ShowKeyHint" />
+                                    <MirageButton Text="Popup confirmation" Variant="@(MirageButton.ButtonVariant.Secondary)" ClickAction="@ShowConfirmPopup" />
+                                    <MirageButton Text="Popup destructif" Variant="@(MirageButton.ButtonVariant.Danger)" ClickAction="@ShowDangerPopup" />
+                                </Body>
+                            </MirageStack>
+                        </Body>
+                    </MiragePanel>
+                </div>
+
+                @if ( !string.IsNullOrEmpty( _toast ) )
+                {
+                    <div class="toast">
+                        <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)" Text="@_toast" />
+                    </div>
+                }
+
+            </Body>
+        </MirageScrollPanel>
+
+    </div>
+
+</root>
+
+@code
+{
+    private static bool _isOpen;
+
+    public static bool IsOpen => _isOpen;
+
+    public static void Toggle() { _isOpen = !_isOpen; }
+    public static void Show() { _isOpen = true; }
+    public static void Hide() { _isOpen = false; }
+
+    [ConCmd( "mirage_ui_demo" )]
+    private static void ToggleCommand() => Toggle();
+
+    private string _firstName = "";
+    private bool _hudEnabled = true;
+    private bool _notif = false;
+    private string _party = "solo";
+    private string _genre = "m";
+    private float _volume = 60f;
+    private float _sensitivity = 1.0f;
+    private string _city = "paris";
+    private Color _color = new Color( 0.43f, 0.78f, 1.0f );
+    private string _toast;
+    private RealTimeSince _toastSince;
+
+    private readonly List<MirageSegmented.SegmentedItem> _segItems = new()
+    {
+        new MirageSegmented.SegmentedItem { Value = "m", Label = "Homme" },
+        new MirageSegmented.SegmentedItem { Value = "f", Label = "Femme" }
+    };
+
+    private readonly List<MirageDropdown.DropdownItem> _cityItems = new()
+    {
+        new MirageDropdown.DropdownItem { Value = "paris",     Label = "Paris" },
+        new MirageDropdown.DropdownItem { Value = "lyon",      Label = "Lyon" },
+        new MirageDropdown.DropdownItem { Value = "marseille", Label = "Marseille" },
+        new MirageDropdown.DropdownItem { Value = "toulouse",  Label = "Toulouse" },
+        new MirageDropdown.DropdownItem { Value = "nice",      Label = "Nice" }
+    };
+
+    protected override void OnUpdate()
+    {
+        SetClass( "open", _isOpen );
+
+        if ( !string.IsNullOrEmpty( _toast ) && _toastSince > 2.0f )
+        {
+            _toast = null;
+            StateHasChanged();
+        }
+    }
+
+    private void Close() => Hide();
+
+    private void Notify( string message )
+    {
+        _toast = message;
+        _toastSince = 0f;
+        StateHasChanged();
+    }
+
+    private void NotifyPrimary() { Notify( "Primary cliqué" ); }
+    private void NotifySecondary() { Notify( "Secondary cliqué" ); }
+    private void NotifyGhost() { Notify( "Ghost cliqué" ); }
+    private void NotifyDanger() { Notify( "Danger cliqué" ); }
+
+    private void OnFirstNameChange( string s ) { _firstName = s; }
+    private void OnHudChange( bool v ) { _hudEnabled = v; }
+    private void OnNotifChange( bool v ) { _notif = v; }
+    private void OnPickSolo( bool v ) { _party = "solo"; StateHasChanged(); }
+    private void OnPickDuo( bool v ) { _party = "duo"; StateHasChanged(); }
+    private void OnPickGroupe( bool v ) { _party = "groupe"; StateHasChanged(); }
+    private void OnGenreChange( string v ) { _genre = v; }
+    private void OnVolumeChange( float v ) { _volume = v; }
+    private void OnSensChange( float v ) { _sensitivity = v; }
+    private void OnCityChange( string v ) { _city = v; }
+    private void OnColorChange( Color c ) { _color = c; }
+
+    private void ShowKeyHint()
+    {
+        MirageKeyHint.Show( "demo-hint", "E", "Action exemple" );
+        _ = HideKeyHintLater();
+    }
+
+    private async Task HideKeyHintLater()
+    {
+        await GameTask.Delay( 3000 );
+        MirageKeyHint.Hide( "demo-hint" );
+    }
+
+    private void ShowConfirmPopup()
+    {
+        MiragePopup.Confirm(
+            title: "Confirmer l'action ?",
+            message: "Ceci est une popup d'exemple. Cliquez sur Confirmer ou Annuler.",
+            onConfirm: () => Notify( "Confirmé" ),
+            onCancel: () => Notify( "Annulé" )
+        );
+    }
+
+    private void ShowDangerPopup()
+    {
+        MiragePopup.Confirm(
+            title: "Supprimer ce personnage ?",
+            message: "Cette action est définitive et ne peut pas être annulée.",
+            onConfirm: () => Notify( "Personnage supprimé (faux)" ),
+            confirmText: "Supprimer",
+            cancelText: "Annuler",
+            variant: MiragePopup.PopupVariant.Danger
+        );
+    }
+
+    protected override int BuildHash() => System.HashCode.Combine( _isOpen, _toast, _hudEnabled, _notif, _party, _genre, _city, MathF.Round( _volume * 10 ) );
+}

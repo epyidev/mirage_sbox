@@ -636,6 +636,99 @@
             }
           ],
           "Children": []
+        },
+        {
+          "__guid": "7d3a1b00-c3f5-4a01-9b21-1a2b3c4d5e80",
+          "__version": 2,
+          "Flags": 0,
+          "Name": "Mirage Key Hint Host",
+          "Position": "0,0,0",
+          "Rotation": "0,0,0,1",
+          "Scale": "1,1,1",
+          "Tags": "",
+          "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkFlags": 0,
+          "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
+          "OwnerTransfer": 1,
+          "Components": [
+            {
+              "__type": "Sandbox.Mirage.UI.MirageKeyHintHost",
+              "__guid": "7d3a1b00-c3f5-4a01-9b21-1a2b3c4d5e81",
+              "__enabled": true,
+              "Flags": 0,
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null
+            }
+          ],
+          "Children": []
+        },
+        {
+          "__guid": "7d3a1b00-c3f5-4a01-9b21-1a2b3c4d5e90",
+          "__version": 2,
+          "Flags": 0,
+          "Name": "Mirage Popup Host",
+          "Position": "0,0,0",
+          "Rotation": "0,0,0,1",
+          "Scale": "1,1,1",
+          "Tags": "",
+          "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkFlags": 0,
+          "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
+          "OwnerTransfer": 1,
+          "Components": [
+            {
+              "__type": "Sandbox.Mirage.UI.MiragePopupHost",
+              "__guid": "7d3a1b00-c3f5-4a01-9b21-1a2b3c4d5e91",
+              "__enabled": true,
+              "Flags": 0,
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null
+            }
+          ],
+          "Children": []
+        },
+        {
+          "__guid": "7d3a1b00-c3f5-4a01-9b21-1a2b3c4d5ea0",
+          "__version": 2,
+          "Flags": 0,
+          "Name": "Mirage UI Demo",
+          "Position": "0,0,0",
+          "Rotation": "0,0,0,1",
+          "Scale": "1,1,1",
+          "Tags": "",
+          "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkFlags": 0,
+          "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
+          "OwnerTransfer": 1,
+          "Components": [
+            {
+              "__type": "Sandbox.Mirage.UI.MirageUiDemo",
+              "__guid": "7d3a1b00-c3f5-4a01-9b21-1a2b3c4d5ea1",
+              "__enabled": true,
+              "Flags": 0,
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null
+            }
+          ],
+          "Children": []
         }
       ]
     },
