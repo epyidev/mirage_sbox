@@ -4,8 +4,8 @@
 -- The model splits OOC and IC state on purpose:
 --   * `players` is OOC: one row per Steam account, identity and IP history.
 --   * `characters` is IC: one row per RP character, owned by a player via
---     `steam_id` and indexed by a `slot` so a player can keep several saved
---     characters under the same account.
+--     `steam_id` and indexed by a `slot`. Holds RP identity (first name, last
+--     name, birth date, height, gender) plus last known position.
 --   * `accounts` and `character_inventory` hang off a character, never directly
 --     off a player. Money and items belong to the character, not the account.
 --
@@ -27,6 +27,11 @@ CREATE TABLE IF NOT EXISTS characters (
 	id              BIGINT UNSIGNED  NOT NULL AUTO_INCREMENT,
 	steam_id        BIGINT UNSIGNED  NOT NULL,
 	slot            TINYINT UNSIGNED NOT NULL,
+	first_name      VARCHAR(32)      NOT NULL,
+	last_name       VARCHAR(32)      NOT NULL,
+	birth_date      DATE             NOT NULL,
+	height_cm       TINYINT UNSIGNED NOT NULL,
+	gender          ENUM('m','f')    NOT NULL,
 	last_pos_x      FLOAT            NULL,
 	last_pos_y      FLOAT            NULL,
 	last_pos_z      FLOAT            NULL,
@@ -38,7 +43,8 @@ CREATE TABLE IF NOT EXISTS characters (
 	CONSTRAINT fk_characters_player
 		FOREIGN KEY (steam_id) REFERENCES players (steam_id)
 		ON DELETE CASCADE
-		ON UPDATE CASCADE
+		ON UPDATE CASCADE,
+	CONSTRAINT chk_characters_height_cm CHECK (height_cm BETWEEN 50 AND 272)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;

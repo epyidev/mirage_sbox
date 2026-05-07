@@ -90,7 +90,7 @@ export const playerRoutes: FastifyPluginAsync = async (app) => {
 			const { steamId } = req.params;
 			await playerRepo.createIfMissing(steamId);
 			try {
-				const id = await createCharacter(steamId, req.body.slot);
+				const id = await createCharacter(steamId, req.body);
 				const row = await characterRepo.findById(id);
 				if (!row) throw fastify.httpErrors.internalServerError('Character not found after insert.');
 				return reply.status(201).send(characterRepo.rowToSummary(row));

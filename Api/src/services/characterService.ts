@@ -17,16 +17,26 @@ export class CharacterSlotTakenError extends Error {
  * Create a character row plus its default wallet rows in a single SQL
  * transaction. Returns the new auto-incremented character id as a string.
  */
-export async function createCharacter(steamId: string, slot: number): Promise<string> {
+export async function createCharacter(
+	steamId: string,
+	payload: {
+		slot: number;
+		firstName: string;
+		lastName: string;
+		birthDate: string;
+		heightCm: number;
+		gender: 'm' | 'f';
+	}
+): Promise<string> {
 	try {
 		return await withTransaction(async (conn) => {
-			const id = await characterRepo.create(conn, steamId, slot);
+			const id = await characterRepo.create(conn, steamId, payload);
 			await accountRepo.seedDefaults(conn, id);
 			return id;
 		});
 	} catch (err) {
 		if (isDuplicateEntry(err)) {
-			throw new CharacterSlotTakenError(steamId, slot);
+			throw new CharacterSlotTakenError(steamId, payload.slot);
 		}
 		throw err;
 	}

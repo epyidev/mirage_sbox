@@ -12,7 +12,7 @@ The s&box gamemode runs inside a managed code sandbox that blocks raw socket acc
 The API is the source of truth for persistent state. The model splits OOC and IC concerns:
 
 - A `players` row carries OOC identity tied to a Steam account: display name, IP history.
-- A `characters` row is one RP character owned by a player, indexed by `slot` so a single Steam account can keep several saved characters.
+- A `characters` row is one RP character owned by a player, indexed by `slot` so a single Steam account can keep several saved characters. It carries the RP identity (`first_name`, `last_name`, `birth_date`, `height_cm`, `gender`) plus the last known position.
 - `accounts` is one row per wallet per character (`character_id`, `account_id`, `amount`). Defaults `cash` and `bank` are seeded on character creation; new wallet ids can be added on the fly through the API.
 - `character_inventory` is one row per occupied slot per character (`character_id`, `slot`, `item_id`, `quantity`, optional `metadata` JSON).
 
@@ -121,7 +121,7 @@ OOC (player-level):
 | GET    | `/players/:steamId`                   | Load OOC profile (display name, IP history). Creates the row if missing. |
 | PUT    | `/players/:steamId`                   | Update OOC fields: `displayName`, `recordIp` (appends or refreshes the timestamp on the entry). |
 | GET    | `/players/:steamId/characters`        | List the player's character summaries.                             |
-| POST   | `/players/:steamId/characters`        | Create a character on a free `slot`. Returns 409 if the slot is taken. |
+| POST   | `/players/:steamId/characters`        | Create a character on a free `slot`. Body: `slot`, `firstName`, `lastName`, `birthDate` (ISO `YYYY-MM-DD`), `heightCm` (50 to 272), `gender` (`m` or `f`). Returns 409 if the slot is taken. |
 
 IC (character-level):
 

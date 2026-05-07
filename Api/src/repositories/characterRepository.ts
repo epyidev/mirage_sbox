@@ -11,6 +11,11 @@ export interface CharacterRow {
 	id: string;
 	steam_id: string;
 	slot: number;
+	first_name: string;
+	last_name: string;
+	birth_date: Date | string;
+	height_cm: number;
+	gender: 'm' | 'f';
 	last_pos_x: number | null;
 	last_pos_y: number | null;
 	last_pos_z: number | null;
@@ -43,11 +48,27 @@ export async function listForPlayer(
 export async function create(
 	conn: PoolConnection,
 	steamId: string,
-	slot: number
+	payload: {
+		slot: number;
+		firstName: string;
+		lastName: string;
+		birthDate: string;
+		heightCm: number;
+		gender: 'm' | 'f';
+	}
 ): Promise<string> {
 	const [result] = await conn.query<ResultSetHeader>(
-		'INSERT INTO characters (steam_id, slot) VALUES (?, ?)',
-		[steamId, slot]
+		`INSERT INTO characters (steam_id, slot, first_name, last_name, birth_date, height_cm, gender)
+		 VALUES (?, ?, ?, ?, ?, ?, ?)`,
+		[
+			steamId,
+			payload.slot,
+			payload.firstName,
+			payload.lastName,
+			payload.birthDate,
+			payload.heightCm,
+			payload.gender
+		]
 	);
 	return String(result.insertId);
 }
@@ -79,6 +100,14 @@ export function rowToSummary(row: CharacterRow): CharacterSummary {
 		id: row.id,
 		steamId: row.steam_id,
 		slot: row.slot,
+		firstName: row.first_name,
+		lastName: row.last_name,
+		birthDate:
+			row.birth_date instanceof Date
+				? row.birth_date.toISOString().slice(0, 10)
+				: row.birth_date,
+		heightCm: row.height_cm,
+		gender: row.gender,
 		lastPosition:
 			row.last_pos_x === null
 				? null
