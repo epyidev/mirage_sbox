@@ -1,5 +1,6 @@
 -- @author Epyi
--- Initial schema for the Mirage backend: players, inventory, transactions audit log.
+-- Full schema for the Mirage backend: players, inventory, transactions audit log.
+-- Import once into an empty database, then start the API.
 
 CREATE TABLE IF NOT EXISTS players (
 	steam_id        BIGINT UNSIGNED NOT NULL,

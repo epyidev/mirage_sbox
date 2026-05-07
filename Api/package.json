@@ -12,7 +12,6 @@
     "dev": "tsx watch --clear-screen=false src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "migrate": "tsx src/db/migrate.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

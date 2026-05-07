@@ -18,18 +18,16 @@ The API is the source of truth for persistent state: identity, money, inventory,
 - **Zod** for runtime validation, with `fastify-type-provider-zod` to derive route types from schemas.
 - **mysql2** as the MariaDB / MySQL driver, used through a connection pool.
 - **Pino** (Fastify-bundled) for structured JSON logs.
-- **Plain SQL migrations** numbered under `migrations/`, applied by a small Node runner.
+- **Plain SQL schema** in `import.sql`, imported once into an empty database.
 
 ## Layout
 
 ```
 Api/
-  migrations/             SQL schema migrations, applied in numeric order.
-    001_init.sql
+  import.sql              Full SQL schema, imported once into an empty database.
   src/
     config/env.ts         Zod-validated environment loader.
     db/pool.ts            mysql2 connection pool plus withTransaction helper.
-    db/migrate.ts         Migration runner CLI.
     middleware/auth.ts    Bearer-token auth hook.
     repositories/         One file per table, raw SQL behind typed methods.
     routes/               Fastify route plugins (health, profiles, transactions).
@@ -45,7 +43,7 @@ The repository layer wraps SQL queries. The service layer composes them inside a
 
 - Node.js 20.10 or later (LTS recommended)
 - MariaDB 10.6 or later, or MySQL 8.0 or later
-- A user with `SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX` on the target database
+- A user with `SELECT, INSERT, UPDATE, DELETE` on the target database (plus the privileges needed to import `import.sql` once)
 
 ## Setup
 
@@ -73,10 +71,10 @@ The repository layer wraps SQL queries. The service layer composes them inside a
    FLUSH PRIVILEGES;
    ```
 
-4. Apply migrations:
+4. Import the schema (one-time):
 
    ```bash
-   npm run migrate
+   mysql -u mirage -p mirage < import.sql
    ```
 
 ## Run
@@ -115,9 +113,9 @@ The token must match `API_BEARER_TOKEN` from `.env` byte for byte (constant-time
 
 All write endpoints accept a `transactionId` (UUID) for idempotency: replays return the original outcome without double effect.
 
-## Migrations
+## Schema changes
 
-Migrations are plain SQL files named `NNN_description.sql` under `migrations/`. The runner applies them in numeric order, tracks which ones ran in a `_migrations` table, and refuses to skip or reorder. Never rename or modify a migration that has been applied to a real database. Add a new migration instead.
+The schema lives in a single `import.sql` file, imported once into an empty database. There is no migration runner. When the schema changes during development, drop and recreate the database, then re-import. Once the project hits a real persistent environment, switch to a real migration tool before applying changes in place.
 
 ## Production deployment
 
