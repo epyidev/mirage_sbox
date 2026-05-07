@@ -1,0 +1,55 @@
+// @author Epyi
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MirageSegmented
+{
+    flex-direction: row;
+    background-color: $mirage-bg-input;
+    border: $mirage-border-width solid $mirage-border-soft;
+    padding: 2px;
+    gap: 2px;
+    width: 100%;
+    align-self: stretch;
+    flex-shrink: 0;
+
+    .seg
+    {
+        flex-grow: 1;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: $mirage-space-2;
+        padding: $mirage-space-2 $mirage-space-3;
+        @include mirage-clickable;
+
+        .text
+        {
+            font-size: $mirage-font-sm;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: $mirage-letter-wide;
+            color: $mirage-text-secondary;
+        }
+        .icon { color: $mirage-text-secondary; font-size: $mirage-font-md; }
+
+        &:hover
+        {
+            background-color: $mirage-bg-hover;
+            .text, .icon { color: $mirage-text-primary; }
+        }
+
+        &.seg--selected
+        {
+            background-color: $mirage-bg-active;
+            .text, .icon { color: $mirage-text-primary; }
+        }
+    }
+
+    &.mirage-segmented--small  .seg { padding: $mirage-space-1 $mirage-space-2; .text { font-size: $mirage-font-xs; } }
+    &.mirage-segmented--large  .seg { padding: $mirage-space-3 $mirage-space-5; .text { font-size: $mirage-font-md; } }
+
+    &.mirage-segmented--disabled
+    {
+        @include mirage-disabled;
+    }
+}

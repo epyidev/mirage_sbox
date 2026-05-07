@@ -1,0 +1,84 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@inherits Panel
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-text-area @(string.IsNullOrEmpty( Error ) ? "" : "mirage-text-area--invalid") @(Disabled ? "mirage-text-area--disabled" : "")">
+
+    @if ( !string.IsNullOrEmpty( LabelText ) )
+    {
+        <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Text="@LabelText" />
+    }
+
+    <TextEntry @ref="_entry"
+               class="entry"
+               Placeholder="@Placeholder"
+               MaxLength="@MaxLength"
+               Multiline="@(true)"
+               Disabled="@Disabled"
+               OnTextEdited="@OnEntryEdited" />
+
+    @if ( !string.IsNullOrEmpty( Error ) )
+    {
+        <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Danger)" Text="@Error" />
+    }
+    else if ( !string.IsNullOrEmpty( HelpText ) )
+    {
+        <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Muted)" Text="@HelpText" />
+    }
+
+</root>
+
+@code
+{
+    [Parameter] public string LabelText { get; set; }
+    [Parameter] public string Placeholder { get; set; }
+    [Parameter] public string HelpText { get; set; }
+    [Parameter] public string Error { get; set; }
+    [Parameter] public int? MaxLength { get; set; } = 1000;
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public int Rows { get; set; } = 4;
+    [Parameter] public string InitialValue { get; set; }
+    [Parameter] public Action<string> OnChange { get; set; }
+
+    private TextEntry _entry;
+    private bool _initialApplied;
+
+    public string Text => _entry?.Text ?? "";
+    public new void Focus() => _entry?.Focus();
+    public void Clear()
+    {
+        if ( _entry is null ) return;
+        _entry.Text = "";
+    }
+
+    public void SetText( string value )
+    {
+        if ( _entry is null ) return;
+        _entry.Text = value ?? "";
+    }
+
+    public override void Tick()
+    {
+        base.Tick();
+        if ( !_initialApplied && _entry is not null )
+        {
+            _initialApplied = true;
+            // Approximate the requested visible row count via min-height. Each
+            // line is roughly 1.4em, so multiply by font-size.
+            _entry.Style.MinHeight = Length.Pixels( Rows * 22 );
+            if ( !string.IsNullOrEmpty( InitialValue ) )
+            {
+                _entry.Text = InitialValue;
+            }
+        }
+    }
+
+    private void OnEntryEdited( string text )
+    {
+        OnChange?.Invoke( text );
+    }
+}

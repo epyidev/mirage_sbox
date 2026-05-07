@@ -1,0 +1,42 @@
+// @author Epyi
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MirageToggleButton
+{
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: $mirage-space-2;
+    padding: $mirage-space-2 $mirage-space-4;
+    background-color: $mirage-bg-input;
+    border: $mirage-border-width solid $mirage-border-soft;
+    @include mirage-clickable;
+
+    .text
+    {
+        font-size: $mirage-font-sm;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: $mirage-letter-wide;
+        color: $mirage-text-secondary;
+    }
+    .icon { font-size: $mirage-font-md; color: $mirage-text-secondary; }
+
+    &:hover
+    {
+        border-color: $mirage-border;
+        .text, .icon { color: $mirage-text-primary; }
+    }
+
+    &.mirage-toggle--active
+    {
+        background-color: $mirage-bg-active;
+        border-color: $mirage-border-accent;
+        .text, .icon { color: $mirage-text-primary; }
+    }
+
+    &.mirage-toggle--disabled
+    {
+        @include mirage-disabled;
+    }
+}

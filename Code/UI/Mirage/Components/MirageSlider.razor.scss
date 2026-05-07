@@ -1,0 +1,68 @@
+// @author Epyi
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MirageSlider
+{
+    flex-direction: column;
+    gap: $mirage-space-2;
+    width: 100%;
+    align-self: stretch;
+    flex-shrink: 0;
+
+    .header
+    {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .track-host
+    {
+        height: 22px;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        cursor: pointer;
+    }
+
+    .track
+    {
+        height: 4px;
+        width: 100%;
+        background-color: $mirage-bg-input;
+        border: 1px solid $mirage-border-soft;
+        position: relative;
+
+        .fill
+        {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background-color: $mirage-text-primary;
+        }
+
+        .thumb
+        {
+            position: absolute;
+            top: -7px;
+            margin-left: -8px;
+            width: 16px;
+            height: 16px;
+            background-color: $mirage-text-primary;
+            border: 2px solid $mirage-bg-elevated;
+            transition: transform 0.08s ease;
+        }
+    }
+
+    .track-host:hover .thumb
+    {
+        transform: scale( 1.15 );
+    }
+
+    &.mirage-slider--disabled
+    {
+        @include mirage-disabled;
+    }
+}

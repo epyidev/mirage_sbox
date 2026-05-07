@@ -1,0 +1,49 @@
+// @author Epyi
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MirageCheckbox
+{
+    flex-direction: row;
+    align-items: center;
+    gap: $mirage-space-2;
+    @include mirage-clickable;
+
+    .box
+    {
+        width: 18px;
+        height: 18px;
+        background-color: $mirage-bg-input;
+        border: $mirage-border-width solid $mirage-border;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: background-color $mirage-transition-fast, border-color $mirage-transition-fast;
+
+        .mark
+        {
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1em;
+            color: $mirage-text-on-accent;
+        }
+    }
+
+    .text
+    {
+        font-size: $mirage-font-md;
+        color: $mirage-text-primary;
+    }
+
+    &:hover .box { border-color: $mirage-border-strong; }
+
+    &.mirage-checkbox--checked .box
+    {
+        background-color: $mirage-text-primary;
+        border-color: $mirage-text-primary;
+    }
+
+    &.mirage-checkbox--disabled
+    {
+        @include mirage-disabled;
+    }
+}

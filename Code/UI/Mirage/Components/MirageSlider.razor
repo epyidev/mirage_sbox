@@ -1,0 +1,112 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@inherits Panel
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-slider @(Disabled ? "mirage-slider--disabled" : "")">
+
+    @if ( !string.IsNullOrEmpty( LabelText ) || ShowValue )
+    {
+        <div class="header">
+            @if ( !string.IsNullOrEmpty( LabelText ) )
+            {
+                <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Text="@LabelText" />
+            }
+            @if ( ShowValue )
+            {
+                <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Secondary)" Text="@FormatValue( Value )" />
+            }
+        </div>
+    }
+
+    <div class="track-host" @ref="_trackHost">
+        <div class="track">
+            <div class="fill" style="width: @FillPercent%"></div>
+            <div class="thumb" style="left: @FillPercent%"></div>
+        </div>
+    </div>
+
+</root>
+
+@code
+{
+    [Parameter] public string LabelText { get; set; }
+    [Parameter] public float Min { get; set; } = 0f;
+    [Parameter] public float Max { get; set; } = 1f;
+    [Parameter] public float Step { get; set; } = 0.01f;
+    [Parameter] public float Value { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool ShowValue { get; set; } = true;
+    [Parameter] public string ValueFormat { get; set; } = "0.##";
+    [Parameter] public Action<float> OnChange { get; set; }
+
+    private Panel _trackHost;
+    private bool _dragging;
+
+    public override bool WantsDrag => !Disabled;
+
+    private float FillPercent
+    {
+        get
+        {
+            var range = Max - Min;
+            if ( range <= 0 ) return 0;
+            return MathX.Clamp( (Value - Min) / range, 0f, 1f ) * 100f;
+        }
+    }
+
+    private string FormatValue( float v ) => v.ToString( ValueFormat, System.Globalization.CultureInfo.InvariantCulture );
+
+    protected override void OnDragStart( DragEvent e )
+    {
+        base.OnDragStart( e );
+        if ( Disabled ) return;
+        _dragging = true;
+        UpdateFromMouse();
+    }
+
+    protected override void OnDragEnd( DragEvent e )
+    {
+        base.OnDragEnd( e );
+        _dragging = false;
+    }
+
+    public override void Tick()
+    {
+        base.Tick();
+        if ( _dragging ) UpdateFromMouse();
+    }
+
+    protected override void OnMouseDown( MousePanelEvent e )
+    {
+        base.OnMouseDown( e );
+        if ( Disabled ) return;
+        // Click without drag still updates the value to the click position.
+        UpdateFromMouse();
+    }
+
+    private void UpdateFromMouse()
+    {
+        if ( _trackHost is null || !_trackHost.IsValid() ) return;
+        var rect = _trackHost.Box.Rect;
+        if ( rect.Width <= 0 ) return;
+
+        var localX = Mouse.Position.x - rect.Left;
+        var t = MathX.Clamp( localX / rect.Width, 0f, 1f );
+
+        var raw = Min + t * (Max - Min);
+        if ( Step > 0 )
+        {
+            raw = Min + MathF.Round( (raw - Min) / Step ) * Step;
+        }
+        var newValue = MathX.Clamp( raw, Min, Max );
+        if ( newValue == Value ) return;
+
+        Value = newValue;
+        OnChange?.Invoke( Value );
+        StateHasChanged();
+    }
+}

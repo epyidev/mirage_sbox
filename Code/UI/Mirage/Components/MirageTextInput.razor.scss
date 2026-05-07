@@ -1,0 +1,32 @@
+// @author Epyi
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MirageTextInput
+{
+    flex-direction: column;
+    gap: $mirage-space-1;
+    width: 100%;
+    align-self: stretch;
+    flex-shrink: 0;
+
+    .entry
+    {
+        @include mirage-input-base;
+        width: 100%;
+    }
+
+    &.mirage-text-input--small  .entry { padding: $mirage-space-1 $mirage-space-2; font-size: $mirage-font-sm; }
+    &.mirage-text-input--medium .entry { padding: $mirage-space-2 $mirage-space-3; font-size: $mirage-font-md; }
+    &.mirage-text-input--large  .entry { padding: $mirage-space-3 $mirage-space-4; font-size: $mirage-font-lg; }
+
+    &.mirage-text-input--invalid .entry
+    {
+        border-color: $mirage-border-danger;
+        &:hover, &:focus, &.focused { border-color: $mirage-danger; }
+    }
+
+    &.mirage-text-input--disabled
+    {
+        @include mirage-disabled;
+    }
+}

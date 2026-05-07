@@ -1,0 +1,101 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@inherits Panel
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-text-input mirage-text-input--@(Size.ToString().ToLower()) @(string.IsNullOrEmpty( Error ) ? "" : "mirage-text-input--invalid") @(Disabled ? "mirage-text-input--disabled" : "")">
+
+    @if ( !string.IsNullOrEmpty( LabelText ) )
+    {
+        <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Text="@LabelText" />
+    }
+
+    <TextEntry @ref="_entry"
+               class="entry"
+               Placeholder="@Placeholder"
+               MaxLength="@MaxLength"
+               Numeric="@Numeric"
+               Multiline="@Multiline"
+               Disabled="@Disabled"
+               OnTextEdited="@OnEntryEdited"
+               @onsubmit="@OnEntrySubmit" />
+
+    @if ( !string.IsNullOrEmpty( Error ) )
+    {
+        <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Danger)" Text="@Error" />
+    }
+    else if ( !string.IsNullOrEmpty( HelpText ) )
+    {
+        <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Muted)" Text="@HelpText" />
+    }
+
+</root>
+
+@code
+{
+    public enum InputSize { Small, Medium, Large }
+
+    [Parameter] public string LabelText { get; set; }
+    [Parameter] public string Placeholder { get; set; }
+    [Parameter] public string HelpText { get; set; }
+    [Parameter] public string Error { get; set; }
+    [Parameter] public int? MaxLength { get; set; }
+    [Parameter] public bool Numeric { get; set; }
+    [Parameter] public bool Multiline { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public InputSize Size { get; set; } = InputSize.Medium;
+
+    /// <summary>Initial value applied once on first render.</summary>
+    [Parameter] public string InitialValue { get; set; }
+
+    /// <summary>Fires on every keystroke. Argument is the current text.</summary>
+    [Parameter] public Action<string> OnChange { get; set; }
+
+    /// <summary>Fires when the user presses Enter inside the entry.</summary>
+    [Parameter] public Action<string> OnSubmit { get; set; }
+
+    private TextEntry _entry;
+    private bool _initialApplied;
+
+    /// <summary>Current text. Returns an empty string if the entry is not yet built.</summary>
+    public string Text => _entry?.Text ?? "";
+
+    public new void Focus() => _entry?.Focus();
+    public void Clear()
+    {
+        if ( _entry is null ) return;
+        _entry.Text = "";
+    }
+
+    public void SetText( string value )
+    {
+        if ( _entry is null ) return;
+        _entry.Text = value ?? "";
+    }
+
+    public override void Tick()
+    {
+        base.Tick();
+        if ( !_initialApplied && _entry is not null )
+        {
+            _initialApplied = true;
+            if ( !string.IsNullOrEmpty( InitialValue ) )
+            {
+                _entry.Text = InitialValue;
+            }
+        }
+    }
+
+    private void OnEntryEdited( string text )
+    {
+        OnChange?.Invoke( text );
+    }
+
+    private void OnEntrySubmit()
+    {
+        OnSubmit?.Invoke( Text );
+    }
+}
