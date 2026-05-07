@@ -1,0 +1,48 @@
+// @author Epyi
+
+@import "/UI/Theme.scss";
+
+.mirage-identity
+{
+    position: absolute;
+    left: 24px;
+    bottom: 24px;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY( 8px );
+    transition: opacity 0.2s ease, transform 0.2s ease;
+
+    &.open
+    {
+        opacity: 1;
+        transform: translateY( 0 );
+    }
+
+    .badge
+    {
+        flex-direction: column;
+        background-color: rgba( 0, 0, 0, 0.55 );
+        backdrop-filter: blur( 4px );
+        border-left: 3px solid #6ec8ff;
+        border-radius: 4px;
+        padding: 10px 18px 12px 16px;
+        font-family: $title-font;
+
+        .label
+        {
+            font-size: 11px;
+            color: rgba( 255, 255, 255, 0.55 );
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .name
+        {
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.1em;
+            margin-top: 2px;
+        }
+    }
+}

@@ -1,0 +1,37 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@inherits PanelComponent
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-identity">
+    <div class="badge">
+        <div class="label">Personnage</div>
+        <div class="name">@_displayName</div>
+    </div>
+</root>
+
+@code
+{
+    private string _displayName = "";
+
+    protected override void OnUpdate()
+    {
+        var local = Player.FindLocalPlayer();
+        var pd = local?.PlayerData;
+
+        var visible = pd is not null && pd.HasActiveCharacter && !(local?.WantsHideHud ?? false);
+        SetClass( "open", visible );
+
+        var name = pd?.FullName ?? "";
+        if ( name != _displayName )
+        {
+            _displayName = name;
+            StateHasChanged();
+        }
+    }
+
+    protected override int BuildHash() => System.HashCode.Combine( _displayName );
+}

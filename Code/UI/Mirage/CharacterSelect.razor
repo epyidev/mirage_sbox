@@ -1,0 +1,226 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.Mirage
+@using Sandbox.UI
+@inherits PanelComponent
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-character-select">
+
+    <div class="panel">
+        <div class="header">
+            <div class="title">Sélection du personnage</div>
+            <div class="subtitle">Choisis le personnage avec qui jouer, ou crées-en un nouveau.</div>
+        </div>
+
+        @if ( !MirageClientCache.HasSnapshot )
+        {
+            <div class="status loading">Chargement des personnages...</div>
+        }
+        else
+        {
+            <div class="cards">
+                @foreach ( var character in MirageClientCache.Characters )
+                {
+                    var c = character;
+                    <div class="card character" @onclick="@(() => OnSelect( c ))">
+                        <div class="slot">Emplacement @c.Slot</div>
+                        <div class="name">@c.FirstName @c.LastName</div>
+                        <div class="meta">
+                            <span>@(c.Gender == "f" ? "Femme" : "Homme")</span>
+                            <span>@c.HeightCm cm</span>
+                            <span>Né(e) le @c.BirthDate</span>
+                        </div>
+                    </div>
+                }
+
+                @if ( CanCreateMore() )
+                {
+                    <div class="card add-new" @onclick="@OpenCreateForm">
+                        <div class="plus">+</div>
+                        <div class="add-label">Nouveau personnage</div>
+                    </div>
+                }
+            </div>
+
+            @if ( MirageClientCache.Characters.Count == 0 )
+            {
+                <div class="status empty">Aucun personnage. Clique sur la carte "+" pour en créer un.</div>
+            }
+        }
+
+        @if ( !string.IsNullOrEmpty( MirageClientCache.LastError ) )
+        {
+            <div class="error">@MirageClientCache.LastError</div>
+        }
+    </div>
+
+    @if ( _formOpen )
+    {
+        <div class="form-overlay">
+            <div class="form">
+                <div class="form-title">Nouveau personnage</div>
+
+                <div class="field">
+                    <label>Prénom</label>
+                    <TextEntry @ref="_firstName" MaxLength="@(32)"></TextEntry>
+                </div>
+                <div class="field">
+                    <label>Nom</label>
+                    <TextEntry @ref="_lastName" MaxLength="@(32)"></TextEntry>
+                </div>
+                <div class="field">
+                    <label>Date de naissance (AAAA-MM-JJ)</label>
+                    <TextEntry @ref="_birthDate" MaxLength="@(10)"></TextEntry>
+                </div>
+                <div class="field">
+                    <label>Taille (cm)</label>
+                    <TextEntry @ref="_heightCm" MaxLength="@(3)" Numeric="@(true)"></TextEntry>
+                </div>
+                <div class="field">
+                    <label>Genre</label>
+                    <div class="gender-toggle">
+                        <div class="opt @(_gender == "m" ? "selected" : "")" @onclick="@(() => SetGender( "m" ))">Homme</div>
+                        <div class="opt @(_gender == "f" ? "selected" : "")" @onclick="@(() => SetGender( "f" ))">Femme</div>
+                    </div>
+                </div>
+
+                @if ( !string.IsNullOrEmpty( _formError ) )
+                {
+                    <div class="form-error">@_formError</div>
+                }
+
+                <div class="actions">
+                    <div class="action cancel" @onclick="@CloseCreateForm">Annuler</div>
+                    <div class="action submit" @onclick="@SubmitCreateForm">Créer</div>
+                </div>
+            </div>
+        </div>
+    }
+
+</root>
+
+@code
+{
+    private const int MaxCharacterSlots = 8;
+
+    private bool _formOpen;
+    private string _formError;
+    private string _gender = "m";
+
+    private TextEntry _firstName;
+    private TextEntry _lastName;
+    private TextEntry _birthDate;
+    private TextEntry _heightCm;
+
+    private bool _hasRequestedList;
+    private int _renderedVersion = -1;
+
+    protected override void OnUpdate()
+    {
+        var visible = ShouldBeVisible();
+        SetClass( "open", visible );
+
+        if ( !visible )
+        {
+            // The panel is hidden, reset transient state so the next session
+            // starts clean.
+            if ( _formOpen ) _formOpen = false;
+            _hasRequestedList = false;
+            return;
+        }
+
+        if ( !_hasRequestedList )
+        {
+            _hasRequestedList = true;
+            MirageClientCache.Reset();
+            MirageSession.RpcRequestCharacters();
+        }
+
+        if ( _renderedVersion != MirageClientCache.Version )
+        {
+            _renderedVersion = MirageClientCache.Version;
+            StateHasChanged();
+        }
+    }
+
+    private bool ShouldBeVisible()
+    {
+        if ( Connection.Local is null ) return false;
+        var pd = PlayerData.For( Connection.Local );
+        if ( pd is null ) return false;
+        return !pd.HasActiveCharacter;
+    }
+
+    private bool CanCreateMore()
+    {
+        return MirageClientCache.Characters.Count < MaxCharacterSlots;
+    }
+
+    private void OnSelect( MirageCharacterSummary character )
+    {
+        if ( character is null || string.IsNullOrEmpty( character.Id ) ) return;
+        MirageSession.RpcSelectCharacter( character.Id );
+    }
+
+    private void OpenCreateForm()
+    {
+        _formOpen = true;
+        _formError = null;
+        _gender = "m";
+        StateHasChanged();
+    }
+
+    private void SetGender( string gender )
+    {
+        _gender = gender;
+        StateHasChanged();
+    }
+
+    private void CloseCreateForm()
+    {
+        _formOpen = false;
+        _formError = null;
+        StateHasChanged();
+    }
+
+    private void SubmitCreateForm()
+    {
+        var firstName = (_firstName?.Text ?? "").Trim();
+        var lastName = (_lastName?.Text ?? "").Trim();
+        var birthDate = (_birthDate?.Text ?? "").Trim();
+        var heightText = (_heightCm?.Text ?? "").Trim();
+
+        if ( firstName.Length == 0 || firstName.Length > 32 ) { _formError = "Le prénom doit faire entre 1 et 32 caractères."; return; }
+        if ( lastName.Length == 0 || lastName.Length > 32 ) { _formError = "Le nom doit faire entre 1 et 32 caractères."; return; }
+        if ( !System.Text.RegularExpressions.Regex.IsMatch( birthDate, @"^\d{4}-\d{2}-\d{2}$" ) ) { _formError = "La date de naissance doit être au format AAAA-MM-JJ."; return; }
+        if ( !int.TryParse( heightText, out var heightCm ) || heightCm < 50 || heightCm > 272 ) { _formError = "La taille doit être un nombre entre 50 et 272."; return; }
+        if ( _gender != "m" && _gender != "f" ) { _formError = "Choisis un genre."; return; }
+
+        var slot = NextFreeSlot();
+
+        MirageSession.RpcCreateCharacter( slot, firstName, lastName, birthDate, heightCm, _gender );
+
+        // The host will deliver an updated list (or an error) via the cache.
+        _formOpen = false;
+        _formError = null;
+        StateHasChanged();
+    }
+
+    private int NextFreeSlot()
+    {
+        var used = new HashSet<int>();
+        foreach ( var c in MirageClientCache.Characters )
+            used.Add( c.Slot );
+        for ( int i = 0; i < MaxCharacterSlots; i++ )
+        {
+            if ( !used.Contains( i ) ) return i;
+        }
+        return 0;
+    }
+
+    /// <summary>Re-render every frame while the panel is open, otherwise once a second.</summary>
+    protected override int BuildHash() => System.HashCode.Combine( ShouldBeVisible(), _formOpen, MirageClientCache.Version, _gender, RealTime.Now.CeilToInt() );
+}

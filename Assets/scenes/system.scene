@@ -574,6 +574,68 @@
             }
           ],
           "Children": []
+        },
+        {
+          "__guid": "7d3a1b00-c3f5-4a01-9b21-1a2b3c4d5e60",
+          "__version": 2,
+          "Flags": 0,
+          "Name": "Mirage Character Select",
+          "Position": "0,0,0",
+          "Rotation": "0,0,0,1",
+          "Scale": "1,1,1",
+          "Tags": "",
+          "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkFlags": 0,
+          "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
+          "OwnerTransfer": 1,
+          "Components": [
+            {
+              "__type": "Sandbox.Mirage.UI.CharacterSelect",
+              "__guid": "7d3a1b00-c3f5-4a01-9b21-1a2b3c4d5e61",
+              "__enabled": true,
+              "Flags": 0,
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null
+            }
+          ],
+          "Children": []
+        },
+        {
+          "__guid": "7d3a1b00-c3f5-4a01-9b21-1a2b3c4d5e70",
+          "__version": 2,
+          "Flags": 0,
+          "Name": "Mirage Identity Nameplate",
+          "Position": "0,0,0",
+          "Rotation": "0,0,0,1",
+          "Scale": "1,1,1",
+          "Tags": "",
+          "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkFlags": 0,
+          "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
+          "OwnerTransfer": 1,
+          "Components": [
+            {
+              "__type": "Sandbox.Mirage.UI.IdentityNameplate",
+              "__guid": "7d3a1b00-c3f5-4a01-9b21-1a2b3c4d5e71",
+              "__enabled": true,
+              "Flags": 0,
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null
+            }
+          ],
+          "Children": []
         }
       ]
     },
