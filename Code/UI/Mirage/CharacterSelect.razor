@@ -3,99 +3,135 @@
 *@
 @using Sandbox
 @using Sandbox.Mirage
+@using Sandbox.Mirage.UI
 @using Sandbox.UI
 @inherits PanelComponent
 @namespace Sandbox.Mirage.UI
 
 <root class="mirage-character-select">
 
-    <div class="panel">
-        <div class="header">
-            <div class="title">Sélection du personnage</div>
-            <div class="subtitle">Choisis le personnage avec qui jouer, ou crées-en un nouveau.</div>
-        </div>
+    <div class="backdrop"></div>
 
-        @if ( !MirageClientCache.HasSnapshot )
-        {
-            <div class="status loading">Chargement des personnages...</div>
-        }
-        else
-        {
-            <div class="cards">
-                @foreach ( var character in MirageClientCache.Characters )
+    <div class="frame">
+
+        <MirageHeader Title="Sélection du personnage" Closable="@(false)" />
+
+        <MirageScrollPanel>
+            <Body>
+
+                @if ( !MirageClientCache.HasSnapshot )
                 {
-                    var c = character;
-                    <div class="card character" @onclick="@(() => OnSelect( c ))">
-                        <div class="slot">Emplacement @c.Slot</div>
-                        <div class="name">@c.FirstName @c.LastName</div>
-                        <div class="meta">
-                            <span>@(c.Gender == "f" ? "Femme" : "Homme")</span>
-                            <span>@c.HeightCm cm</span>
-                            <span>Né(e) le @c.BirthDate</span>
-                        </div>
+                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)"
+                                 Color="@(MirageLabel.LabelColor.Secondary)"
+                                 Align="@(MirageLabel.LabelAlign.Center)"
+                                 Text="Chargement des personnages..." />
+                }
+                else
+                {
+                    <div class="cards">
+                        @foreach ( var character in MirageClientCache.Characters )
+                        {
+                            var c = character;
+                            <div class="card character" @onclick="@(() => OnSelect( c ))">
+                                <MirageBadge Text="@($"Slot {c.Slot}")" Variant="@(MirageBadge.BadgeVariant.Outline)" />
+                                <MirageLabel Variant="@(MirageLabel.LabelVariant.Heading)" Text="@($"{c.FirstName} {c.LastName}")" />
+                                <div class="meta">
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)"
+                                                 Color="@(MirageLabel.LabelColor.Secondary)"
+                                                 Text="@(c.Gender == "f" ? "Femme" : "Homme")" />
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)"
+                                                 Color="@(MirageLabel.LabelColor.Secondary)"
+                                                 Text="@($"{c.HeightCm} cm")" />
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)"
+                                                 Color="@(MirageLabel.LabelColor.Muted)"
+                                                 Text="@($"Né(e) le {c.BirthDate}")" />
+                                </div>
+                                <div class="card-cta">
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)"
+                                                 Color="@(MirageLabel.LabelColor.Accent)"
+                                                 Text="Jouer →" />
+                                </div>
+                            </div>
+                        }
+
+                        @if ( CanCreateMore() )
+                        {
+                            <div class="card add-new" @onclick="@OpenCreateForm">
+                                <Label class="plus" Text="+" />
+                                <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)"
+                                             Color="@(MirageLabel.LabelColor.Secondary)"
+                                             Text="Nouveau personnage" />
+                            </div>
+                        }
                     </div>
+
+                    @if ( MirageClientCache.Characters.Count == 0 )
+                    {
+                        <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)"
+                                     Color="@(MirageLabel.LabelColor.Warning)"
+                                     Align="@(MirageLabel.LabelAlign.Center)"
+                                     Text="Aucun personnage. Clique sur la carte « + » pour en créer un." />
+                    }
                 }
 
-                @if ( CanCreateMore() )
+                @if ( !string.IsNullOrEmpty( MirageClientCache.LastError ) )
                 {
-                    <div class="card add-new" @onclick="@OpenCreateForm">
-                        <div class="plus">+</div>
-                        <div class="add-label">Nouveau personnage</div>
-                    </div>
+                    <MiragePanel Variant="@(MiragePanel.PanelVariant.Default)" Padded="@(true)">
+                        <Body>
+                            <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)"
+                                         Color="@(MirageLabel.LabelColor.Danger)"
+                                         Align="@(MirageLabel.LabelAlign.Center)"
+                                         Text="@MirageClientCache.LastError" />
+                        </Body>
+                    </MiragePanel>
                 }
-            </div>
 
-            @if ( MirageClientCache.Characters.Count == 0 )
-            {
-                <div class="status empty">Aucun personnage. Clique sur la carte "+" pour en créer un.</div>
-            }
-        }
+            </Body>
+        </MirageScrollPanel>
 
-        @if ( !string.IsNullOrEmpty( MirageClientCache.LastError ) )
-        {
-            <div class="error">@MirageClientCache.LastError</div>
-        }
     </div>
 
     @if ( _formOpen )
     {
         <div class="form-overlay">
-            <div class="form">
-                <div class="form-title">Nouveau personnage</div>
+            <div class="form-frame">
 
-                <div class="field">
-                    <label>Prénom</label>
-                    <TextEntry @ref="_firstName" MaxLength="@(32)"></TextEntry>
-                </div>
-                <div class="field">
-                    <label>Nom</label>
-                    <TextEntry @ref="_lastName" MaxLength="@(32)"></TextEntry>
-                </div>
-                <div class="field">
-                    <label>Date de naissance (AAAA-MM-JJ)</label>
-                    <TextEntry @ref="_birthDate" MaxLength="@(10)"></TextEntry>
-                </div>
-                <div class="field">
-                    <label>Taille (cm)</label>
-                    <TextEntry @ref="_heightCm" MaxLength="@(3)" Numeric="@(true)"></TextEntry>
-                </div>
-                <div class="field">
-                    <label>Genre</label>
-                    <div class="gender-toggle">
-                        <div class="opt @(_gender == "m" ? "selected" : "")" @onclick="@(() => SetGender( "m" ))">Homme</div>
-                        <div class="opt @(_gender == "f" ? "selected" : "")" @onclick="@(() => SetGender( "f" ))">Femme</div>
-                    </div>
+                <MirageHeader Title="Nouveau personnage" Closable="@(true)" OnClose="@CloseCreateForm" />
+
+                <div class="form-body">
+                    <MirageStack Gap="@(MirageStack.StackGap.Md)">
+                        <Body>
+                            <MirageTextInput @ref="_firstName" LabelText="Prénom" Placeholder="Jean" MaxLength="@(32)" />
+                            <MirageTextInput @ref="_lastName" LabelText="Nom" Placeholder="Dupont" MaxLength="@(32)" />
+                            <MirageTextInput @ref="_birthDate" LabelText="Date de naissance" Placeholder="AAAA-MM-JJ" MaxLength="@(10)" />
+                            <MirageTextInput @ref="_heightCm" LabelText="Taille (cm)" Placeholder="180" MaxLength="@(3)" Numeric="@(true)" />
+
+                            <div class="form-field">
+                                <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Text="Genre" />
+                                <MirageSegmented Items="@_genderItems" Value="@_gender" OnChange="@OnGenderChange" />
+                            </div>
+
+                            @if ( !string.IsNullOrEmpty( _formError ) )
+                            {
+                                <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)"
+                                             Color="@(MirageLabel.LabelColor.Danger)"
+                                             Text="@_formError" />
+                            }
+                        </Body>
+                    </MirageStack>
                 </div>
 
-                @if ( !string.IsNullOrEmpty( _formError ) )
-                {
-                    <div class="form-error">@_formError</div>
-                }
-
-                <div class="actions">
-                    <div class="action cancel" @onclick="@CloseCreateForm">Annuler</div>
-                    <div class="action submit" @onclick="@SubmitCreateForm">Créer</div>
+                <div class="form-actions">
+                    <MirageButton Text="Annuler"
+                                  Variant="@(MirageButton.ButtonVariant.Ghost)"
+                                  Size="@(MirageButton.ButtonSize.Medium)"
+                                  ClickAction="@CloseCreateForm" />
+                    <MirageButton Text="Créer le personnage"
+                                  Variant="@(MirageButton.ButtonVariant.Primary)"
+                                  Size="@(MirageButton.ButtonSize.Medium)"
+                                  ClickAction="@SubmitCreateForm" />
                 </div>
+
             </div>
         </div>
     }
@@ -110,13 +146,19 @@
     private string _formError;
     private string _gender = "m";
 
-    private TextEntry _firstName;
-    private TextEntry _lastName;
-    private TextEntry _birthDate;
-    private TextEntry _heightCm;
+    private MirageTextInput _firstName;
+    private MirageTextInput _lastName;
+    private MirageTextInput _birthDate;
+    private MirageTextInput _heightCm;
 
     private bool _hasRequestedList;
     private int _renderedVersion = -1;
+
+    private readonly List<MirageSegmented.SegmentedItem> _genderItems = new()
+    {
+        new MirageSegmented.SegmentedItem { Value = "m", Label = "Homme" },
+        new MirageSegmented.SegmentedItem { Value = "f", Label = "Femme" }
+    };
 
     protected override void OnUpdate()
     {
@@ -125,8 +167,6 @@
 
         if ( !visible )
         {
-            // The panel is hidden, reset transient state so the next session
-            // starts clean.
             if ( _formOpen ) _formOpen = false;
             _hasRequestedList = false;
             return;
@@ -173,7 +213,7 @@
         StateHasChanged();
     }
 
-    private void SetGender( string gender )
+    private void OnGenderChange( string gender )
     {
         _gender = gender;
         StateHasChanged();
@@ -203,7 +243,6 @@
 
         MirageSession.RpcCreateCharacter( slot, firstName, lastName, birthDate, heightCm, _gender );
 
-        // The host will deliver an updated list (or an error) via the cache.
         _formOpen = false;
         _formError = null;
         StateHasChanged();
@@ -221,6 +260,5 @@
         return 0;
     }
 
-    /// <summary>Re-render every frame while the panel is open, otherwise once a second.</summary>
-    protected override int BuildHash() => System.HashCode.Combine( ShouldBeVisible(), _formOpen, MirageClientCache.Version, _gender, RealTime.Now.CeilToInt() );
+    protected override int BuildHash() => System.HashCode.Combine( ShouldBeVisible(), _formOpen, MirageClientCache.Version, _gender, _formError, RealTime.Now.CeilToInt() );
 }
