@@ -110,9 +110,9 @@ The s&box code sandbox blocks raw SQL drivers and sockets, so the gamemode canno
 - **Not in the gamemode build.** `Code/mirage.csproj` only scans `Code/`, so `Api/` is invisible to the s&box compiler. Publishing the gamemode does not bundle `Api/` either (the `Resources` globs in `mirage.sbproj` do not match it).
 - **Stack.** Node 20+, TypeScript strict, Fastify 5, `fastify-type-provider-zod`, `mysql2/promise`, single `import.sql` for the schema (no migration runner). No ORM. Repository, service, route layers separated.
 - **Auth.** Single shared bearer token (`API_BEARER_TOKEN` env var). The s&box host sends `Authorization: Bearer <token>` on every call. Constant-time comparison. The API is meant to bind on a private interface (`127.0.0.1`) and stay behind the firewall.
-- **Idempotency.** Mutating endpoints accept a `transactionId` UUID. The `transactions` table primary-keys on it, so replays after a network blip return the original outcome instead of double-charging.
-- **Atomicity.** Money, inventory, and audit writes happen inside a single MariaDB transaction with `SELECT ... FOR UPDATE` on the player row to serialise concurrent requests for the same player.
-- **Source of truth.** When a gameplay system needs persistent state, the API is authoritative. The host holds an in-memory cache of an online player's profile, syncs it back via the API on transactions, and flushes on disconnect. Do not invent parallel local-file persistence.
+- **Data model.** OOC and IC are split. `players` (OOC) holds Steam account identity and IP history. `characters` (IC, one row per RP character, owned by a player via `steam_id` and indexed by `slot`) holds position and timestamps. `accounts` (one row per wallet per character: `account_id`, `amount`) and `character_inventory` (one row per occupied slot: `slot`, `item_id`, `quantity`, optional `metadata` JSON) hang off a character, not off a player.
+- **Idempotency by design.** Character creation is keyed on `(steam_id, slot)` so a replayed POST returns 409 instead of duplicating. All other writes are slot-keyed or row-keyed upserts, so retries converge.
+- **Source of truth.** When a gameplay system needs persistent state, the API is authoritative. The host holds an in-memory cache of an active character, syncs it back via the API as state changes, and flushes on disconnect. Do not invent parallel local-file persistence.
 
 See `Api/README.md` for setup, run, endpoints, and deployment notes.
 
