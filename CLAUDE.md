@@ -14,6 +14,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The code in `Code/` and the assets in `Assets/` are still largely the original Sandbox base. Most existing files are upstream code, and the RP-specific systems will be built on top, mostly as new components and systems plugged into the existing event interfaces.
 
+## s&box reference (`Docs/Sbox/`)
+
+Curated, text-only mirror of the official s&box documentation plus the auto-generated API reference for every public type. Read `Docs/Sbox/SKILL.md` first. Do not invent s&box APIs: if a type or member is not in `Docs/Sbox/api/INDEX.md`, it does not exist in this version. Hand-curated digest cards for the patterns we actually use live in `Docs/Sbox/reference/` (ConVars, dedicated server, HTTP from the host, RPC, ownership, FileSystem, serverside code). Regenerated from `Downloaded/` (gitignored) by `tools/sbox-docs/generate.mjs`.
+
 ## Building and running
 
 There is no command-line build. s&box compiles the project from the editor:
