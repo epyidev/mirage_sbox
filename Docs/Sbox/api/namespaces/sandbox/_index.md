@@ -1,0 +1,678 @@
+# Namespace `Sandbox`
+
+540 types.
+
+## Classes
+
+- [`Achievement`](./Achievement.md)
+- [`AchievementCollection`](./AchievementCollection.md) - Holds achievements for a package
+- [`AmbientLight`](./AmbientLight.md) - Adds an ambient light to the scene, applied globally.
+- [`AmbientOcclusion`](./AmbientOcclusion.md) - Adds an approximation of ambient occlusion using Screen Space Ambient Occlusion (SSAO).
+- [`AnimationBuilder`](./AnimationBuilder.md) - Provides ability to generate animations for a `Sandbox.Model` at runtime.
+- [`AnimationGraph`](./AnimationGraph.md)
+- [`AnimationSequence`](./AnimationSequence.md)
+- [`AnimGraphDirectPlayback`](./AnimGraphDirectPlayback.md) - For communicating with a Direct Playback Anim Node, which allows code to tell it to play a given sequence
+- [`AnimParam<T>`](./AnimParam-T.md) - Anim param values contain any value for a limited set of types
+- [`AnyOfType<T>`](./AnyOfType-T.md) - A wrapper that holds an instance of any concrete type assignable to `T`.
+- [`AssetTypeFlags`](./AssetTypeFlags.md) - Flags for `Sandbox.AssetTypeAttribute`
+- [`AudioListener`](./AudioListener.md) - If this exists and is enabled in a scene, then the client will hear from this point rather than
+- [`AudioSurface`](./AudioSurface.md) - Defines acoustic properties of a surface, which defines how sound will bounce
+- [`BallJoint`](./BallJoint.md) - Fix two objects together but can rotate - like a shoulder.
+- [`BallJointBuilder`](./BallJointBuilder.md) - Provides ability to generate a ball joint for a `Sandbox.Model` at runtime.
+- [`BaseChair`](./BaseChair.md)
+- [`BaseFileSystem`](./BaseFileSystem.md) - A filesystem. Could be on disk, or in memory, or in the cloud. Could be writable or read only.
+- [`BasePostProcess`](./BasePostProcess.md) - The base class for all post process effects.
+- [`BasePostProcess<T>`](./BasePostProcess-T.md) - Like BasePostProcess but enables access to helper methods for accessing from multiple instances using GetWeighted.
+- [`BaseSoundComponent`](./BaseSoundComponent.md)
+- [`BeamEffect`](./BeamEffect.md) - The BeamEffect component creates a visual beam effect in the scene, simulating a continuous line or laser-like effect.
+- [`Bitmap`](./Bitmap.md)
+- [`BlendMode`](./BlendMode.md) - Blend modes used by the UI system
+- [`BlitOverlay`](./BlitOverlay.md) - Draw a material over the screen
+- [`BlobData`](./BlobData.md) - Base class for properties that should be serialized to binary format instead of JSON.
+- [`Bloom`](./Bloom.md) - Applies a bloom effect to the camera
+- [`Blur`](./Blur.md) - Applies a blur effect to the camera.
+- [`BoneCollection`](./BoneCollection.md) - A collection of bones. This could be from a model, or an entity
+- [`BoxCollider`](./BoxCollider.md) - Defines a box collider.
+- [`ByteStream`](./ByteStream.md) - Write and read bytes to a stream. This aims to be as allocation free as possible while also being as fast as possible.
+- [`CableComponent`](./CableComponent.md) - Non-destructive cable data + mesh generation.
+- [`CableNodeComponent`](./CableNodeComponent.md)
+- [`CachingHandler`](./CachingHandler.md)
+- [`CameraComponent`](./CameraComponent.md) - Every scene should have at least one Camera.
+- [`CapsuleCollider`](./CapsuleCollider.md) - Defines a capsule collider.
+- [`CaseInsensitiveConcurrentDictionary<T>`](./CaseInsensitiveConcurrentDictionary-T.md)
+- [`CaseInsensitiveDictionary<T>`](./CaseInsensitiveDictionary-T.md)
+- [`CharacterController`](./CharacterController.md) - Allows collision constrained movement without the need for a rigidbody. This is not affected by forces and will only move when you call the Move() method.
+- [`CharacterControllerHelper`](./CharacterControllerHelper.md)
+- [`ChromaticAberration`](./ChromaticAberration.md) - Applies a chromatic aberration effect to the camera
+- [`ClearFlags`](./ClearFlags.md) - Flags for clearing a RT before rendering a scene using a SceneCamera
+- [`CloneConfig`](./CloneConfig.md) - The low level input of a GameObject.Clone
+- [`Clothing`](./Clothing.md) - Describes an item of clothing and implicitly which other items it can be worn with
+- [`ClothingContainer`](./ClothingContainer.md) - Holds a collection of clothing items. Won't let you add items that aren't compatible.
+- [`CodeArchive`](./CodeArchive.md)
+- [`CodeGeneratorFlags`](./CodeGeneratorFlags.md) - Used to specify what type of code generation to perform.
+- [`Collider`](./Collider.md)
+- [`ColliderFlags`](./ColliderFlags.md)
+- [`Collision`](./Collision.md)
+- [`CollisionSoundSystem`](./CollisionSoundSystem.md) - This system exists to collect pending collision sounds and filter them into a unique set, to avoid
+- [`CollisionSource`](./CollisionSource.md)
+- [`CollisionStop`](./CollisionStop.md)
+- [`ColorAdjustments`](./ColorAdjustments.md) - Applies color adjustments to the camera.
+- [`ColorGrading`](./ColorGrading.md) - Applies color grading to the camera
+- [`CompactTerrainMaterial`](./CompactTerrainMaterial.md) - Compact terrain material encoding with base/overlay texture blending.
+- [`CompileGroup`](./CompileGroup.md)
+- [`Compiler`](./Compiler.md) - Given a folder of .cs files, this will produce (and load) an assembly
+- [`CompilerOutput`](./CompilerOutput.md)
+- [`Component`](./Component.md) - A GameObject can have many components, which are the building blocks of the game.
+- [`ComponentFlags`](./ComponentFlags.md)
+- [`ComponentList`](./ComponentList.md)
+- [`ComputeBuffer<T>`](./ComputeBuffer-T.md)
+- [`ComputeBufferType`](./ComputeBufferType.md)
+- [`ComputeShader`](./ComputeShader.md) - A compute shader is a program that runs on the GPU, often with data provided to/from the CPU by means of a `Sandbox.GpuBuffer`1` or a `Sandbox.Texture`.
+- [`ConfigData`](./ConfigData.md) - Project configuration data is derived from this class
+- [`Connection`](./Connection.md) - A connection, usually to a server or a client.
+- [`ControlJoint`](./ControlJoint.md)
+- [`ControlModeSettings`](./ControlModeSettings.md)
+- [`ConVarFlags`](./ConVarFlags.md)
+- [`CookieContainer`](./CookieContainer.md)
+- [`CubemapFog`](./CubemapFog.md) - Applies a cubemap fog effect to the camera
+- [`CubemapFogController`](./CubemapFogController.md)
+- [`CurrencyValue`](./CurrencyValue.md) - Describes money, in a certain currency
+- [`CursorSettings`](./CursorSettings.md)
+- [`Curve`](./Curve.md) - Describes a curve, which can have multiple key frames.
+- [`CurveRange`](./CurveRange.md) - Two curves
+- [`DamageInfo`](./DamageInfo.md) - Describes the damage that should be done to something. This is purposefully a class
+- [`DebugOverlaySystem`](./DebugOverlaySystem.md)
+- [`Decal`](./Decal.md) - The Decal component projects textures onto model's opaque or transparent surfaces.
+- [`DecalDefinition`](./DecalDefinition.md) - A decal which can be applied to objects and surfaces.
+- [`DecalGameSystem`](./DecalGameSystem.md)
+- [`DecalRenderer`](./DecalRenderer.md) - Component that creates a projected decal relative to its GameObject.
+- [`DepthOfField`](./DepthOfField.md) - Applies a depth of field effect to the camera
+- [`DirectionalLight`](./DirectionalLight.md) - A directional light that casts shadows, like the sun.
+- [`DisplayInfo`](./DisplayInfo.md) - Collects all the relevant info (such as description, name, icon, etc) from attributes and other sources about a type or type member.
+- [`Doo`](./Doo.md) - A visual scripting task composed of executable blocks.
+- [`DooEngine`](./DooEngine.md) - System that manages the execution of Doo scripts within a scene.
+- [`Dresser`](./Dresser.md) - Allows easily dressing a citizen or human in clothing
+- [`DspVolume`](./DspVolume.md)
+- [`EditorSystemPublic`](./EditorSystemPublic.md)
+- [`EditorTint`](./EditorTint.md)
+- [`EnumDescription`](./EnumDescription.md)
+- [`EnvmapProbe`](./EnvmapProbe.md) - A cubemap probe that captures the environment around it.
+- [`FieldDescription`](./FieldDescription.md) - Describes a field. We use this class to wrap and return <see cref="P:Sandbox.FieldDescription.FieldInfo">FieldInfo</see>'s that are safe to interact with.
+- [`FileWatch`](./FileWatch.md) - Watch folders, dispatch events on changed files
+- [`FilmGrain`](./FilmGrain.md) - Applies a film grain effect to the camera
+- [`FindMode`](./FindMode.md) - Flags to search for Components.
+- [`FireDamage`](./FireDamage.md) - Applies fire damage to any IDamageable in our Root object. 
+- [`FixedJoint`](./FixedJoint.md) - Weld two physics objects together
+- [`FixedJointBuilder`](./FixedJointBuilder.md) - Provides ability to generate a fixed joint for a `Sandbox.Model` at runtime.
+- [`FloatSpan`](./FloatSpan.md) - Provides vectorized operations over a span of floats.
+- [`Friend`](./Friend.md)
+- [`Frustum`](./Frustum.md) - Represents a <a href="https://en.wikipedia.org/wiki/Frustum">frustum</a>.
+- [`GameObject`](./GameObject.md) - An object in the scene. Functionality is added using Components. A GameObject has a transform, which explains its position,
+- [`GameObjectDirectory`](./GameObjectDirectory.md) - New GameObjects and Components are registered with this class when they're created, and 
+- [`GameObjectFlags`](./GameObjectFlags.md)
+- [`GameObjectSystem`](./GameObjectSystem.md) - Allows creation of a system that always exists in every scene, is hooked into the scene's lifecycle, 
+- [`GameObjectSystem<T>`](./GameObjectSystem-T.md) - A syntax sugar wrapper around GameObjectSystem, which allows you to access your system using
+- [`GamepadCode`](./GamepadCode.md) - Game controller codes, driven from SDL.
+- [`GameResource`](./GameResource.md) - Assets defined in C# and created through tools.
+- [`GameTags`](./GameTags.md) - Entity Tags are strings you can set and check for on any entity. Internally
+- [`GameTransform`](./GameTransform.md)
+- [`Gib`](./Gib.md) - A gib is a prop that is treated slightly different. It will fade out after a certain amount of time.
+- [`GlyphStyle`](./GlyphStyle.md)
+- [`GpuBuffer`](./GpuBuffer.md) - A GPU data buffer intended for use with a `Sandbox.ComputeShader`.
+- [`GpuBuffer<T>`](./GpuBuffer-T.md) - A typed GpuBuffer
+- [`Gradient`](./Gradient.md) - Describes a gradient between multiple colors
+- [`GradientFog`](./GradientFog.md) - Adds a gradient fog to the world
+- [`HammerMesh`](./HammerMesh.md) - Added automatically by Hammer to GameObjects that have a map mesh tied to them.
+- [`HapticEffect`](./HapticEffect.md) - Contains a haptic effect, which consists of patterns for the controller and triggers.
+- [`HapticPattern`](./HapticPattern.md) - Contains a haptic pattern, which consists of frequency and amplitude values that can change over time.
+- [`HapticTarget`](./HapticTarget.md) - Places you can trigger haptics on
+- [`Highlight`](./Highlight.md) - This should be added to a camera that you want to outline stuff
+- [`HighlightOutline`](./HighlightOutline.md) - This component should be added to stuff you want to be outlined. You will also need to 
+- [`HingeJoint`](./HingeJoint.md) - Create a hinged connection between two physics objects. Like a door hinge or a wheel.
+- [`HingeJointBuilder`](./HingeJointBuilder.md) - Provides ability to generate a hinge joint for a `Sandbox.Model` at runtime.
+- [`Hitbox`](./Hitbox.md)
+- [`HitboxSet`](./HitboxSet.md) - A set of hitboxes on a model. Hitboxes can be boxes, spheres or capsules.
+- [`HullCollider`](./HullCollider.md) - Defines a box, cone, or cylinder hull collider.
+- [`ImageFormat`](./ImageFormat.md) - Format used when creating textures.
+- [`IndirectLightVolume`](./IndirectLightVolume.md) - Dynamic Diffuse Global Illumination volume that provides indirect lighting using a 3D probe grid.
+- [`InputAction`](./InputAction.md) - An input action defined by a game project.
+- [`InputAnalog`](./InputAnalog.md) - An analog input, when fetched, is between -1 and 1 (0 being default)
+- [`InputGlyphSize`](./InputGlyphSize.md)
+- [`InputMotionData`](./InputMotionData.md) - Represents the current state of a device's motion sensor(s).
+- [`InputSettings`](./InputSettings.md) - A class that holds all configured input settings for a game.
+- [`ITagSet`](./ITagSet.md)
+- [`Joint`](./Joint.md)
+- [`JointMotion`](./JointMotion.md)
+- [`KeyboardModifiers`](./KeyboardModifiers.md)
+- [`KeyStore`](./KeyStore.md) - Allows storing files by hashed keys, rather than by actual filename. This is sometimes useful.
+- [`LanguageContainer`](./LanguageContainer.md) - A container for the current language, allowing access to translated phrases and language information.
+- [`LegacyParticleSystem`](./LegacyParticleSystem.md) - Support's Source Engine's vpcf particles
+- [`Light`](./Light.md)
+- [`LineRenderer`](./LineRenderer.md) - Renders a line between a list of points
+- [`LipSync`](./LipSync.md) - Drive morphs with lipsync from sounds.
+- [`LoadingContext`](./LoadingContext.md)
+- [`LogEvent`](./LogEvent.md)
+- [`LogLevel`](./LogLevel.md)
+- [`ManifestSchema`](./ManifestSchema.md) - An addon's manifest, describing what files are available
+- [`ManualHitbox`](./ManualHitbox.md) - A hitbox that can be placed manually on a GameObject, instead of coming from a model
+- [`Map`](./Map.md)
+- [`MapCollider`](./MapCollider.md)
+- [`MapInstance`](./MapInstance.md) - Allows you to load a map into the Scene. This can be either a vpk or a scene map.
+- [`MapLoader`](./MapLoader.md)
+- [`MapObjectComponent`](./MapObjectComponent.md)
+- [`MapSkybox3D`](./MapSkybox3D.md)
+- [`Material`](./Material.md) - A material. Uses several `Sandbox.Texture`s and a `Sandbox.Material.Shader` with specific settings for more interesting visual effects.
+- [`MaterialGroupBuilder`](./MaterialGroupBuilder.md)
+- [`MemberDescription`](./MemberDescription.md) - Wraps <see cref="F:Sandbox.MemberDescription.MemberInfo">MemberInfo</see> but with caching and sandboxing.
+- [`Mesh`](./Mesh.md) - A <a href="https://en.wikipedia.org/wiki/Polygon_mesh">mesh</a> is a basic version of a `Sandbox.Model`,
+- [`MeshComponent`](./MeshComponent.md) - An editable polygon mesh with collision
+- [`MeshPrimitiveType`](./MeshPrimitiveType.md) - Possible primitive types of a `Sandbox.Mesh`.
+- [`Metadata`](./Metadata.md) - A simple class for storing and retrieving metadata values.
+- [`MethodDescription`](./MethodDescription.md) - Describes a method. We use this class to wrap and return <see cref="T:System.Reflection.MethodInfo">MethodInfo</see>'s that are safe to interact with.
+- [`MissingComponent`](./MissingComponent.md) - This is added when a component is missing. It will store the json data of the missing component, so we don't lose any data.
+- [`Model`](./Model.md) - A model.
+- [`ModelArchetype`](./ModelArchetype.md) - Default model archetypes.
+- [`ModelAttachments`](./ModelAttachments.md)
+- [`ModelBuilder`](./ModelBuilder.md) - Provides ability to generate `Sandbox.Model`s at runtime.
+- [`ModelCollider`](./ModelCollider.md) - Defines a collider based on a model.
+- [`ModelHitboxes`](./ModelHitboxes.md) - Hitboxes from a model
+- [`ModelMorphs`](./ModelMorphs.md) - Allows fast lookups of morph variables
+- [`ModelParts`](./ModelParts.md)
+- [`ModelPhysics`](./ModelPhysics.md) - Physics for a model. This is primarily used for ragdolls and other physics driven models, otherwise you should be using a Rigidbody.
+- [`ModelRenderer`](./ModelRenderer.md) - Renders a model in the world
+- [`MorphCollection`](./MorphCollection.md) - Used to access and manipulate morphs.
+- [`MotionBlur`](./MotionBlur.md) - Applies a motion blur effect to the camera
+- [`MouseButtons`](./MouseButtons.md) - State of mouse buttons being pressed or not.
+- [`MouseVisibility`](./MouseVisibility.md) - The visibility state of the mouse cursor.
+- [`MultisampleAmount`](./MultisampleAmount.md)
+- [`MultiSerializedObject`](./MultiSerializedObject.md) - An object (or data) that can be accessed as an object
+- [`MusicPlayer`](./MusicPlayer.md) - Enables music playback. Use this for music, not for playing game sounds.
+- [`NavMeshAgent`](./NavMeshAgent.md) - An agent that can navigate the navmesh defined in the scene.
+- [`NavMeshArea`](./NavMeshArea.md) - An area that influences the NavMesh generation.
+- [`NavMeshLink`](./NavMeshLink.md) - NavigationLinks connect navigation mesh polygons for pathfinding and enable shortcuts like ladders, jumps, or teleports.
+- [`NetDictionary<TKey,TValue>`](./NetDictionary-TKey,TValue.md) - A networkable dictionary for use with the `Sandbox.SyncAttribute` and `Sandbox.HostSyncAttribute`. Only changes will be
+- [`NetDictionaryChangeEvent<TKey,TValue>`](./NetDictionaryChangeEvent-TKey,TValue.md) - Describes a change to a `Sandbox.NetDictionary`2` which is passed to
+- [`NetFlags`](./NetFlags.md)
+- [`NetList<T>`](./NetList-T.md) - A networkable list for use with the `Sandbox.SyncAttribute` and `Sandbox.HostSyncAttribute`. Only changes will be
+- [`NetListChangeEvent<T>`](./NetListChangeEvent-T.md) - Describes a change to a `Sandbox.NetListChangeEvent`1` which is passed to
+- [`NetPermission`](./NetPermission.md) - Specifies who can invoke an action over the network.
+- [`NetworkFlags`](./NetworkFlags.md) - Describes the behavior of network objects.
+- [`NetworkHelper`](./NetworkHelper.md)
+- [`NetworkingSettings`](./NetworkingSettings.md) - A class that holds all configured networking settings for a game.
+- [`NetworkMode`](./NetworkMode.md) - Specifies how a `Sandbox.GameObject` should be networked.
+- [`NetworkOrphaned`](./NetworkOrphaned.md) - Specifies what happens when the owner of a networked object disconnects.
+- [`NetworkSpawnOptions`](./NetworkSpawnOptions.md) - Configurable options when spawning a networked object.
+- [`OwnerTransfer`](./OwnerTransfer.md) - Specifies who can control ownership of a networked object.
+- [`Package`](./Package.md) - Represents an asset on <a href="https://asset.party/">Asset Party</a>.
+- [`PanelComponent`](./PanelComponent.md)
+- [`Particle`](./Particle.md)
+- [`ParticleAttractor`](./ParticleAttractor.md) - Attract particles to a GameObject in the scene
+- [`ParticleBoxEmitter`](./ParticleBoxEmitter.md) - Emits particles within a box shape.
+- [`ParticleConeEmitter`](./ParticleConeEmitter.md) - Emits particles within/along a cone shape.
+- [`ParticleController`](./ParticleController.md) - Particles can have extra controllers that can modify the particles every frame.
+- [`ParticleControlPoint`](./ParticleControlPoint.md)
+- [`ParticleEffect`](./ParticleEffect.md) - Defines and holds particles. This is the core of the particle system.
+- [`ParticleEmitter`](./ParticleEmitter.md) - Creates particles. Should be attached to a `Sandbox.ParticleEffect`.
+- [`ParticleFloat`](./ParticleFloat.md) - Represents a floating-point value that can change over time with support for various evaluation modes.
+- [`ParticleGradient`](./ParticleGradient.md)
+- [`ParticleLightRenderer`](./ParticleLightRenderer.md) - Adds lighting to particles in your effect.
+- [`ParticleModelEmitter`](./ParticleModelEmitter.md) - Emits particles in a model
+- [`ParticleModelRenderer`](./ParticleModelRenderer.md) - Renders particles as models, using the particle's position, rotation, and size.
+- [`ParticleRenderer`](./ParticleRenderer.md) - Renders a set of particles. Should be attached to a `Sandbox.ParticleRenderer.ParticleEffect`.
+- [`ParticleRingEmitter`](./ParticleRingEmitter.md) - Emits particles in a ring. The ring can be flat or have a tube-like quality.
+- [`ParticleSnapshot`](./ParticleSnapshot.md) - A particle snapshot that can be created procedurally.
+- [`ParticleSphereEmitter`](./ParticleSphereEmitter.md) - Emits particles within a sphere shape.
+- [`ParticleSpriteRenderer`](./ParticleSpriteRenderer.md) - Renders particles as 2D sprites - can be static or animated
+- [`ParticleSystem`](./ParticleSystem.md) - A particle effect system that allows for complex visual effects, such as
+- [`ParticleTextRenderer`](./ParticleTextRenderer.md) - Renders particles as 2D sprites
+- [`ParticleTrailRenderer`](./ParticleTrailRenderer.md) - Renders a trail for each particle in the effect.
+- [`ParticleVector3`](./ParticleVector3.md)
+- [`PartyRoom`](./PartyRoom.md) - A Party. A Party with your friends.
+- [`PhysicsBody`](./PhysicsBody.md) - Represents a physics object. An entity can have multiple physics objects. See <see cref="P:Sandbox.PhysicsBody.PhysicsGroup">PhysicsGroup</see>.
+- [`PhysicsBodyBuilder`](./PhysicsBodyBuilder.md) - Provides ability to generate a physics body for a `Sandbox.Model` at runtime.
+- [`PhysicsBodyType`](./PhysicsBodyType.md)
+- [`PhysicsContact`](./PhysicsContact.md)
+- [`PhysicsFilter`](./PhysicsFilter.md)
+- [`PhysicsGroup`](./PhysicsGroup.md) - Represents a set of <see cref="T:Sandbox.PhysicsBody">PhysicsBody</see> objects. Think ragdoll.
+- [`PhysicsGroupDescription`](./PhysicsGroupDescription.md)
+- [`PhysicsIntersection`](./PhysicsIntersection.md)
+- [`PhysicsIntersectionEnd`](./PhysicsIntersectionEnd.md)
+- [`PhysicsJointBuilder`](./PhysicsJointBuilder.md) - Provides ability to generate a physics joint for a `Sandbox.Model` at runtime.
+- [`PhysicsLock`](./PhysicsLock.md)
+- [`PhysicsMotionType`](./PhysicsMotionType.md) - Represents <see cref="T:Sandbox.PhysicsBody">Physics body's</see> motion type.
+- [`PhysicsShape`](./PhysicsShape.md) - Represents a basic, convex shape. A <see cref="T:Sandbox.PhysicsBody">PhysicsBody</see> consists of one or more of these.
+- [`PhysicsSimulationMode`](./PhysicsSimulationMode.md) - Physics simulation mode. For use with `Sandbox.PhysicsWorld.SimulationMode`.
+- [`PhysicsTraceBuilder`](./PhysicsTraceBuilder.md)
+- [`PhysicsTraceResult`](./PhysicsTraceResult.md)
+- [`PhysicsWorld`](./PhysicsWorld.md) - A world in which physics objects exist. You can create your own world but you really don't need to. A world for the map is created clientside and serverside automatically.
+- [`Pixelate`](./Pixelate.md) - Applies a pixelate effect to the camera
+- [`Plane`](./Plane.md) - Represents a plane.
+- [`PlaneCollider`](./PlaneCollider.md) - Defines a plane collider.
+- [`PlayerController`](./PlayerController.md)
+- [`PointLight`](./PointLight.md) - Emits light in all directions from a point in space.
+- [`PolygonMesh`](./PolygonMesh.md) - An editable mesh made up of polygons, triangulated into a model
+- [`PostProcess`](./PostProcess.md) - Adds an effect to the camera
+- [`PostProcessSystem`](./PostProcessSystem.md) - Manages post-processing effects for cameras and volumes within a scene, handling their application during rendering
+- [`PostProcessVolume`](./PostProcessVolume.md) - A volume that defines a region in the scene where post processing effects will be applied.
+- [`PrefabFile`](./PrefabFile.md) - A GameObject which is saved to a file.
+- [`PrefabScene`](./PrefabScene.md)
+- [`PrefabVariable`](./PrefabVariable.md) - A prefab variable definition
+- [`Project`](./Project.md) - Represents an on-disk project.
+- [`ProjectSettings`](./ProjectSettings.md)
+- [`Prop`](./Prop.md) - A prop is defined by its model. The model can define its health and what happens when it breaks.
+- [`PropertyAccessor`](./PropertyAccessor.md)
+- [`PropertyDescription`](./PropertyDescription.md) - Describes a property. We use this class to wrap and return <see cref="P:Sandbox.PropertyDescription.PropertyInfo">PropertyInfo</see>'s that are safe to interact with.
+- [`RadiusDamage`](./RadiusDamage.md) - Applies damage in a radius, with physics force, and optional occlusion
+- [`RayTracingAccelerationStructure`](./RayTracingAccelerationStructure.md) - Represents a ray tracing acceleration structure that contains geometry for efficient ray intersection testing.
+- [`RealTimeSince`](./RealTimeSince.md) - A convenience struct to easily measure time since an event last happened, based on `Sandbox.RealTime.GlobalNow`.<br /><br />
+- [`RealTimeUntil`](./RealTimeUntil.md) - A convenience struct to easily manage a time countdown, based on `Sandbox.RealTime.GlobalNow`.<br /><br />
+- [`Rect`](./Rect.md) - Represents a rectangle.
+- [`RectInt`](./RectInt.md) - Represents a rectangle but with whole numbers
+- [`RenderAttributes`](./RenderAttributes.md) - RenderAttributes are a set of values that are passed to the renderer.
+- [`Renderer`](./Renderer.md)
+- [`RenderOptions`](./RenderOptions.md)
+- [`RenderTarget`](./RenderTarget.md) - Essentially wraps a couple of textures that we're going to render to. The color texture and the depth texture.
+- [`RenderTextureAsset`](./RenderTextureAsset.md) - Asset that owns a GPU render target texture which can be shared across runtime systems.
+- [`Resource`](./Resource.md) - A resource loaded in the engine, such as a `Sandbox.Model` or `Sandbox.Material`.
+- [`ResourceExtension<T,TSelf>`](./ResourceExtension-T,TSelf.md) - An extension of ResourceExtension[t], this gives special helper methods for retrieving resources targetting
+- [`ResourceExtension<T>`](./ResourceExtension-T.md) - A GameResource type that adds extended properties to another resource type. You should prefer to use
+- [`ResourcePublishContext`](./ResourcePublishContext.md) - Created by the editor when publishing a resource, passed into Resource.ConfigurePublishing. This allows
+- [`ResourceSystem`](./ResourceSystem.md)
+- [`Rigidbody`](./Rigidbody.md) - Adds physics properties to an object. Requires a collider to be attached to the same object.
+- [`RigidbodyFlags`](./RigidbodyFlags.md)
+- [`Scene`](./Scene.md)
+- [`SceneAnimationSystem`](./SceneAnimationSystem.md)
+- [`SceneCamera`](./SceneCamera.md) - Represents a camera and holds render hooks. This camera can be used to draw tool windows and scene panels.
+- [`SceneCameraDebugMode`](./SceneCameraDebugMode.md)
+- [`SceneCubemap`](./SceneCubemap.md)
+- [`SceneCullingBox`](./SceneCullingBox.md) - A box which can be used to explicitly control scene visibility. 
+- [`SceneCustomObject`](./SceneCustomObject.md) - A scene object that allows custom rendering within a scene world.
+- [`SceneDirectionalLight`](./SceneDirectionalLight.md) - A directional scene light that is used to mimic sun light in a `Sandbox.SceneWorld`.
+- [`SceneDynamicObject`](./SceneDynamicObject.md)
+- [`SceneFile`](./SceneFile.md) - A scene file contains a collection of GameObject with Components and their properties.
+- [`SceneFogVolume`](./SceneFogVolume.md) - Represents a volume of fog in a scene, contributing to volumetric fog effects set on `Sandbox.SceneCamera.VolumetricFog`.
+- [`SceneInformation`](./SceneInformation.md)
+- [`SceneLayerType`](./SceneLayerType.md)
+- [`SceneLight`](./SceneLight.md) - Base class for light scene objects for use with a `Sandbox.SceneWorld`.
+- [`SceneLineObject`](./SceneLineObject.md) - A scene object which is used to draw lines
+- [`SceneLoadOptions`](./SceneLoadOptions.md)
+- [`SceneMap`](./SceneMap.md) - Map geometry that can be rendered within a `Sandbox.SceneWorld`.
+- [`SceneMapLoader`](./SceneMapLoader.md)
+- [`SceneModel`](./SceneModel.md) - A model scene object that supports animations and can be rendered within a `Sandbox.SceneWorld`.
+- [`SceneNetworkSystem`](./SceneNetworkSystem.md) - This is created and referenced by the network system, as a way to route.
+- [`SceneObject`](./SceneObject.md) - A model scene object that can be rendered within a `Sandbox.SceneWorld`.
+- [`SceneParticles`](./SceneParticles.md) - A SceneObject used to render particles.
+- [`ScenePointLight`](./ScenePointLight.md) - A point light scene object for use in a `Sandbox.SceneWorld`.
+- [`SceneRenderLayer`](./SceneRenderLayer.md) - SceneObjects can be rendered on layers other than the main game layer.
+- [`SceneSkyBox`](./SceneSkyBox.md) - Renders a skybox within a `Sandbox.SceneWorld`.
+- [`SceneSpotLight`](./SceneSpotLight.md) - A simple spot light scene object for use in a `Sandbox.SceneWorld`.
+- [`SceneSpriteSystem`](./SceneSpriteSystem.md)
+- [`SceneTrace`](./SceneTrace.md)
+- [`SceneTraceResult`](./SceneTraceResult.md)
+- [`SceneWorld`](./SceneWorld.md) - A scene world that contains `Sandbox.SceneObject`s. See <a href="https://sbox.game/api/Tools.Utility.CreateSceneWorld()">Utility.CreateSceneWorld</a>.
+- [`ScreenPanel`](./ScreenPanel.md) - Renders any attached PanelComponents to the screen. Acts as the root for all your UI components.
+- [`ScreenSpaceReflections`](./ScreenSpaceReflections.md)
+- [`SelectionSetsSystem`](./SelectionSetsSystem.md) - Stores editor selection sets on the scene so they serialize into SceneProperties/GameObjectSystems.
+- [`SelectionSystem`](./SelectionSystem.md) - An ordered collection of unique objects with add/remove callbacks.
+- [`SerializedCollection`](./SerializedCollection.md)
+- [`SerializedObject`](./SerializedObject.md) - An object (or data) that can be accessed as an object
+- [`SerializedProperty`](./SerializedProperty.md)
+- [`Shader`](./Shader.md) - A <a href="https://en.wikipedia.org/wiki/Shader">shader</a> is a specialized and complex computer program that use
+- [`Sharpen`](./Sharpen.md) - Applies a sharpen effect to the camera
+- [`SimpleVertex`](./SimpleVertex.md)
+- [`SkinnedModelRenderer`](./SkinnedModelRenderer.md) - Renders a skinned model in the world. A skinned model is any model with bones/animations.
+- [`SkyBox2D`](./SkyBox2D.md) - Adds a 2D skybox to the world
+- [`SliderJoint`](./SliderJoint.md) - Restrict an object to one axis, relative to another object. Like a drawer opening.
+- [`SliderJointBuilder`](./SliderJointBuilder.md) - Provides ability to generate a slider joint for a `Sandbox.Model` at runtime.
+- [`SoundBoxComponent`](./SoundBoxComponent.md) - Plays a sound within a box.
+- [`SoundEvent`](./SoundEvent.md) - A sound event. It can play a set of random sounds with optionally random settings such as volume and pitch.
+- [`SoundFile`](./SoundFile.md) - A sound resource.
+- [`SoundFormat`](./SoundFormat.md)
+- [`SoundHandle`](./SoundHandle.md) - A handle to a sound that is currently playing. You can use this to control the sound's position, volume, pitch etc.
+- [`SoundPointComponent`](./SoundPointComponent.md) - Plays a sound at a point in the world.
+- [`Soundscape`](./Soundscape.md) - A soundscape is used for environmental ambiance of a map by playing a set of random sounds at given intervals.
+- [`SoundscapeTrigger`](./SoundscapeTrigger.md) - Plays a soundscape when the listener enters the trigger area.
+- [`SoundStream`](./SoundStream.md)
+- [`SpawnPoint`](./SpawnPoint.md) - Dictates where players will spawn when they join the game when using a NetworkHelper.
+- [`Sphere`](./Sphere.md) - Represents a sphere.
+- [`SphereCollider`](./SphereCollider.md) - Defines a sphere collider.
+- [`Spline`](./Spline.md) - Collection of curves in 3D space.
+- [`SpotLight`](./SpotLight.md) - Emits light in a specific direction in a cone shape.
+- [`SpringJoint`](./SpringJoint.md) - Try to keep an object a set distance away from another object. Like a spring connecting two objects.
+- [`Sprite`](./Sprite.md) - Represents a sprite resource that can be static or animated. Sprites are rendererd using the SpriteRenderer component.
+- [`SpriteRenderer`](./SpriteRenderer.md) - Renders a sprite in the world
+- [`StandaloneManifest`](./StandaloneManifest.md)
+- [`SteamId`](./SteamId.md) - Represents a Steam ID (64-bit unique identifier for Steam accounts).
+- [`StereoTargetEye`](./StereoTargetEye.md)
+- [`StreamChannel`](./StreamChannel.md)
+- [`StreamChatMessage`](./StreamChatMessage.md)
+- [`StreamClip`](./StreamClip.md)
+- [`StreamPoll`](./StreamPoll.md)
+- [`StreamPrediction`](./StreamPrediction.md)
+- [`StreamService`](./StreamService.md) - Streamer integration services
+- [`StreamUser`](./StreamUser.md)
+- [`StreamUserFollow`](./StreamUserFollow.md)
+- [`StringToken`](./StringToken.md) - Strings are commonly converted to tokens in engine, to save space and speed up things like comparisons.
+- [`Surface`](./Surface.md) - A physics surface. This is applied to each <see cref="T:Sandbox.PhysicsShape">PhysicsShape</see> and controls its physical properties and physics related sounds.
+- [`SyncFlags`](./SyncFlags.md) - Describes the behaviour of network synchronization.
+- [`SystemsConfig`](./SystemsConfig.md) - Configuration for GameObjectSystem properties at a project level. 
+- [`TagSet`](./TagSet.md)
+- [`TaskSource`](./TaskSource.md) - Provides a way for us to cancel tasks after common async shit is executed.
+- [`Terrain`](./Terrain.md) - Terrain renders heightmap based terrain.
+- [`TerrainFlags`](./TerrainFlags.md)
+- [`TerrainMaterial`](./TerrainMaterial.md) - Description of a Terrain Material.
+- [`TerrainStorage`](./TerrainStorage.md) - Stores heightmaps, control maps and materials.
+- [`TextFlag`](./TextFlag.md) - Flags dictating position of text (and other elements).
+- [`TextRenderer`](./TextRenderer.md) - Renders text in the world
+- [`Texture`](./Texture.md) - A texture is an image used in rendering. Can be a static texture loaded from disk, or a dynamic texture rendered to by code.
+- [`Texture2DBuilder`](./Texture2DBuilder.md)
+- [`Texture3DBuilder`](./Texture3DBuilder.md)
+- [`TextureArrayBuilder`](./TextureArrayBuilder.md)
+- [`TextureBuilder`](./TextureBuilder.md)
+- [`TextureCubeBuilder`](./TextureCubeBuilder.md)
+- [`TextureFlags`](./TextureFlags.md) - Flags providing hints about a texture
+- [`Time`](./Time.md)
+- [`TimeSince`](./TimeSince.md) - A convenience struct to easily measure time since an event last happened, based on `Sandbox.Time.Now`.<br /><br />
+- [`TimeUntil`](./TimeUntil.md) - A convenience struct to easily manage a time countdown, based on `Sandbox.Time.Now`.<br /><br />
+- [`Tonemapping`](./Tonemapping.md) - Applies a tonemapping effect to the camera.
+- [`TrailRenderer`](./TrailRenderer.md) - Renders a trail behind the object, when it moves.
+- [`TrailTextureConfig`](./TrailTextureConfig.md) - Defines how a trail is going to be textured. Used by TrailRenderer.
+- [`TransformProxy`](./TransformProxy.md)
+- [`TransformProxyComponent`](./TransformProxyComponent.md) - Help to implement a component that completely overrides the transform. This is useful for scenarios
+- [`Triangle`](./Triangle.md)
+- [`TriggerHurt`](./TriggerHurt.md) - Deals damage to objects inside
+- [`TypeDescription`](./TypeDescription.md) - Describes a type. We use this class to wrap and return <see cref="T:System.Type">System.Type</see>'s that are safe to interact with.
+- [`UprightJoint`](./UprightJoint.md) - Constrains a physics body to stay upright relative to another body or the world.
+- [`Variant`](./Variant.md) - A Variant is a type that can hold any value, and also keeps track of the type of the value it holds.
+- [`VerletRope`](./VerletRope.md) - Verlet integration-based rope physics simulation component.
+- [`Vertex`](./Vertex.md)
+- [`VertexAttribute`](./VertexAttribute.md)
+- [`VertexAttributeFormat`](./VertexAttributeFormat.md)
+- [`VertexAttributeType`](./VertexAttributeType.md)
+- [`VertexBuffer`](./VertexBuffer.md)
+- [`VideoPlayer`](./VideoPlayer.md) - Enables video playback and access to the video texture and audio.
+- [`VideoWriter`](./VideoWriter.md) - Allows the creation of video content by encoding a sequence of frames.
+- [`Vignette`](./Vignette.md) - Applies a vignette to the camera
+- [`Voice`](./Voice.md) - Records and transmits voice/microphone input to other players.
+- [`VolumetricFogController`](./VolumetricFogController.md) - Internal component for storing the baked fog texture
+- [`VolumetricFogParameters`](./VolumetricFogParameters.md)
+- [`VolumetricFogVolume`](./VolumetricFogVolume.md) - Adds a volumetric fog volume to the scene.
+- [`WebSocket`](./WebSocket.md) - A WebSocket client for connecting to external services.
+- [`WebSurface`](./WebSurface.md) - Enables rendering and interacting with a webpage
+- [`WheelJoint`](./WheelJoint.md) - The wheel joint can be used to simulate wheels on vehicles.
+- [`WorkshopItemMetaData`](./WorkshopItemMetaData.md) - Some metadata we'll pack into a workshop submission when publishing.
+- [`WorldInput`](./WorldInput.md) - A router for world input, the best place to put this is on your player's camera.
+- [`WorldPanel`](./WorldPanel.md) - Renders any attached PanelComponents to the world in 3D space.
+- [`WrappedMethod`](./WrappedMethod.md) - Provides data about a wrapped method in a `Sandbox.CodeGeneratorAttribute` callback.
+- [`WrappedMethod<T>`](./WrappedMethod-T.md) - Provides data about a wrapped method in a `Sandbox.CodeGeneratorAttribute` callback.
+- [`WrappedPropertyGet<T>`](./WrappedPropertyGet-T.md) - Provides data about a wrapped property getter in a `Sandbox.CodeGeneratorAttribute` callback.
+- [`WrappedPropertySet<T>`](./WrappedPropertySet-T.md) - Provides data about a wrapped property setter in a `Sandbox.CodeGeneratorAttribute` callback.
+
+## Static classes
+
+- [`Application`](./Application.md)
+- [`Cloud`](./Cloud.md) - For accessing assets from the cloud - from code
+- [`CompilerExtensions`](./CompilerExtensions.md)
+- [`ConsoleSystem`](./ConsoleSystem.md) - A library to interact with the Console System.
+- [`FileSystem`](./FileSystem.md) - A filesystem that can be accessed by the game.
+- [`Game`](./Game.md) - Provides global access to core game state, utilities, and operations for S&amp;box.
+- [`GameTask`](./GameTask.md) - A generic `Sandbox.TaskSource`.
+- [`Gizmo`](./Gizmo.md)
+- [`Global`](./Global.md) - Utility info for tools usage.
+- [`Graphics`](./Graphics.md) - Used to render to the screen using your Graphics Card, or whatever you
+- [`Http`](./Http.md) - Lets your game make async HTTP requests.
+- [`Input`](./Input.md) - Allows querying of player button presses and other inputs.
+- [`Json`](./Json.md) - A convenience JSON helper that handles `Sandbox.Resource` types for you.
+- [`Language`](./Language.md) - Allows access to translated phrases, allowing the translation of gamemodes etc
+- [`LaunchArguments`](./LaunchArguments.md) - These are arguments that were set when launching the current game.
+- [`LoadingScreen`](./LoadingScreen.md) - Holds metadata and raw data relating to a Saved Game.
+- [`MainThread`](./MainThread.md) - Utility functions that revolve around the main thread
+- [`MathX`](./MathX.md) - A class to add functionality to the math library that System.Math and System.MathF don't provide.
+- [`Mouse`](./Mouse.md) - Gives access to mouse position etc
+- [`Networking`](./Networking.md) - Global manager to hold and tick the singleton instance of NetworkSystem.
+- [`PhysicsJointBuilderExtensions`](./PhysicsJointBuilderExtensions.md)
+- [`Preferences`](./Preferences.md) - Holds information about the current user's preferences.
+- [`RealTime`](./RealTime.md) - Access to time.
+- [`ResourceLibrary`](./ResourceLibrary.md) - Keeps a library of all available `Sandbox.Resource`.
+- [`Rpc`](./Rpc.md)
+- [`SandboxBaseExtensions`](./SandboxBaseExtensions.md)
+- [`SandboxGameExtensions`](./SandboxGameExtensions.md)
+- [`SandboxSystemExtensions`](./SandboxSystemExtensions.md)
+- [`SandboxToolExtensions`](./SandboxToolExtensions.md)
+- [`SceneExtensions`](./SceneExtensions.md)
+- [`SceneUtility`](./SceneUtility.md)
+- [`Screen`](./Screen.md) - Access screen dimension etc.
+- [`Sound`](./Sound.md) - Single source for creating sounds
+- [`Standalone`](./Standalone.md)
+- [`Storage`](./Storage.md)
+- [`Streamer`](./Streamer.md)
+- [`TextRendering`](./TextRendering.md)
+- [`ThreadSafe`](./ThreadSafe.md) - Provides utilities for working with threads, particularly for identifying
+- [`VertexLayout`](./VertexLayout.md) - Allows for the definition of custom vertex layouts
+
+## Attributes
+
+- [`ActionGraphExposeWhenCachedAttribute`](./ActionGraphExposeWhenCachedAttribute.md) - Don't cache instances of this type when serializing action graph references, force them to be always serialized separately.
+- [`ActionGraphIgnoreAttribute`](./ActionGraphIgnoreAttribute.md)
+- [`ActionGraphIncludeAttribute`](./ActionGraphIncludeAttribute.md)
+- [`ActionGraphNodeAttribute`](./ActionGraphNodeAttribute.md)
+- [`ActionGraphOperatorAttribute`](./ActionGraphOperatorAttribute.md) - Display this node as an operator, with no header or socket labels, and a big icon in the middle.
+- [`ActionGraphPropertyAttribute`](./ActionGraphPropertyAttribute.md) - In ActionGraph, this parameter should only be configurable in the inspector as a property and not have a dedicated input.
+- [`ActionGraphTargetAttribute`](./ActionGraphTargetAttribute.md)
+- [`ActionNodeAttribute`](./ActionNodeAttribute.md)
+- [`AdvancedAttribute`](./AdvancedAttribute.md) - Some properties are not meant for the average user, hide them unless they really want to see them.
+- [`AssetPathAttribute`](./AssetPathAttribute.md) - When added to a string property, will becomes a selector for AssetTypeExtension
+- [`AssetTypeAttribute`](./AssetTypeAttribute.md) - Should be applied to a class that inherits from `Sandbox.GameResource`.
+- [`AuthorityAttribute`](./AuthorityAttribute.md) - Marks a method as being an RPC specifically targeted to the owner of the `Sandbox.GameObject`, or the host
+- [`AutoGenerateAttribute`](./AutoGenerateAttribute.md) - Indicates that this type should generate meta data. Tagging your asset with this will
+- [`BitFlagsAttribute`](./BitFlagsAttribute.md) - This choices type is bitflags, so we should be able to choose more than one option at a time.
+- [`BroadcastAttribute`](./BroadcastAttribute.md) - Marks a method as being an RPC that when invoked will be called for all connected clients including the host.
+- [`ButtonAttribute`](./ButtonAttribute.md) - When added to a method - the inspector will show a button for it.
+- [`ChangeAttribute`](./ChangeAttribute.md) - This will invoke a method when the property changes. It can be used with any property but is especially useful
+- [`ClientEditableAttribute`](./ClientEditableAttribute.md) - Indicates that this propery can be edited by the client, in a game like Sandbox Mode. In reality
+- [`CodeGeneratorAttribute`](./CodeGeneratorAttribute.md) - An attribute that can be added to a custom `System.Attribute` class for special code generation behavior.
+- [`ColorUsageAttribute`](./ColorUsageAttribute.md) - When applied to a Color property, allows you to specify whether the color should have an alpha channel and/or be in HDR.
+- [`ConCmdAttribute`](./ConCmdAttribute.md)
+- [`ConVarAttribute`](./ConVarAttribute.md) - Console variable
+- [`CustomEditorAttribute`](./CustomEditorAttribute.md)
+- [`CustomEmbeddedEditorAttribute`](./CustomEmbeddedEditorAttribute.md)
+- [`EditorHandleAttribute`](./EditorHandleAttribute.md) - When applied to a component, the editor will draw a selectable handle sprite for the gameobject in scene
+- [`EnumButtonGroupAttribute`](./EnumButtonGroupAttribute.md) - Forces an enum property to be shown as a group of buttons.
+- [`EnumDropdownAttribute`](./EnumDropdownAttribute.md) - Forces an enum property to be shown as a dropdown list.
+- [`EventAttribute`](./EventAttribute.md) - A generic event listener. You are probably looking for Sandbox.Event.* attributes.
+- [`ExpressionNodeAttribute`](./ExpressionNodeAttribute.md)
+- [`FeatureAttribute`](./FeatureAttribute.md) - Sets the category or the group of a type or a type member.
+- [`FeatureEnabledAttribute`](./FeatureEnabledAttribute.md) - Mark a boolean property as a feature toggle
+- [`FGDTypeAttribute`](./FGDTypeAttribute.md) - Overrides the auto generated FGD type.
+- [`FilePathAttribute`](./FilePathAttribute.md) - When added to a string property, will become a file picker for the given extension (or all by default)
+- [`FontNameAttribute`](./FontNameAttribute.md) - When applied to a string property, uses a font name selector.
+- [`GameResourceAttribute`](./GameResourceAttribute.md)
+- [`HasImplementationAttribute`](./HasImplementationAttribute.md) - In ActionGraph, this type parameter can only be satisfied by a type `TArg`, such
+- [`HeaderAttribute`](./HeaderAttribute.md) - Add a header above this property
+- [`HelpUrlAttribute`](./HelpUrlAttribute.md) - Add a link to some documentation for this component, or `property`
+- [`HideAttribute`](./HideAttribute.md) - Hide this in tools/editors.
+- [`HostSyncAttribute`](./HostSyncAttribute.md) - Automatically synchronize a property of a networked object from the host to other clients.
+- [`IconNameAttribute`](./IconNameAttribute.md) - When applied to a string property, uses a Material Icon selector.
+- [`ImageAssetPathAttribute`](./ImageAssetPathAttribute.md) - When added to a string property, will become an image string selector
+- [`ImpureAttribute`](./ImpureAttribute.md)
+- [`InfoBoxAttribute`](./InfoBoxAttribute.md) - Draw a box with information above this property
+- [`InlineEditorAttribute`](./InlineEditorAttribute.md) - Tell the editor to try to display inline editing for this property, rather than hiding it behind a popup etc.
+- [`InputActionAttribute`](./InputActionAttribute.md) - When applied to a string property, use an input action selector.
+- [`InputAttribute`](./InputAttribute.md) - Makes this method available as a Map Logic Input, for use in the Hammer Editor. This is only applicable to entities.
+- [`InspectorVisibilityAttribute`](./InspectorVisibilityAttribute.md) - Hide a property if a condition matches.
+- [`JsonUpgraderAttribute`](./JsonUpgraderAttribute.md) - An attribute that describes a version update for a JSON object.
+- [`KeyPropertyAttribute`](./KeyPropertyAttribute.md) - Mark this property as the key property - which means that it can represent the whole object in a single line, while
+- [`LibraryAttribute`](./LibraryAttribute.md)
+- [`MakeDirtyAttribute`](./MakeDirtyAttribute.md)
+- [`MapAssetPathAttribute`](./MapAssetPathAttribute.md) - When added to a string property, will become a map string selector
+- [`MethodArgumentsAttribute`](./MethodArgumentsAttribute.md) - Specify the types of arguments a method should have. Typically used with event attributes to throw an exception
+- [`MethodBodyChangeAttribute`](./MethodBodyChangeAttribute.md)
+- [`NormalAttribute`](./NormalAttribute.md) - When applied to a Vector property, provides normal selection tools.
+- [`PropertyAccessorBodyChangeAttribute`](./PropertyAccessorBodyChangeAttribute.md)
+- [`PropertyAttribute`](./PropertyAttribute.md)
+- [`PureAttribute`](./PureAttribute.md)
+- [`RangeAttribute`](./RangeAttribute.md) - Mark this property as a ranged float/int. In inspector we'll be able to create a slider
+- [`ReadOnlyAttribute`](./ReadOnlyAttribute.md) - Display this in the inspector - but don't let anyone edit it
+- [`RequireComponentAttribute`](./RequireComponentAttribute.md) - When added to a property on a Component, we'll try to make that component value non null.
+- [`ResourceTypeAttribute`](./ResourceTypeAttribute.md) - Allows you to specify a string property as a resource type. This will
+- [`RpcAttribute`](./RpcAttribute.md) - Marks a method as being an RPC. This means that it can be called over the network.
+- [`SelectionBaseAttribute`](./SelectionBaseAttribute.md) - Apply this attribute to a component class to mark its GameObject as a selection base for Scene View picking.
+- [`SingleActionAttribute`](./SingleActionAttribute.md) - Force a delegate-type property to only have a single attached Action Graph.
+- [`SkipHotloadAttribute`](./SkipHotloadAttribute.md) - Skip processing a specific field, or any fields in a type marked by this attribute. Field
+- [`SpaceAttribute`](./SpaceAttribute.md) - Add a space above this property
+- [`StepAttribute`](./StepAttribute.md) - Mark this property as a stepped value, where the value can only be set to multiples of the step value.
+- [`StringLiteralOnlyAttribute`](./StringLiteralOnlyAttribute.md) - Ask codegen to shit itself if the parameter isn't passed in as a string literal
+- [`SupportsILHotloadAttribute`](./SupportsILHotloadAttribute.md)
+- [`SuppressNullKeyWarningAttribute`](./SuppressNullKeyWarningAttribute.md) - When applied to a member with `System.Collections.Generic.Dictionary`2` or `System.Collections.Generic.HashSet`1` type,
+- [`SyncAttribute`](./SyncAttribute.md) - Automatically synchronize a property of a networked object from the owner to other clients.
+- [`TargetTypeAttribute`](./TargetTypeAttribute.md) - When applied to a Type property, allows you to specify a Type that the property's value must derive from.
+- [`TextAreaAttribute`](./TextAreaAttribute.md) - When applied to a string property, show a multi-line text box instead of a single line.
+- [`TextureImagePathAttribute`](./TextureImagePathAttribute.md) - When added to a string property, will allow selection of anything that a Texture can be
+- [`TintAttribute`](./TintAttribute.md)
+- [`WideModeAttribute`](./WideModeAttribute.md) - Expand the value editor to fill the next line in the inspector, leaving the title above it
+
+## Interfaces
+
+- [`IByteParsable`](./IByteParsable.md)
+- [`IByteParsable<T>`](./IByteParsable-T.md)
+- [`ICompileReferenceProvider`](./ICompileReferenceProvider.md) - Allows you to look up references for a compiler.
+- [`IComponentLister`](./IComponentLister.md) - Interface for types that reference a `Sandbox.ComponentList`, to provide
+- [`IDynamicFloatContext`](./IDynamicFloatContext.md)
+- [`IGameInstance`](./IGameInstance.md) - Todo: make internal - the only thing using ir right now is the binds system
+- [`IGameObjectNetworkEvents`](./IGameObjectNetworkEvents.md) - Allows listening to network events on a specific GameObject
+- [`IHotloadManaged`](./IHotloadManaged.md) - During hotloads, instances of types implementing this interface will be notified when
+- [`IJsonConvert`](./IJsonConvert.md) - Allows writing JsonConverter in a more compact way, without having to pre-register them.
+- [`IJsonPopulator`](./IJsonPopulator.md) - Objects that need to be deserialized into can implement this interface
+- [`IMemberAttribute`](./IMemberAttribute.md) - When applied to an attribute, which is them applied to a member..
+- [`ISceneCollisionEvents`](./ISceneCollisionEvents.md) - Listen to all collision events that happen during a physics step.
+- [`ISceneEvent<T>`](./ISceneEvent-T.md) - A wrapper for scene event interfaces. Allows syntax sugar of something like
+- [`ISceneLoadingEvents`](./ISceneLoadingEvents.md) - Allows listening to events related to scene loading
+- [`ISceneMetadata`](./ISceneMetadata.md) - Allows components to add metadata to the scene/prefab file, which is accessible before loading it.
+- [`IScenePhysicsEvents`](./IScenePhysicsEvents.md) - Allows events before and after the the physics step
+- [`ISceneStartup`](./ISceneStartup.md) - Allows listening to events related to scene startup. This should really only apply to GameObjectSystem's
+- [`ISpriteRenderGroup`](./ISpriteRenderGroup.md) - Base interface for components that can be grouped for sprite rendering.
+- [`ITypeAttribute`](./ITypeAttribute.md) - When applied to an attribute, which is then applied to a type..
+- [`IValid`](./IValid.md) - Interface for objects that can become invalid over time,
+
+## Structs
+
+- [`AnimParam<T>`](./AnimParam-T.md) - Anim param values contain any value for a limited set of types
+- [`AnyOfType<T>`](./AnyOfType-T.md) - A wrapper that holds an instance of any concrete type assignable to `T`.
+- [`ByteStream`](./ByteStream.md) - Write and read bytes to a stream. This aims to be as allocation free as possible while also being as fast as possible.
+- [`CharacterControllerHelper`](./CharacterControllerHelper.md)
+- [`CloneConfig`](./CloneConfig.md) - The low level input of a GameObject.Clone
+- [`Collision`](./Collision.md)
+- [`CollisionSource`](./CollisionSource.md)
+- [`CollisionStop`](./CollisionStop.md)
+- [`CompactTerrainMaterial`](./CompactTerrainMaterial.md) - Compact terrain material encoding with base/overlay texture blending.
+- [`CurrencyValue`](./CurrencyValue.md) - Describes money, in a certain currency
+- [`Curve`](./Curve.md) - Describes a curve, which can have multiple key frames.
+- [`CurveRange`](./CurveRange.md) - Two curves
+- [`DisplayInfo`](./DisplayInfo.md) - Collects all the relevant info (such as description, name, icon, etc) from attributes and other sources about a type or type member.
+- [`FloatSpan`](./FloatSpan.md) - Provides vectorized operations over a span of floats.
+- [`Friend`](./Friend.md)
+- [`Frustum`](./Frustum.md) - Represents a <a href="https://en.wikipedia.org/wiki/Frustum">frustum</a>.
+- [`GlyphStyle`](./GlyphStyle.md)
+- [`Gradient`](./Gradient.md) - Describes a gradient between multiple colors
+- [`InputMotionData`](./InputMotionData.md) - Represents the current state of a device's motion sensor(s).
+- [`LogEvent`](./LogEvent.md)
+- [`NetDictionaryChangeEvent<TKey,TValue>`](./NetDictionaryChangeEvent-TKey,TValue.md) - Describes a change to a `Sandbox.NetDictionary`2` which is passed to
+- [`NetListChangeEvent<T>`](./NetListChangeEvent-T.md) - Describes a change to a `Sandbox.NetListChangeEvent`1` which is passed to
+- [`NetworkSpawnOptions`](./NetworkSpawnOptions.md) - Configurable options when spawning a networked object.
+- [`ParticleControlPoint`](./ParticleControlPoint.md)
+- [`ParticleFloat`](./ParticleFloat.md) - Represents a floating-point value that can change over time with support for various evaluation modes.
+- [`ParticleGradient`](./ParticleGradient.md)
+- [`ParticleVector3`](./ParticleVector3.md)
+- [`PhysicsContact`](./PhysicsContact.md)
+- [`PhysicsIntersection`](./PhysicsIntersection.md)
+- [`PhysicsIntersectionEnd`](./PhysicsIntersectionEnd.md)
+- [`PhysicsLock`](./PhysicsLock.md)
+- [`PhysicsTraceBuilder`](./PhysicsTraceBuilder.md)
+- [`PhysicsTraceResult`](./PhysicsTraceResult.md)
+- [`Plane`](./Plane.md) - Represents a plane.
+- [`RealTimeSince`](./RealTimeSince.md) - A convenience struct to easily measure time since an event last happened, based on `Sandbox.RealTime.GlobalNow`.<br /><br />
+- [`RealTimeUntil`](./RealTimeUntil.md) - A convenience struct to easily manage a time countdown, based on `Sandbox.RealTime.GlobalNow`.<br /><br />
+- [`Rect`](./Rect.md) - Represents a rectangle.
+- [`RectInt`](./RectInt.md) - Represents a rectangle but with whole numbers
+- [`SceneTrace`](./SceneTrace.md)
+- [`SceneTraceResult`](./SceneTraceResult.md)
+- [`SimpleVertex`](./SimpleVertex.md)
+- [`Sphere`](./Sphere.md) - Represents a sphere.
+- [`SteamId`](./SteamId.md) - Represents a Steam ID (64-bit unique identifier for Steam accounts).
+- [`StreamChannel`](./StreamChannel.md)
+- [`StreamChatMessage`](./StreamChatMessage.md)
+- [`StreamClip`](./StreamClip.md)
+- [`StreamPoll`](./StreamPoll.md)
+- [`StreamPrediction`](./StreamPrediction.md)
+- [`StreamUser`](./StreamUser.md)
+- [`StreamUserFollow`](./StreamUserFollow.md)
+- [`StringToken`](./StringToken.md) - Strings are commonly converted to tokens in engine, to save space and speed up things like comparisons.
+- [`TaskSource`](./TaskSource.md) - Provides a way for us to cancel tasks after common async shit is executed.
+- [`Texture2DBuilder`](./Texture2DBuilder.md)
+- [`Texture3DBuilder`](./Texture3DBuilder.md)
+- [`TextureArrayBuilder`](./TextureArrayBuilder.md)
+- [`TextureBuilder`](./TextureBuilder.md)
+- [`TextureCubeBuilder`](./TextureCubeBuilder.md)
+- [`TimeSince`](./TimeSince.md) - A convenience struct to easily measure time since an event last happened, based on `Sandbox.Time.Now`.<br /><br />
+- [`TimeUntil`](./TimeUntil.md) - A convenience struct to easily manage a time countdown, based on `Sandbox.Time.Now`.<br /><br />
+- [`TrailTextureConfig`](./TrailTextureConfig.md) - Defines how a trail is going to be textured. Used by TrailRenderer.
+- [`Triangle`](./Triangle.md)
+- [`Variant`](./Variant.md) - A Variant is a type that can hold any value, and also keeps track of the type of the value it holds.
+- [`Vertex`](./Vertex.md)
+- [`VertexAttribute`](./VertexAttribute.md)
+- [`WorkshopItemMetaData`](./WorkshopItemMetaData.md) - Some metadata we'll pack into a workshop submission when publishing.
+- [`WrappedMethod`](./WrappedMethod.md) - Provides data about a wrapped method in a `Sandbox.CodeGeneratorAttribute` callback.
+- [`WrappedMethod<T>`](./WrappedMethod-T.md) - Provides data about a wrapped method in a `Sandbox.CodeGeneratorAttribute` callback.
+- [`WrappedPropertyGet<T>`](./WrappedPropertyGet-T.md) - Provides data about a wrapped property getter in a `Sandbox.CodeGeneratorAttribute` callback.
+- [`WrappedPropertySet<T>`](./WrappedPropertySet-T.md) - Provides data about a wrapped property setter in a `Sandbox.CodeGeneratorAttribute` callback.
+
+## Enums
+
+- [`AssetTypeFlags`](./AssetTypeFlags.md) - Flags for `Sandbox.AssetTypeAttribute`
+- [`AudioSurface`](./AudioSurface.md) - Defines acoustic properties of a surface, which defines how sound will bounce
+- [`BlendMode`](./BlendMode.md) - Blend modes used by the UI system
+- [`ClearFlags`](./ClearFlags.md) - Flags for clearing a RT before rendering a scene using a SceneCamera
+- [`CodeGeneratorFlags`](./CodeGeneratorFlags.md) - Used to specify what type of code generation to perform.
+- [`ColliderFlags`](./ColliderFlags.md)
+- [`ComponentFlags`](./ComponentFlags.md)
+- [`ComputeBufferType`](./ComputeBufferType.md)
+- [`ConVarFlags`](./ConVarFlags.md)
+- [`EditorTint`](./EditorTint.md)
+- [`FindMode`](./FindMode.md) - Flags to search for Components.
+- [`GameObjectFlags`](./GameObjectFlags.md)
+- [`GamepadCode`](./GamepadCode.md) - Game controller codes, driven from SDL.
+- [`HapticTarget`](./HapticTarget.md) - Places you can trigger haptics on
+- [`ImageFormat`](./ImageFormat.md) - Format used when creating textures.
+- [`InputAnalog`](./InputAnalog.md) - An analog input, when fetched, is between -1 and 1 (0 being default)
+- [`InputGlyphSize`](./InputGlyphSize.md)
+- [`JointMotion`](./JointMotion.md)
+- [`KeyboardModifiers`](./KeyboardModifiers.md)
+- [`LogLevel`](./LogLevel.md)
+- [`MeshPrimitiveType`](./MeshPrimitiveType.md) - Possible primitive types of a `Sandbox.Mesh`.
+- [`ModelArchetype`](./ModelArchetype.md) - Default model archetypes.
+- [`MouseButtons`](./MouseButtons.md) - State of mouse buttons being pressed or not.
+- [`MouseVisibility`](./MouseVisibility.md) - The visibility state of the mouse cursor.
+- [`MultisampleAmount`](./MultisampleAmount.md)
+- [`NetFlags`](./NetFlags.md)
+- [`NetPermission`](./NetPermission.md) - Specifies who can invoke an action over the network.
+- [`NetworkFlags`](./NetworkFlags.md) - Describes the behavior of network objects.
+- [`NetworkMode`](./NetworkMode.md) - Specifies how a `Sandbox.GameObject` should be networked.
+- [`NetworkOrphaned`](./NetworkOrphaned.md) - Specifies what happens when the owner of a networked object disconnects.
+- [`OwnerTransfer`](./OwnerTransfer.md) - Specifies who can control ownership of a networked object.
+- [`PhysicsBodyType`](./PhysicsBodyType.md)
+- [`PhysicsMotionType`](./PhysicsMotionType.md) - Represents <see cref="T:Sandbox.PhysicsBody">Physics body's</see> motion type.
+- [`PhysicsSimulationMode`](./PhysicsSimulationMode.md) - Physics simulation mode. For use with `Sandbox.PhysicsWorld.SimulationMode`.
+- [`PropertyAccessor`](./PropertyAccessor.md)
+- [`RigidbodyFlags`](./RigidbodyFlags.md)
+- [`SceneCameraDebugMode`](./SceneCameraDebugMode.md)
+- [`SceneLayerType`](./SceneLayerType.md)
+- [`SceneRenderLayer`](./SceneRenderLayer.md) - SceneObjects can be rendered on layers other than the main game layer.
+- [`SoundFormat`](./SoundFormat.md)
+- [`StereoTargetEye`](./StereoTargetEye.md)
+- [`StreamService`](./StreamService.md) - Streamer integration services
+- [`SyncFlags`](./SyncFlags.md) - Describes the behaviour of network synchronization.
+- [`TerrainFlags`](./TerrainFlags.md)
+- [`TextFlag`](./TextFlag.md) - Flags dictating position of text (and other elements).
+- [`TextureFlags`](./TextureFlags.md) - Flags providing hints about a texture
+- [`VertexAttributeFormat`](./VertexAttributeFormat.md)
+- [`VertexAttributeType`](./VertexAttributeType.md)

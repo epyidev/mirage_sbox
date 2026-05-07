@@ -1,0 +1,213 @@
+# Sandbox.Bitmap
+
+- **Kind:** sealed class
+- **Namespace:** `Sandbox`
+- **Assembly:** `Sandbox.Engine`
+
+## Constructors
+
+- `Bitmap(System.Int32 width, System.Int32 height, System.Boolean floatingPoint)`
+
+## Properties
+
+- `System.Int32 Width`
+- `System.Int32 Height`
+- `System.Int32 BytesPerPixel`
+- `System.Int32 ByteCount`
+- `Sandbox.Rect Rect`
+- `Vector2Int Size`
+  - The width and height of the bitmap
+- `Vector2 Center`
+- `System.Boolean IsFloatingPoint`
+- `System.Boolean IsValid`
+
+## Methods
+
+### Static methods
+
+- `static Sandbox.Bitmap CreateFromBytes(System.Byte[] data)`
+  - Loads a bitmap from the specified byte array.
+  - `data`: The byte array containing the image data.
+  - returns: A new `Sandbox.Bitmap` instance.
+- `static Sandbox.Bitmap CreateFromIesBytes(System.Byte[] data)`
+- `static System.Boolean IsIes(System.Byte[] data)`
+  - Return true if this data is a Ies file
+- `static Sandbox.Bitmap CreateFromPsdBytes(System.Byte[] data)`
+  - Creates a Bitmap instance from PSD file data.
+  - `data`: Byte array containing the PSD file data.
+  - returns: A Bitmap instance if successful, or null if the data is not valid PSD.
+- `static System.Boolean IsPsd(System.Byte[] data)`
+  - Checks if the provided byte array is a valid PSD file.
+  - `data`: Byte array to check.
+  - returns: True if the data is a PSD file, otherwise false.
+- `static Sandbox.Bitmap CreateFromSvgString(System.String svgContents, System.Nullable<System.Int32> width, System.Nullable<System.Int32> height, System.Nullable<Vector2> scale, System.Nullable<Vector2> offset, System.Nullable<System.Single> rotation)`
+- `static Sandbox.Bitmap CreateFromTgaBytes(System.Byte[] data)`
+- `static System.Boolean IsTga(System.Byte[] data)`
+  - Return true if this data is a Tga file
+- `static Sandbox.Bitmap CreateFromTifBytes(System.Byte[] data)`
+- `static System.Boolean IsTif(System.ReadOnlySpan<System.Byte> data)`
+
+### Instance methods
+
+- `virtual System.Void Dispose()`
+- `System.Void Clear(Color color)`
+  - Clears the bitmap to the specified color.
+  - `color`: The color to fill the bitmap with.
+- `Color[] GetPixels()`
+  - Retrieves the pixel data of the bitmap as an array of colors.
+- `Color.Rgba16[] GetPixels16()`
+  - Retrieves the pixel data of the bitmap as an array of colors.
+- `Color32[] GetPixels32()`
+  - Retrieves the pixel data of the bitmap as an array of colors.
+- `System.Void SetPixels(Color[] colors)`
+- `Color GetPixel(System.Int32 x, System.Int32 y)`
+  - Retrieves the color of a specific pixel in the bitmap.
+  - `x`: The x-coordinate of the pixel.
+  - `y`: The y-coordinate of the pixel.
+  - returns: The color of the pixel at the specified coordinates.
+- `System.Void SetPixel(System.Int32 x, System.Int32 y, Color color)`
+  - Sets the color of a specific pixel in the bitmap.
+  - `x`: The x-coordinate of the pixel.
+  - `y`: The y-coordinate of the pixel.
+  - `color`: The color to set the pixel to.
+- `Sandbox.Bitmap Clone()`
+  - Copy the bitmap to a new one without any changes.
+- `System.Boolean IsOpaque()`
+  - Returns true if this bitmap is completely opaque (no alpha)
+This does a pixel by pixel search, so it's not the fastest.
+- `System.Void DrawRect(Sandbox.Rect rect)`
+  - Draws a rectangle using the current pen settings.
+  - `rect`: The rectangle to draw.
+- `System.Void DrawRect(System.Single x, System.Single y, System.Single width, System.Single height)`
+  - Draws a rectangle using the current pen settings.
+  - `x`: The x-coordinate of the top-left corner.
+  - `y`: The y-coordinate of the top-left corner.
+  - `width`: The width of the rectangle.
+  - `height`: The height of the rectangle.
+- `System.Void DrawRoundRect(Sandbox.Rect rect, Sandbox.UI.Margin margins)`
+  - Draws a rectangle using the current pen settings.
+- `System.Void DrawCircle(Vector2 center, System.Single radius)`
+  - Draws a circle using the current pen settings.
+  - `center`: The center of the circle.
+  - `radius`: The radius of the circle.
+- `System.Void DrawCircle(System.Single x, System.Single y, System.Single radius)`
+  - Draws a circle using the current pen settings.
+  - `x`: The x-coordinate of the circle's center.
+  - `y`: The y-coordinate of the circle's center.
+  - `radius`: The radius of the circle.
+- `System.Void DrawPolygon(Vector2[] points)`
+  - Draws a polygon using the current pen settings.
+  - `points`: The points of the polygon.
+- `System.Void DrawArc(Sandbox.Rect rect, System.Single startAngle, System.Single sweepAngle)`
+  - Draws an arc using the current pen settings.
+  - `rect`: The bounding rectangle of the arc.
+  - `startAngle`: The starting angle of the arc, in degrees.
+  - `sweepAngle`: The sweep angle of the arc, in degrees.
+- `System.Void DrawArc(Sandbox.Rect rect, System.Single startAngle, System.Single sweepAngle, System.Boolean useCenter)`
+  - Draws an arc using the current pen settings, with an option to connect to the center.
+  - `rect`: The bounding rectangle of the arc.
+  - `startAngle`: The starting angle of the arc, in degrees.
+  - `sweepAngle`: The sweep angle of the arc, in degrees.
+  - `useCenter`: If true, connects the arc endpoints to the center point, forming a pie shape.
+- `System.Void DrawBitmap(Sandbox.Bitmap bitmap, Sandbox.Rect destRect)`
+  - Draws another bitmap onto this bitmap.
+  - `bitmap`: The bitmap to draw.
+  - `destRect`: The destination rectangle for the drawn bitmap.
+- `System.Void DrawLine(Vector2 start, Vector2 end)`
+  - Draws a line using the current pen settings.
+  - `start`: The starting point of the line.
+  - `end`: The ending point of the line.
+- `System.Void DrawLines(Vector2[] points)`
+  - Draws connected lines through a series of points using the current pen settings.
+  - `points`: The points to connect with lines.
+- `System.Void Blur(System.Single radius, System.Boolean tileClamp)`
+  - Applies a Gaussian blur effect to the current bitmap.
+  - `radius`: The radius of the blur, controlling its intensity. Must be non-negative.
+  - `tileClamp`: Determines the behavior at the edges of the bitmap:
+            `true` to clamp the edges (default), or `false` to repeat the edges.
+- `System.Void Sharpen(System.Single amount, System.Boolean tileClamp)`
+  - Applies a Gaussian blur effect to the current bitmap.
+- `System.Void Adjust(System.Single brightness, System.Single contrast, System.Single saturation, System.Single hueDegrees)`
+  - Adjusts brightness, contrast, and saturation in one pass.
+- `System.Void AdjustHue(System.Single angle)`
+  - Adjusts the hue of the bitmap.
+  - `angle`: The angle to rotate the hue, in degrees (0 to 360).
+- `System.Void Colorize(Color color)`
+  - Color the bitmap using this color, respect alpha
+- `System.Void Tint(Color color)`
+  - Tint the bitmap using this color, respect alpha
+- `System.Void InsertPadding(Sandbox.UI.Margin margin)`
+  - Shrink the image by adding padding all around - without resizing the bitmap
+- `Sandbox.Bitmap HeightmapToNormalMap(System.Single strength)`
+  - Converts a heightmap to a normal map using parallel processing.
+  - `strength`: The strength of the normal map effect (default is 1.0).
+  - returns: The generated normal map as an SKBitmap.
+- `System.Void InvertColor()`
+  - Inverts the colors of the bitmap while preserving alpha.
+- `System.Void SetAntialias(System.Boolean on)`
+  - Sets the pen for drawing with a solid color and stroke style.
+- `System.Void SetBlendMode(Sandbox.BlendMode blendMode)`
+  - Sets the pen to use a specific blend mode.
+  - `blendMode`: The blend mode to apply.
+- `System.Void SetPen(Color color, System.Single width)`
+  - Sets the pen for drawing with a solid color and stroke style.
+  - `color`: The color of the pen.
+  - `width`: The width of the pen in pixels.
+- `System.Void SetDashedPen(Color color, System.Single width, System.Single[] dashPattern)`
+  - Sets the pen for drawing dashed or dotted lines.
+  - `color`: The color of the pen.
+  - `width`: The width of the pen in pixels.
+  - `dashPattern`: An array defining the dash pattern (e.g., [10, 5] for 10px dash, 5px gap).
+- `System.Void SetFill(Color color)`
+  - Sets the pen for drawing filled shapes with a solid color.
+  - `color`: The color to fill the shapes with.
+- `System.Void SetLinearGradient(Vector2 start, Vector2 end, Sandbox.Gradient gradient)`
+  - Sets the pen for drawing with a linear gradient.
+  - `start`: the gradient's start point.
+  - `end`: the gradient's end point.
+  - `gradient`: The color of the gradient.
+- `System.Void SetRadialGradient(Vector2 center, System.Single radius, Sandbox.Gradient gradient)`
+  - Sets the pen for drawing with a radial gradient.
+  - `center`: The gradient's center.
+  - `radius`: The radius of the gradient.
+  - `gradient`: The color of the gradient.
+- `System.Byte[] ToJpg(System.Int32 quality)`
+  - Exports the bitmap as a JPEG byte array with the specified quality.
+  - `quality`: The quality of the JPEG, between 0 and 100.
+  - returns: A byte array containing the JPEG image data.
+- `System.Byte[] ToPng()`
+  - Exports the bitmap as a PNG byte array.
+  - returns: A byte array containing the PNG image data.
+- `System.Byte[] ToBmp()`
+  - Exports the bitmap as a BMP byte array.
+  - returns: A byte array containing the BMP image data.
+- `System.Byte[] ToWebP(System.Int32 quality)`
+  - Exports the bitmap as an HDR WebP byte array with the specified quality.
+  - `quality`: The quality of the WebP image, between 0 and 100.
+  - returns: A byte array containing the WebP HDR image data.
+- `System.Byte[] ToFormat(Sandbox.ImageFormat format)`
+  - Exports the bitmap to the specified engine format
+- `System.Void DrawText(Sandbox.TextRendering.Scope scope, Sandbox.Rect rect, Sandbox.TextFlag flags)`
+  - Draws text onto this bitmap
+- `Sandbox.Texture ToTexture(System.Boolean mips)`
+  - Try to create a texture from this bitmap
+- `Sandbox.Bitmap Rotate(System.Single degrees)`
+  - Rotates the bitmap by the specified angle.
+  - `degrees`: The angle in degrees to rotate the bitmap.
+  - returns: A new `Sandbox.Bitmap` instance with the rotated image.
+- `Sandbox.Bitmap Resize(System.Int32 newWidth, System.Int32 newHeight, System.Boolean smooth)`
+  - Resizes the bitmap to the specified dimensions and returns a new bitmap.
+  - `newWidth`: The new width of the bitmap.
+  - `newHeight`: The new height of the bitmap.
+  - `smooth`: Resample smoothly. If false this will be nearest neighbour.
+  - returns: A new `Sandbox.Bitmap` instance with the specified dimensions.
+- `Sandbox.Bitmap FlipVertical()`
+  - Flips the bitmap vertically.
+  - returns: A new `Sandbox.Bitmap` instance with the flipped image.
+- `Sandbox.Bitmap FlipHorizontal()`
+  - Flips the bitmap horizontally.
+  - returns: A new `Sandbox.Bitmap` instance with the flipped image.
+- `Sandbox.Bitmap Crop(Sandbox.Rect rect)`
+  - Crops the bitmap to the specified rectangle.
+  - `rect`: The rectangle to crop to.
+  - returns: A new `Sandbox.Bitmap` instance with the cropped image.

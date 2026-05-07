@@ -1,0 +1,219 @@
+# Sandbox.PolygonMesh
+
+An editable mesh made up of polygons, triangulated into a model
+
+- **Kind:** sealed class
+- **Namespace:** `Sandbox`
+- **Assembly:** `Sandbox.Engine`
+
+## Constructors
+
+- `PolygonMesh()`
+
+## Properties
+
+- `System.Boolean IsDirty`
+  - Has there been changes to the mesh that need rebuilding?
+- `Transform Transform`
+  - Where is the mesh in worldspace.
+- `System.Collections.Generic.IEnumerable<HalfEdgeMesh.VertexHandle> VertexHandles`
+  - All of the vertex handles being used
+- `System.Collections.Generic.IEnumerable<HalfEdgeMesh.FaceHandle> FaceHandles`
+  - All of the face handles being used
+- `System.Collections.Generic.IEnumerable<HalfEdgeMesh.HalfEdgeHandle> HalfEdgeHandles`
+  - All of the half edge handles being used
+
+## Methods
+
+### Static methods
+
+- `static System.Void GetBestPlanesForEdgeBetweenFaces(Sandbox.PolygonMesh pMesh1, HalfEdgeMesh.FaceHandle hFace1, Transform mLocalToWorld1, Sandbox.PolygonMesh pMesh2, HalfEdgeMesh.FaceHandle hFace2, Transform mLocalToWorld2, Sandbox.Plane pOutPlane1, Sandbox.Plane pOutPlane2)`
+- `static System.Boolean GetNearestEdgesBetweenFaces(Sandbox.PolygonMesh pMesh1, HalfEdgeMesh.FaceHandle hFace1, Transform mLocalToWorld1, Sandbox.PolygonMesh pMesh2, HalfEdgeMesh.FaceHandle hFace2, Transform mLocalToWorld2, HalfEdgeMesh.HalfEdgeHandle pOutEdge1, HalfEdgeMesh.HalfEdgeHandle pOutEdge2)`
+- `static System.Void GetTextureExtents(Vector4 vAxisU, Vector4 vAxisV, Vector2 vScale, Sandbox.PolygonMesh.FaceExtents extents, Vector2 topLeft, Vector2 bottomRight)`
+- `static System.Object JsonRead(System.Text.Json.Utf8JsonReader reader, System.Type typeToConvert)`
+- `static System.Void JsonWrite(System.Object value, System.Text.Json.Utf8JsonWriter writer)`
+
+### Instance methods
+
+- `System.Boolean BevelEdges(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> edges, Sandbox.PolygonMesh.BevelEdgesMode edgeRemoveMode, System.Int32 numSegments, System.Single distance, System.Single shape, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> outNewOuterEdges, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> outNewInnerEdges, System.Collections.Generic.List<HalfEdgeMesh.FaceHandle> outNewFaces, System.Collections.Generic.List<HalfEdgeMesh.FaceHandle> outFacesNeedingUVs)`
+- `System.Boolean PerformBoolean(Sandbox.PolygonMesh other, Transform relativeTransform, Sandbox.PolygonMesh.BooleanOperation operation)`
+  - Perform a boolean operation between this mesh (A) and another mesh (B).
+The result replaces this mesh. The other mesh is not modified.
+- `System.Void ClipFacesByPlaneAndCap(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.FaceHandle> faces, Sandbox.Plane planeInMeshSpace, System.Boolean removeFacesBehindPlane, System.Boolean attemptToCap, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> outNewEdges, System.Collections.Generic.List<HalfEdgeMesh.FaceHandle> outCapFaces)`
+- `HalfEdgeMesh.VertexHandle VertexHandleFromIndex(System.Int32 index)`
+- `HalfEdgeMesh.HalfEdgeHandle HalfEdgeHandleFromIndex(System.Int32 index)`
+- `HalfEdgeMesh.FaceHandle FaceHandleFromIndex(System.Int32 index)`
+- `System.Void MergeMesh(Sandbox.PolygonMesh sourceMesh, Transform transform, System.Collections.Generic.Dictionary<HalfEdgeMesh.VertexHandle,HalfEdgeMesh.VertexHandle> newVertices, System.Collections.Generic.Dictionary<HalfEdgeMesh.HalfEdgeHandle,HalfEdgeMesh.HalfEdgeHandle> newHalfEdges, System.Collections.Generic.Dictionary<HalfEdgeMesh.FaceHandle,HalfEdgeMesh.FaceHandle> newFaces)`
+- `System.Void SetTransform(Transform transform)`
+  - Set transform without computing texture parameters from coordinates.
+- `HalfEdgeMesh.VertexHandle AddVertex(Vector3 position)`
+  - Add a vertex to the topology
+- `HalfEdgeMesh.VertexHandle[] AddVertices(Vector3[] positions)`
+  - Add multiple vertices to the topology
+- `HalfEdgeMesh.FaceHandle AddFace(HalfEdgeMesh.VertexHandle[] hVertices)`
+  - Connect these vertices to make a face
+- `BBox CalculateBounds()`
+  - Calculate bounds of all vertices
+- `BBox CalculateBounds(Transform transform)`
+  - Calculate bounds of all transformed vertices
+- `System.Void Scale(Vector3 scale)`
+  - Scale all vertices
+- `System.Void SetFaceMaterial(HalfEdgeMesh.FaceHandle hFace, Sandbox.Material material)`
+  - Assign a material to a face
+- `System.Void SetFaceMaterial(HalfEdgeMesh.FaceHandle hFace, System.String material)`
+  - Assign a material to a face
+- `Sandbox.Material GetFaceMaterial(HalfEdgeMesh.FaceHandle hFace)`
+  - Get a material a face is using
+- `Sandbox.PolygonMesh.EdgeSmoothMode GetEdgeSmoothing(HalfEdgeMesh.HalfEdgeHandle hEdge)`
+  - Get the smoothing of this edge
+- `System.Void SetEdgeSmoothing(HalfEdgeMesh.HalfEdgeHandle hEdge, Sandbox.PolygonMesh.EdgeSmoothMode mode)`
+  - Set the smoothing of this edge
+- `System.Void SetSmoothingAngle(System.Single smoothingAngle)`
+- `HalfEdgeMesh.FaceHandle TriangleToFace(System.Int32 triangle)`
+  - Convert a triangle index to a face handle
+- `System.Void ExtrudeFaces(HalfEdgeMesh.FaceHandle[] faces, System.Collections.Generic.List<HalfEdgeMesh.FaceHandle> newFaces, System.Collections.Generic.List<HalfEdgeMesh.FaceHandle> connectingFaces, Vector3 offset)`
+- `System.Void DetachFaces(HalfEdgeMesh.FaceHandle[] faces, System.Collections.Generic.List<HalfEdgeMesh.FaceHandle> newFaces)`
+- `System.Boolean ExtendEdges(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> edges, System.Single amount, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> newEdges, System.Collections.Generic.List<HalfEdgeMesh.FaceHandle> newFaces)`
+- `System.Boolean AreEdgesCoLinear(HalfEdgeMesh.HalfEdgeHandle hEdgeA, HalfEdgeMesh.HalfEdgeHandle hEdgeB, System.Single flAngleToleranceInDegrees)`
+- `System.Void CombineFaces(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.FaceHandle> faces)`
+- `System.Void DissolveEdge(HalfEdgeMesh.HalfEdgeHandle edge)`
+- `System.Void DissolveEdges(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> edges, System.Boolean bFaceMustBePlanar, Sandbox.PolygonMesh.DissolveRemoveVertexCondition removeCondition)`
+- `System.Boolean ComputeClosestPointOnEdge(HalfEdgeMesh.VertexHandle hVertexA, HalfEdgeMesh.VertexHandle hVertexB, Vector3 vTargetPoint, System.Single pOutBaseEdgeParam)`
+- `System.Boolean RemoveColinearVertexAndUpdateTable(HalfEdgeMesh.VertexHandle hVertex, System.Collections.Generic.SortedSet<HalfEdgeMesh.HalfEdgeHandle> edgeTable, System.Single flColinearAngleTolerance)`
+- `System.Boolean GetEdgesConnectedToVertex(HalfEdgeMesh.VertexHandle hVertex, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> edges)`
+- `HalfEdgeMesh.VertexHandle CreateEdgesConnectingVertexToPoint(HalfEdgeMesh.VertexHandle hStartVertex, Vector3 vTargetPosition, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> pOutEdgeList, System.Boolean pOutIsLastEdgeConnector, System.Collections.Generic.SortedSet<HalfEdgeMesh.HalfEdgeHandle> pEdgeTable)`
+- `System.Boolean MergeEdges(HalfEdgeMesh.HalfEdgeHandle hEdgeA, HalfEdgeMesh.HalfEdgeHandle hEdgeB, HalfEdgeMesh.HalfEdgeHandle hOutNewEdge)`
+- `System.Void FlipAllFaces()`
+- `System.Int32 MergeVerticesWithinDistance(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.VertexHandle> originalVertices, System.Single flMaxDistance, System.Boolean bPreConnect, System.Boolean bAveragePositions, System.Collections.Generic.List<HalfEdgeMesh.VertexHandle> pOutFinalVertices)`
+- `System.Boolean CreateFaceInEdgeLoop(HalfEdgeMesh.HalfEdgeHandle hOpenEdge, HalfEdgeMesh.FaceHandle hNewFace)`
+  - Add a face filling in the open edge loop specified by the provided edge
+- `HalfEdgeMesh.FaceHandle GetHalfEdgeFace(HalfEdgeMesh.HalfEdgeHandle hEdge)`
+  - Get the face connected to this half edge
+- `System.Boolean IsEdgeOpen(HalfEdgeMesh.HalfEdgeHandle hEdge)`
+  - Determine if the specified edge is open (only has one connected face)
+- `System.Void FindEdgeRing(HalfEdgeMesh.HalfEdgeHandle hEdge, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> outEdgeList)`
+- `System.Boolean BridgeEdges(HalfEdgeMesh.HalfEdgeHandle hEdgeA, HalfEdgeMesh.HalfEdgeHandle hEdgeB, HalfEdgeMesh.FaceHandle hOutNewFace)`
+  - Bridge two edges (create a face connecting them). The edges must both be open and belong to
+different faces.
+- `System.Boolean BridgeEdgesInterpolated(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> fromEdges, System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> toEdges, Sandbox.PolygonMesh.BridgeInterpolationParameters parameters, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> outEdgesCreated)`
+- `Vector3 ComputeOpenEdgeExtendDirection(HalfEdgeMesh.HalfEdgeHandle edge)`
+- `System.Boolean ComputeNormalForOpenEdgeLoop(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> edges, Vector3 outNormal, Vector3 outMidPoint)`
+- `System.Boolean ComputeNormalForOpenEdgeLoop(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> edges, Transform transform, Vector3 outNormal, Vector3 outMidPoint)`
+- `System.Boolean BridgeEdges(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> edgesA, System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> edgesB)`
+- `System.Boolean ConnectEdges(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> edges, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> newEdges)`
+- `System.Boolean AddVertexToEdge(HalfEdgeMesh.VertexHandle hVertexA, HalfEdgeMesh.VertexHandle hVertexB, System.Single flParam, HalfEdgeMesh.VertexHandle pOutNewVertex)`
+- `System.Boolean AddVertexToEdgeAndUpdateTable(HalfEdgeMesh.VertexHandle hVertexA, HalfEdgeMesh.VertexHandle hVertexB, System.Single flParam, HalfEdgeMesh.VertexHandle pNewVertex, System.Collections.Generic.SortedSet<HalfEdgeMesh.HalfEdgeHandle> pEdgeTable)`
+- `System.Boolean RemoveVertex(HalfEdgeMesh.VertexHandle hVertex, System.Boolean removeFreeVerts)`
+- `System.Boolean BevelVertices(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.VertexHandle> vertices, System.Single distance, System.Collections.Generic.List<HalfEdgeMesh.VertexHandle> newVertices)`
+- `System.Boolean GetFacesConnectedToVertex(HalfEdgeMesh.VertexHandle hVertex, System.Collections.Generic.List<HalfEdgeMesh.FaceHandle> faces)`
+- `System.Boolean GetFacesConnectedToFace(HalfEdgeMesh.FaceHandle hFace, System.Collections.Generic.List<HalfEdgeMesh.FaceHandle> faces)`
+- `HalfEdgeMesh.HalfEdgeHandle FindFaceVertexConnectedToVertex(HalfEdgeMesh.VertexHandle hVertex, HalfEdgeMesh.FaceHandle hFace)`
+- `HalfEdgeMesh.HalfEdgeHandle GetNextVertexInFace(HalfEdgeMesh.HalfEdgeHandle hFaceVertex)`
+- `System.Boolean ConnectVertices(HalfEdgeMesh.VertexHandle hVertexA, HalfEdgeMesh.VertexHandle hVertexB, HalfEdgeMesh.HalfEdgeHandle hNewEdge)`
+- `System.Void FindEdgeLoopForEdges(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> originalEdges, HalfEdgeMesh.HalfEdgeHandle[] pOutEdgeLoopEdges)`
+- `System.Void FindEdgeIslands(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> edgeList, System.Collections.Generic.List<System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle>> outEdgeList)`
+- `System.Int32 FindEdgeRibs(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> edges, System.Collections.Generic.List<System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle>> outLeftRibs, System.Collections.Generic.List<System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle>> outRightRibs)`
+- `Line GetEdgeLine(HalfEdgeMesh.HalfEdgeHandle hEdge)`
+  - Get start and end points of an edge
+- `System.Void GetEdgeVertices(HalfEdgeMesh.HalfEdgeHandle hEdge, HalfEdgeMesh.VertexHandle hVertexA, HalfEdgeMesh.VertexHandle hVertexB)`
+  - Get the two vertices of this half edge
+- `System.Void SetVertexPosition(HalfEdgeMesh.VertexHandle hVertex, Vector3 position)`
+  - Set the position of a vertex
+- `Vector3 GetVertexPosition(HalfEdgeMesh.VertexHandle hVertex)`
+  - Get the position of a vertex
+- `System.Void GetVertexPosition(HalfEdgeMesh.VertexHandle hVertex, Transform transform, Vector3 outPosition)`
+  - Get the position of a vertex
+- `System.Collections.Generic.IEnumerable<Vector3> GetVertexPositions()`
+  - Get the positions of all vertices
+- `System.Void SetVertexBlend(HalfEdgeMesh.HalfEdgeHandle hFaceVertex, Color32 blend)`
+  - Set the blend of a vertex
+- `System.Void SetVertexColor(HalfEdgeMesh.HalfEdgeHandle hFaceVertex, Color32 color)`
+  - Set the color of a vertex
+- `Color32 GetVertexColor(HalfEdgeMesh.HalfEdgeHandle hFaceVertex)`
+  - Get the color of a vertex
+- `Color32 GetVertexBlend(HalfEdgeMesh.HalfEdgeHandle hFaceVertex)`
+  - Get the blend of a vertex
+- `System.Void ComputeFaceNormal(HalfEdgeMesh.FaceHandle hFace, Vector3 pOutNormal)`
+- `Vector3 GetFaceCenter(HalfEdgeMesh.FaceHandle hFace)`
+  - Calculate the center point of a face
+- `System.Collections.Generic.IEnumerable<Line> GetEdges()`
+  - Get the start and end points of all edges
+- `System.Collections.Generic.IEnumerable<Vector3> GetFaceVertexPositions(HalfEdgeMesh.FaceHandle hFace, Transform transform)`
+- `System.Boolean GetFaceVerticesConnectedToFace(HalfEdgeMesh.FaceHandle hFace, HalfEdgeMesh.HalfEdgeHandle[] hEdges)`
+- `HalfEdgeMesh.VertexHandle GetVertexConnectedToFaceVertex(HalfEdgeMesh.HalfEdgeHandle hFaceVertex)`
+- `System.Void ComputeFaceTextureParametersFromCoordinates()`
+- `System.Void ComputeFaceTextureParametersFromCoordinates(System.Collections.Generic.IEnumerable<HalfEdgeMesh.FaceHandle> faces)`
+- `System.Void ComputeFaceTextureCoordinatesFromParameters()`
+- `System.Void ComputeFaceTextureCoordinatesFromParameters(Transform transform)`
+- `System.Void ComputeFaceTextureCoordinatesFromParameters(System.Collections.Generic.IEnumerable<HalfEdgeMesh.FaceHandle> faces)`
+- `System.Void ComputeFaceTextureParametersFromCoordinates(System.Collections.Generic.IEnumerable<HalfEdgeMesh.FaceHandle> faces, System.Collections.Generic.IReadOnlyList<Vector2> textureSizes, Transform transform)`
+- `System.Void ComputeFaceTextureCoordinatesFromParameters(System.Collections.Generic.IEnumerable<HalfEdgeMesh.FaceHandle> faces, Transform transform, System.Collections.Generic.IReadOnlyList<Vector2> textureSizes, System.Single defaultScale)`
+- `System.Void ApplyTransform(Transform transform)`
+  - Transform all the vertices
+- `HalfEdgeMesh.HalfEdgeHandle[] GetFaceEdges(HalfEdgeMesh.FaceHandle hFace)`
+  - Get all edge handles of a face
+- `HalfEdgeMesh.VertexHandle[] GetFaceVertices(HalfEdgeMesh.FaceHandle hFace)`
+  - Get all vertex handles of a face
+- `Vector2 GetTextureOffset(HalfEdgeMesh.FaceHandle hFace)`
+  - Get texture offset of a face
+- `System.Void SetTextureOffset(HalfEdgeMesh.FaceHandle hFace, Vector2 offset)`
+  - Set texture offset of a face
+- `Vector2 GetTextureScale(HalfEdgeMesh.FaceHandle hFace)`
+  - Get texture scale of a face
+- `System.Void SetTextureScale(HalfEdgeMesh.FaceHandle hFace, Vector2 scale)`
+  - Set texture scale of a face
+- `System.Void TextureAlignToGrid(Transform transform, HalfEdgeMesh.FaceHandle hFace)`
+  - Align face texture properties to grid
+- `System.Void TextureAlignToFace(Transform transform, HalfEdgeMesh.FaceHandle hFace)`
+  - Align face texture properties to face
+- `System.Void SetTextureCoord(HalfEdgeMesh.HalfEdgeHandle faceVertex, Vector2 texcoord)`
+  - Set face vertex texture coord
+- `Vector2 GetTextureCoord(HalfEdgeMesh.HalfEdgeHandle faceVertex)`
+  - Get face vertex texture coord
+- `System.Void SetFaceTextureCoords(HalfEdgeMesh.FaceHandle hFace, System.Collections.Generic.IReadOnlyList<Vector2> texcoords)`
+- `Vector2[] GetFaceTextureCoords(HalfEdgeMesh.FaceHandle hFace)`
+- `System.Void SetFaceTextureParameters(HalfEdgeMesh.FaceHandle hFace, Vector2 offset, Vector3 uAxis, Vector3 vAxis)`
+  - Set face texture properties
+- `System.Void GetFaceTextureParameters(HalfEdgeMesh.FaceHandle hFace, Vector4 outAxisU, Vector4 outAxisV, Vector2 outScale)`
+- `System.Void SetFaceTextureParameters(HalfEdgeMesh.FaceHandle hFace, Vector4 axisU, Vector4 axisV, Vector2 scale)`
+- `System.Void TextureAlignToGrid(Transform transform)`
+  - Align all face texture properties to grid
+- `System.Void RemoveFaces(System.Collections.Generic.IEnumerable<HalfEdgeMesh.FaceHandle> hFaces)`
+- `System.Void RemoveVertices(System.Collections.Generic.IEnumerable<HalfEdgeMesh.VertexHandle> hVertices)`
+- `System.Void RemoveEdges(System.Collections.Generic.IEnumerable<HalfEdgeMesh.HalfEdgeHandle> hEdges)`
+- `System.Boolean CollapseEdge(HalfEdgeMesh.HalfEdgeHandle hEdge, HalfEdgeMesh.VertexHandle pOutNewVertex, System.Collections.Generic.List<System.ValueTuple<HalfEdgeMesh.HalfEdgeHandle,HalfEdgeMesh.HalfEdgeHandle>> pOutReplacedEdges)`
+- `System.Boolean CollapseEdge(HalfEdgeMesh.HalfEdgeHandle hHalfEdgeA, System.Single flParam, HalfEdgeMesh.VertexHandle pOutNewVertex, System.Collections.Generic.List<System.ValueTuple<HalfEdgeMesh.HalfEdgeHandle,HalfEdgeMesh.HalfEdgeHandle>> pOutReplacedEdges)`
+- `System.Boolean CollapseFace(HalfEdgeMesh.FaceHandle hFace, HalfEdgeMesh.VertexHandle hOutVertex)`
+- `System.Boolean SplitEdges(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> edges, HalfEdgeMesh.HalfEdgeHandle[] newEdgesA, HalfEdgeMesh.HalfEdgeHandle[] pOutNewEdgesB)`
+- `System.Void CollapseEdges(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> edges)`
+- `Sandbox.Model Rebuild()`
+  - Triangulate the polygons into a model
+- `System.Boolean IsEdgeSmooth(HalfEdgeMesh.HalfEdgeHandle hEdge)`
+- `System.Boolean GetEdgesConnectedToFace(HalfEdgeMesh.FaceHandle hFace, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> edges)`
+- `System.Boolean GetVerticesConnectedToEdge(HalfEdgeMesh.HalfEdgeHandle hEdge, HalfEdgeMesh.FaceHandle hFace, HalfEdgeMesh.VertexHandle hOutVertexA, HalfEdgeMesh.VertexHandle hOutVertexB)`
+- `System.Void GetVerticesConnectedToEdge(HalfEdgeMesh.HalfEdgeHandle hEdge, HalfEdgeMesh.VertexHandle hOutVertexA, HalfEdgeMesh.VertexHandle hOutVertexB)`
+- `System.Void GetEdgeVertexPositions(HalfEdgeMesh.HalfEdgeHandle hEdge, Transform transform, Vector3 outVertexA, Vector3 outVertexB)`
+- `HalfEdgeMesh.FaceHandle GetOppositeFaceConnectedToEdge(HalfEdgeMesh.HalfEdgeHandle hEdge, HalfEdgeMesh.FaceHandle hFace)`
+- `System.Boolean GetVerticesConnectedToFace(HalfEdgeMesh.FaceHandle hFace, HalfEdgeMesh.VertexHandle[] vertices)`
+- `System.Void FindCornerVerticesForFace(HalfEdgeMesh.FaceHandle hFace, System.Single minCornerAngle, System.Collections.Generic.List<HalfEdgeMesh.VertexHandle> outCornerVertices)`
+- `System.Void QuadSliceFaces(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.FaceHandle> faces, System.Int32 cutsX, System.Int32 cutsY, System.Single minCornerAngleDegrees, System.Collections.Generic.List<HalfEdgeMesh.FaceHandle> outNewFaceList)`
+- `System.Void RemoveBadFaces()`
+- `System.Void AverageEdgeUVs(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> edges)`
+- `System.Void AverageVertexUVs(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.VertexHandle> vertices)`
+- `System.Void GetFacePlaneUsingEdge(HalfEdgeMesh.FaceHandle hFace, HalfEdgeMesh.HalfEdgeHandle hEdge, Transform transform, Sandbox.Plane outPlane)`
+- `HalfEdgeMesh.HalfEdgeHandle GetOppositeHalfEdge(HalfEdgeMesh.HalfEdgeHandle hEdge)`
+- `System.Void JustifyFaceTextureParameters(System.Collections.Generic.IEnumerable<HalfEdgeMesh.FaceHandle> hFaces, Sandbox.PolygonMesh.TextureJustification justification, Sandbox.PolygonMesh.FaceExtents extents)`
+- `System.Void UnionExtentsForFaces(System.Collections.Generic.IEnumerable<HalfEdgeMesh.FaceHandle> hFaces, Transform transform, Sandbox.PolygonMesh.FaceExtents extents)`
+- `Sandbox.Vertex[] CreateFace(HalfEdgeMesh.FaceHandle hFace, Transform transform, Color color)`
+- `System.Void GetFacesConnectedToEdge(HalfEdgeMesh.HalfEdgeHandle hEdge, HalfEdgeMesh.FaceHandle hOutFaceA, HalfEdgeMesh.FaceHandle hOutFaceB)`
+- `System.Void FindBoundaryEdgesConnectedToFaces(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.FaceHandle> faces, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> outBoundaryEdges)`
+- `System.Boolean ThickenFaces(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.FaceHandle> faces, System.Single amount, System.Collections.Generic.List<HalfEdgeMesh.FaceHandle> outFaces)`
+- `System.Void FindFaceIslands(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.FaceHandle> faces, System.Collections.Generic.List<System.Collections.Generic.List<HalfEdgeMesh.FaceHandle>> outFaces)`
+- `System.Boolean GetFaceVerticesConnectedToVertex(HalfEdgeMesh.VertexHandle hVertex, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> faceVertices)`
+- `System.Boolean FindHalfEdgesConnectedToFace(HalfEdgeMesh.FaceHandle face, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> halfEdges)`
+- `System.Boolean CorrelateOpenEdges(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> edgeSetA, System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> edgeSetB, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> outA, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> outB)`
+- `System.Void FindOpenEdgeIslands(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.HalfEdgeHandle> edgeList, System.Collections.Generic.List<System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle>> outEdgeIslands)`
+- `HalfEdgeMesh.ComponentConnectivityType ClassifyEdgeListConnectivity(System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> edgeList, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> outSortedEdges)`
+- `System.Void FindClosedFaces(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.FaceHandle> faceList, System.Collections.Generic.List<HalfEdgeMesh.FaceHandle> outClosedFaces)`
+- `System.Void GenerateUVsForFaces(System.ReadOnlySpan<HalfEdgeMesh.FaceHandle> faces, System.Int32 generationMode, System.Int32 edgeAlignMode, HalfEdgeMesh.HalfEdgeHandle alignEdgeVertexA, HalfEdgeMesh.HalfEdgeHandle alignEdgeVertexB, System.Collections.Generic.List<HalfEdgeMesh.HalfEdgeHandle> outFaceVertices, System.Collections.Generic.List<Vector2> outFaceVertexUVs)`
+- `System.Void SplitFacesIntoIslandsForUVMapping(System.Collections.Generic.IReadOnlyList<HalfEdgeMesh.FaceHandle> faces, System.Collections.Generic.List<System.Collections.Generic.List<HalfEdgeMesh.FaceHandle>> faceIslands)`

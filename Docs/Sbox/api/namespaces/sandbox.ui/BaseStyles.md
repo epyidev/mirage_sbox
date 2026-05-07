@@ -1,0 +1,336 @@
+# Sandbox.UI.BaseStyles
+
+Auto generated container class for majority of CSS properties available.
+
+- **Kind:** abstract class
+- **Namespace:** `Sandbox.UI`
+- **Assembly:** `Sandbox.Engine`
+
+## Constructors
+
+- `BaseStyles()`
+
+## Properties
+
+- `System.Nullable<Sandbox.UI.OverflowMode> Overflow`
+  - Represents the `overflow` CSS property.
+- `System.String Content`
+  - Represents the `content` CSS property.
+- `System.Nullable<Sandbox.UI.Length> Width`
+  - Represents the `width` CSS property.
+- `System.Nullable<Sandbox.UI.Length> MinWidth`
+  - Represents the `min-width` CSS property.
+- `System.Nullable<Sandbox.UI.Length> MaxWidth`
+  - Represents the `max-width` CSS property.
+- `System.Nullable<Sandbox.UI.Length> Height`
+  - Represents the `height` CSS property.
+- `System.Nullable<Sandbox.UI.Length> MinHeight`
+  - Represents the `min-height` CSS property.
+- `System.Nullable<Sandbox.UI.Length> MaxHeight`
+  - Represents the `max-height` CSS property.
+- `System.Nullable<Sandbox.UI.Length> Left`
+  - Represents the `left` CSS property.
+- `System.Nullable<Sandbox.UI.Length> Top`
+  - Represents the `top` CSS property.
+- `System.Nullable<Sandbox.UI.Length> Right`
+  - Represents the `right` CSS property.
+- `System.Nullable<Sandbox.UI.Length> Bottom`
+  - Represents the `bottom` CSS property.
+- `System.Nullable<System.Single> Opacity`
+  - Represents the `opacity` CSS property.
+- `System.Nullable<Color> BackgroundColor`
+  - Represents the `background-color` CSS property.
+- `System.Nullable<Sandbox.UI.Length> PaddingLeft`
+  - Represents the `padding-left` CSS property.
+- `System.Nullable<Sandbox.UI.Length> PaddingTop`
+  - Represents the `padding-top` CSS property.
+- `System.Nullable<Sandbox.UI.Length> PaddingRight`
+  - Represents the `padding-right` CSS property.
+- `System.Nullable<Sandbox.UI.Length> PaddingBottom`
+  - Represents the `padding-bottom` CSS property.
+- `System.Nullable<Sandbox.UI.Length> MarginLeft`
+  - Represents the `margin-left` CSS property.
+- `System.Nullable<Sandbox.UI.Length> MarginTop`
+  - Represents the `margin-top` CSS property.
+- `System.Nullable<Sandbox.UI.Length> MarginRight`
+  - Represents the `margin-right` CSS property.
+- `System.Nullable<Sandbox.UI.Length> MarginBottom`
+  - Represents the `margin-bottom` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BorderTopLeftRadius`
+  - Represents the `border-top-left-radius` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BorderTopRightRadius`
+  - Represents the `border-top-right-radius` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BorderBottomRightRadius`
+  - Represents the `border-bottom-right-radius` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BorderBottomLeftRadius`
+  - Represents the `border-bottom-left-radius` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BorderLeftWidth`
+  - Represents the `border-left-width` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BorderTopWidth`
+  - Represents the `border-top-width` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BorderRightWidth`
+  - Represents the `border-right-width` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BorderBottomWidth`
+  - Represents the `border-bottom-width` CSS property.
+- `System.Nullable<Color> BorderLeftColor`
+  - Represents the `border-left-color` CSS property.
+- `System.Nullable<Color> BorderTopColor`
+  - Represents the `border-top-color` CSS property.
+- `System.Nullable<Color> BorderRightColor`
+  - Represents the `border-right-color` CSS property.
+- `System.Nullable<Color> BorderBottomColor`
+  - Represents the `border-bottom-color` CSS property.
+- `System.Nullable<Sandbox.UI.Length> FontSize`
+  - Represents the `font-size` CSS property.
+- `System.Nullable<Color> FontColor`
+  - Represents the `font-color` CSS property.
+- `System.Nullable<System.Int32> FontWeight`
+  - Represents the `font-weight` CSS property.
+- `System.String FontFamily`
+  - Represents the `font-family` CSS property.
+- `System.Nullable<Color> CaretColor`
+  - Represents the `caret-color` CSS property.
+- `System.String Cursor`
+  - Represents the `cursor` CSS property.
+- `System.Nullable<Sandbox.UI.PointerEvents> PointerEvents`
+  - Represents the `pointer-events` CSS property.
+- `System.String MixBlendMode`
+  - Represents the `mix-blend-mode` CSS property.
+- `System.Nullable<Sandbox.UI.PositionMode> Position`
+  - Represents the `position` CSS property.
+- `System.Nullable<Sandbox.UI.OverflowMode> OverflowX`
+  - Represents the `overflow-x` CSS property.
+- `System.Nullable<Sandbox.UI.OverflowMode> OverflowY`
+  - Represents the `overflow-y` CSS property.
+- `System.Nullable<Sandbox.UI.FlexDirection> FlexDirection`
+  - Represents the `flex-direction` CSS property.
+- `System.Nullable<Sandbox.UI.Justify> JustifyContent`
+  - Represents the `justify-content` CSS property.
+- `System.Nullable<Sandbox.UI.DisplayMode> Display`
+  - Represents the `display` CSS property.
+- `System.Nullable<Sandbox.UI.Wrap> FlexWrap`
+  - Represents the `flex-wrap` CSS property.
+- `System.Nullable<Sandbox.UI.Align> AlignContent`
+  - Represents the `align-content` CSS property.
+- `System.Nullable<Sandbox.UI.Align> AlignSelf`
+  - Represents the `align-self` CSS property.
+- `System.Nullable<Sandbox.UI.Align> AlignItems`
+  - Represents the `align-items` CSS property.
+- `System.Nullable<Sandbox.UI.Length> FlexBasis`
+  - Represents the `flex-basis` CSS property.
+- `System.Nullable<System.Single> FlexGrow`
+  - Represents the `flex-grow` CSS property.
+- `System.Nullable<System.Single> FlexShrink`
+  - Represents the `flex-shrink` CSS property.
+- `System.Nullable<Sandbox.UI.Length> RowGap`
+  - Represents the `row-gap` CSS property.
+- `System.Nullable<Sandbox.UI.Length> ColumnGap`
+  - Represents the `column-gap` CSS property.
+- `System.Nullable<System.Single> AspectRatio`
+  - Represents the `aspect-ratio` CSS property.
+- `System.Nullable<Sandbox.UI.TextAlign> TextAlign`
+  - Represents the `text-align` CSS property.
+- `System.Nullable<Sandbox.UI.TextOverflow> TextOverflow`
+  - Represents the `text-overflow` CSS property.
+- `System.Nullable<Sandbox.Rendering.FilterMode> TextFilter`
+  - Represents the `text-filter` CSS property.
+- `System.Nullable<Sandbox.UI.WordBreak> WordBreak`
+  - Represents the `word-break` CSS property.
+- `System.Nullable<Sandbox.UI.TextDecoration> TextDecorationLine`
+  - Represents the `text-decoration-line` CSS property.
+- `System.Nullable<Color> TextDecorationColor`
+  - Represents the `text-decoration-color` CSS property.
+- `System.Nullable<Sandbox.UI.Length> TextDecorationThickness`
+  - Represents the `text-decoration-thickness` CSS property.
+- `System.Nullable<Sandbox.UI.TextSkipInk> TextDecorationSkipInk`
+  - Represents the `text-decoration-skip-ink` CSS property.
+- `System.Nullable<Sandbox.UI.TextDecorationStyle> TextDecorationStyle`
+  - Represents the `text-decoration-style` CSS property.
+- `System.Nullable<Sandbox.UI.Length> TextUnderlineOffset`
+  - Represents the `text-underline-offset` CSS property.
+- `System.Nullable<Sandbox.UI.Length> TextOverlineOffset`
+  - Represents the `text-overline-offset` CSS property.
+- `System.Nullable<Sandbox.UI.Length> TextLineThroughOffset`
+  - Represents the `text-line-through-offset` CSS property.
+- `System.Nullable<Sandbox.UI.FontStyle> FontStyle`
+  - Represents the `font-style` CSS property.
+- `System.Nullable<Sandbox.UI.FontVariantNumeric> FontVariantNumeric`
+  - Represents the `font-variant-numeric` CSS property.
+- `System.Nullable<Sandbox.UI.PanelTransform> Transform`
+  - Represents the `transform` CSS property.
+- `System.Nullable<Sandbox.UI.TextTransform> TextTransform`
+  - Represents the `text-transform` CSS property.
+- `System.Nullable<Sandbox.UI.Length> TransformOriginX`
+  - Represents the `transform-origin-x` CSS property.
+- `System.Nullable<Sandbox.UI.Length> TransformOriginY`
+  - Represents the `transform-origin-y` CSS property.
+- `System.Nullable<Sandbox.UI.Length> LetterSpacing`
+  - Represents the `letter-spacing` CSS property.
+- `System.Nullable<Sandbox.UI.Length> LineHeight`
+  - Represents the `line-height` CSS property.
+- `System.Nullable<Sandbox.UI.Length> WordSpacing`
+  - Represents the `word-spacing` CSS property.
+- `System.Nullable<Sandbox.UI.WhiteSpace> WhiteSpace`
+  - Represents the `white-space` CSS property.
+- `System.Nullable<System.Int32> ZIndex`
+  - Represents the `z-index` CSS property.
+- `System.Nullable<System.Int32> Order`
+  - Represents the `order` CSS property.
+- `System.String SoundIn`
+  - Represents the `sound-in` CSS property.
+- `System.String SoundOut`
+  - Represents the `sound-out` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BackdropFilterBlur`
+  - Represents the `backdrop-filter-blur` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BackdropFilterBrightness`
+  - Represents the `backdrop-filter-brightness` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BackdropFilterContrast`
+  - Represents the `backdrop-filter-contrast` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BackdropFilterSaturate`
+  - Represents the `backdrop-filter-saturate` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BackdropFilterSepia`
+  - Represents the `backdrop-filter-sepia` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BackdropFilterInvert`
+  - Represents the `backdrop-filter-invert` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BackdropFilterHueRotate`
+  - Represents the `backdrop-filter-hue-rotate` CSS property.
+- `System.Nullable<Sandbox.UI.Length> FilterBlur`
+  - Represents the `filter-blur` CSS property.
+- `System.Nullable<Sandbox.UI.Length> FilterSaturate`
+  - Represents the `filter-saturate` CSS property.
+- `System.Nullable<Sandbox.UI.Length> FilterSepia`
+  - Represents the `filter-sepia` CSS property.
+- `System.Nullable<Sandbox.UI.Length> FilterBrightness`
+  - Represents the `filter-brightness` CSS property.
+- `System.Nullable<Sandbox.UI.Length> FilterHueRotate`
+  - Represents the `filter-hue-rotate` CSS property.
+- `System.Nullable<Sandbox.UI.Length> FilterInvert`
+  - Represents the `filter-invert` CSS property.
+- `System.Nullable<Sandbox.UI.Length> FilterContrast`
+  - Represents the `filter-contrast` CSS property.
+- `System.Nullable<Color> FilterTint`
+  - Represents the `filter-tint` CSS property.
+- `System.Nullable<Sandbox.UI.Length> FilterBorderWidth`
+  - Represents the `filter-border-width` CSS property.
+- `System.Nullable<Color> FilterBorderColor`
+  - Represents the `filter-border-color` CSS property.
+- `System.Nullable<Sandbox.UI.MaskMode> MaskMode`
+  - Represents the `mask-mode` CSS property.
+- `System.Nullable<Sandbox.UI.BackgroundRepeat> MaskRepeat`
+  - Represents the `mask-repeat` CSS property.
+- `System.Nullable<Sandbox.UI.Length> MaskSizeX`
+  - Represents the `mask-size-x` CSS property.
+- `System.Nullable<Sandbox.UI.Length> MaskSizeY`
+  - Represents the `mask-size-y` CSS property.
+- `System.Nullable<Sandbox.UI.Length> MaskPositionX`
+  - Represents the `mask-position-x` CSS property.
+- `System.Nullable<Sandbox.UI.Length> MaskPositionY`
+  - Represents the `mask-position-y` CSS property.
+- `System.Nullable<Sandbox.UI.Length> MaskAngle`
+  - Represents the `mask-angle` CSS property.
+- `System.Nullable<Sandbox.UI.MaskScope> MaskScope`
+  - Represents the `mask-scope` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BackgroundSizeX`
+  - Represents the `background-size-x` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BackgroundSizeY`
+  - Represents the `background-size-y` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BackgroundPositionX`
+  - Represents the `background-position-x` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BackgroundPositionY`
+  - Represents the `background-position-y` CSS property.
+- `System.Nullable<Sandbox.UI.BackgroundRepeat> BackgroundRepeat`
+  - Represents the `background-repeat` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BorderImageWidthLeft`
+  - Represents the `border-image-width-left` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BorderImageWidthRight`
+  - Represents the `border-image-width-right` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BorderImageWidthTop`
+  - Represents the `border-image-width-top` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BorderImageWidthBottom`
+  - Represents the `border-image-width-bottom` CSS property.
+- `System.Nullable<Sandbox.UI.BorderImageFill> BorderImageFill`
+  - Represents the `border-image-fill` CSS property.
+- `System.Nullable<Sandbox.UI.BorderImageRepeat> BorderImageRepeat`
+  - Represents the `border-image-repeat` CSS property.
+- `System.Nullable<Color> BorderImageTint`
+  - Represents the `border-image-tint` CSS property.
+- `System.String BackgroundBlendMode`
+  - Represents the `background-blend-mode` CSS property.
+- `System.Nullable<Color> BackgroundTint`
+  - Represents the `background-tint` CSS property.
+- `System.Nullable<Sandbox.UI.Length> BackgroundAngle`
+  - Represents the `background-angle` CSS property.
+- `System.Nullable<Sandbox.UI.Length> TextBackgroundAngle`
+  - Represents the `text-background-angle` CSS property.
+- `System.Nullable<Sandbox.UI.Length> PerspectiveOriginX`
+  - Represents the `perspective-origin-x` CSS property.
+- `System.Nullable<Sandbox.UI.Length> PerspectiveOriginY`
+  - Represents the `perspective-origin-y` CSS property.
+- `System.Nullable<Color> TextStrokeColor`
+  - Represents the `text-stroke-color` CSS property.
+- `System.Nullable<Sandbox.UI.Length> TextStrokeWidth`
+  - Represents the `text-stroke-width` CSS property.
+- `System.Nullable<Sandbox.UI.ImageRendering> ImageRendering`
+  - Represents the `image-rendering` CSS property.
+- `System.Nullable<System.Single> AnimationDelay`
+  - Represents the `animation-delay` CSS property.
+- `System.String AnimationDirection`
+  - Represents the `animation-direction` CSS property.
+- `System.Nullable<System.Single> AnimationDuration`
+  - Represents the `animation-duration` CSS property.
+- `System.String AnimationFillMode`
+  - Represents the `animation-fill-mode` CSS property.
+- `System.Nullable<System.Single> AnimationIterationCount`
+  - Represents the `animation-iteration-count` CSS property.
+- `System.String AnimationName`
+  - Represents the `animation-name` CSS property.
+- `System.String AnimationPlayState`
+  - Represents the `animation-play-state` CSS property.
+- `System.String AnimationTimingFunction`
+  - Represents the `animation-timing-function` CSS property.
+- `System.Nullable<Sandbox.UI.FontSmooth> FontSmooth`
+  - Represents the `font-smooth` CSS property.
+- `System.Nullable<Sandbox.UI.ObjectFit> ObjectFit`
+  - Represents the `object-fit` CSS property.
+- `System.Nullable<Sandbox.UI.Length> OutlineWidth`
+  - Represents the `outline-width` CSS property.
+- `System.Nullable<Color> OutlineColor`
+  - Represents the `outline-color` CSS property.
+- `System.Nullable<Sandbox.UI.Length> OutlineOffset`
+  - Represents the `outline-offset` CSS property.
+- `Sandbox.Texture BackgroundImage`
+- `Sandbox.Texture MaskImage`
+- `Sandbox.Texture BorderImageSource`
+- `System.Nullable<System.Boolean> BackgroundPlaybackPaused`
+  - Controls whether the background video is paused. Mirrors `animation-play-state`.
+Maps to the CSS property `background-playback-state: paused | running`.
+- `System.Boolean HasAnimation`
+  - Whether there is an active CSS animation.
+
+## Methods
+
+### Instance methods
+
+- `virtual System.Void Dirty()`
+  - Called when any CSS properties are changed.
+- `virtual System.Void Add(Sandbox.UI.BaseStyles bs)`
+  - Copy over only the styles that are set.
+- `virtual System.Void From(Sandbox.UI.BaseStyles bs)`
+  - Copy all styles from given style set.
+- `virtual System.Boolean Set(System.String property, System.String value)`
+  - Copy all styles from given style set.
+- `System.Void FillDefaults()`
+- `System.Void SetRect(Sandbox.Rect r, System.Single scale)`
+  - Set Left, Right, Width and Height based on this rect. Scale can be used to scale the rect (maybe you want to use Panel.ScaleFromScreen etc)
+- `virtual System.Void FromLerp(Sandbox.UI.BaseStyles from, Sandbox.UI.BaseStyles to, System.Single delta)`
+  - Lerp every property in this stylesheet
+- `virtual System.Void LerpProperty(System.String name, Sandbox.UI.BaseStyles from, Sandbox.UI.BaseStyles to, System.Single delta)`
+  - Lerp a specific property by name
+- `virtual System.Object Clone()`
+  - Perform a deep copy of this stylesheet
+- `System.Void ApplyCascading(Sandbox.UI.BaseStyles parent)`
+- `System.Void Lerp(System.Nullable<System.Single> o, System.Nullable<System.Single> a, System.Nullable<System.Single> b, System.Nullable<System.Single> defaultValue, System.Single delta)`
+- `System.Void Lerp(System.Nullable<Sandbox.UI.PanelTransform> o, System.Nullable<Sandbox.UI.PanelTransform> a, System.Nullable<Sandbox.UI.PanelTransform> b, System.Nullable<Sandbox.UI.PanelTransform> defaultValue, System.Single delta)`
+- `System.Void Lerp(System.Nullable<Color> o, System.Nullable<Color> a, System.Nullable<Color> b, System.Nullable<Color> defaultValue, System.Single delta)`
+- `System.Void Lerp(System.Nullable<Sandbox.UI.Length> o, System.Nullable<Sandbox.UI.Length> a, System.Nullable<Sandbox.UI.Length> b, System.Nullable<Sandbox.UI.Length> defaultValue, System.Single delta)`
+- `System.Void Lerp(System.Nullable<System.Int32> o, System.Nullable<System.Int32> a, System.Nullable<System.Int32> b, System.Nullable<System.Int32> defaultValue, System.Single delta)`

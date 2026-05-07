@@ -1,0 +1,817 @@
+# Namespace `(global)`
+
+532 types.
+
+## Classes
+
+- [`<G>$CF338E16634EC54D8049A06B0E09B078`](./G-$CF338E16634EC54D8049A06B0E09B078.md)
+- [`AccountTypes`](./AccountTypes.md) - The different types of Steam accounts.
+- [`ActionBind`](./ActionBind.md)
+- [`ActivateMode`](./ActivateMode.md)
+- [`AddedObject`](./AddedObject.md) - Represents an object that needs to be added during patching.
+- [`AdditionalFile`](./AdditionalFile.md) - Represents a file to send to the compiler along with all the code. This is usually
+- [`AdvancedDropdownPanel`](./AdvancedDropdownPanel.md) - A single sliding panel with header, scroll area, and item list.
+- [`AlphaFrame`](./AlphaFrame.md) - Keyframes times and values should range between 0 and 1
+- [`Angles`](./Angles.md) - Euler angles. Unlike a <see cref="T:Rotation">Rotation</see>, Euler angles can represent multiple revolutions (rotations) around an axis,
+- [`Animation`](./Animation.md) - Contains one or multiple frames that can be played in sequence.
+- [`AnimationState`](./AnimationState.md) - Contains the state of a sprite instance's animation playback.
+- [`AnimatorSitPose`](./AnimatorSitPose.md)
+- [`AnimTagEvent`](./AnimTagEvent.md)
+- [`AnimTagStatus`](./AnimTagStatus.md) - Enumeration that describes how the AnimGraph tag state changed. Used in `Sandbox.SceneModel.AnimTagEvent`.
+- [`AsAccessor`](./AsAccessor.md)
+- [`AssetAutoTagFilter`](./AssetAutoTagFilter.md)
+- [`AssetPickerParameters`](./AssetPickerParameters.md) - Passed parameters for the AssetPicker going from engine to addon code
+- [`AssetTags`](./AssetTags.md) - Represents a collection of tags for an asset.
+- [`Attachment`](./Attachment.md)
+- [`AttachmentMode`](./AttachmentMode.md)
+- [`Attribute`](./Attribute.md)
+- [`AttributeAccess`](./AttributeAccess.md)
+- [`AudioAccessor`](./AudioAccessor.md)
+- [`AudioCodec`](./AudioCodec.md) - Audio codec to use for encoding.
+- [`AutocompleteEntry`](./AutocompleteEntry.md)
+- [`AutoCompleteResult`](./AutoCompleteResult.md)
+- [`AutoExposureSetup`](./AutoExposureSetup.md)
+- [`AutoScale`](./AutoScale.md)
+- [`Axis`](./Axis.md)
+- [`BaseListener`](./BaseListener.md) - Allows creating a class that will exist for as long as a particle.
+- [`BBox`](./BBox.md) - An <a href="https://en.wikipedia.org/wiki/Minimum_bounding_box">Axis Aligned Bounding Box</a>.
+- [`BeamInstance`](./BeamInstance.md) - Represents an individual beam instance within the effect.
+- [`BevelEdgesMode`](./BevelEdgesMode.md)
+- [`BillboardAlignment`](./BillboardAlignment.md)
+- [`BillboardMode`](./BillboardMode.md)
+- [`BindEntry`](./BindEntry.md)
+- [`BlendMode`](./BlendMode.md) - Describes how the line should behave when entering/leaving a frame
+- [`BlitMode`](./BlitMode.md)
+- [`Block`](./Block.md) - Base class for all executable blocks within a Doo.
+- [`Block`](./Block.md) - A keyframe within the animation.
+- [`Block`](./Block.md)
+- [`BloomAccessor`](./BloomAccessor.md)
+- [`BloomMode`](./BloomMode.md)
+- [`Board`](./Board.md)
+- [`Board2`](./Board2.md)
+- [`Body`](./Body.md) - Represents a `Sandbox.Rigidbody` attached to a specific bone with a local transform.
+- [`Body`](./Body.md)
+- [`Body`](./Body.md) - An action to perform in a branch or loop.
+- [`BodyGroups`](./BodyGroups.md)
+- [`BodyPart`](./BodyPart.md)
+- [`BodyPart`](./BodyPart.md)
+- [`Bone`](./Bone.md) - A bone in a `Sandbox.BoneCollection`.
+- [`Bone`](./Bone.md) - A bone definition for use with `Sandbox.ModelBuilder`.
+- [`BoneVelocity`](./BoneVelocity.md)
+- [`BooleanOperation`](./BooleanOperation.md)
+- [`Box`](./Box.md) - A single hitbox on the model. This can be a box, sphere or capsule.
+- [`BridgeInterpolationParameters`](./BridgeInterpolationParameters.md)
+- [`BridgeUVMode`](./BridgeUVMode.md)
+- [`BroadcastEvent`](./BroadcastEvent.md) - A message that is broadcast when a frame is displayed.
+- [`BroadcastEventType`](./BroadcastEventType.md)
+- [`BuildStep`](./BuildStep.md)
+- [`ButtonMode`](./ButtonMode.md) - The button's behavior mode.
+- [`ByteParseOptions`](./ByteParseOptions.md)
+- [`CableTextureOrientation`](./CableTextureOrientation.md)
+- [`Callback`](./Callback.md) - Callback delegate for receiving progress updates.
+- [`CapStyle`](./CapStyle.md)
+- [`Capsule`](./Capsule.md) - A capsule object, defined by 2 points and a radius. A capsule is a cylinder with round ends (inset half spheres on each end).
+- [`CapsulePart`](./CapsulePart.md)
+- [`CascadeVisualizer`](./CascadeVisualizer.md)
+- [`CategoryEntry`](./CategoryEntry.md) - A category entry widget with a forward arrow.
+- [`Child`](./Child.md)
+- [`Choice`](./Choice.md)
+- [`Choice`](./Choice.md)
+- [`Clear`](./Clear.md)
+- [`ClothingCategory`](./ClothingCategory.md)
+- [`ClothingEntry`](./ClothingEntry.md)
+- [`ClothingSource`](./ClothingSource.md)
+- [`ClutterMode`](./ClutterMode.md) - Clutter generation mode.
+- [`ClutterStorage`](./ClutterStorage.md) - Manages storage and serialization of painted clutter instances.
+- [`Codec`](./Codec.md)
+- [`CollisionDelegate`](./CollisionDelegate.md)
+- [`CollisionStopDelegate`](./CollisionStopDelegate.md)
+- [`CollisionType`](./CollisionType.md)
+- [`Color`](./Color.md) - Represents a color using 4 floats (rgba), with 0-1 range.
+- [`Color32`](./Color32.md) - A 32bit color, commonly used by things like vertex buffers.
+- [`ColorFrame`](./ColorFrame.md) - Keyframes times and values should range between 0 and 1
+- [`ColorHsv`](./ColorHsv.md) - A color in <a href="https://upload.wikimedia.org/wikipedia/commons/a/a0/Hsl-hsv_models.svg">Hue-Saturation-Value/Brightness</a> format.
+- [`ColorIndexRef`](./ColorIndexRef.md)
+- [`ColorSpaceEnum`](./ColorSpaceEnum.md)
+- [`ColorTextureRef`](./ColorTextureRef.md)
+- [`ComboDescription`](./ComboDescription.md)
+- [`CommonData`](./CommonData.md)
+- [`Cone`](./Cone.md) - A tapered shape between two points with a radius at each end.
+- [`Config`](./Config.md)
+- [`Configuration`](./Configuration.md)
+- [`Configure`](./Configure.md) - Provides configuration for a Doo run, such as setting initial argument values.
+- [`Container`](./Container.md)
+- [`ControlPointValueInput`](./ControlPointValueInput.md)
+- [`CubemapDynamicUpdate`](./CubemapDynamicUpdate.md)
+- [`CubemapResolution`](./CubemapResolution.md)
+- [`CullMode`](./CullMode.md) - Cull mode, either inside or outside
+- [`Cursor`](./Cursor.md)
+- [`CustomizableSerializedProperty`](./CustomizableSerializedProperty.md) - A proxy around a SerializedProperty that allows overriding any property for UI customization.
+- [`Danger`](./Danger.md)
+- [`DataReceivedHandler`](./DataReceivedHandler.md) - Event handler which processes binary messages from the WebSocket service.
+- [`DataStream`](./DataStream.md)
+- [`DecalEntry`](./DecalEntry.md)
+- [`DelayBlock`](./DelayBlock.md) - Wait for a number of seconds
+- [`DenoiseModes`](./DenoiseModes.md)
+- [`DependencyComponent`](./DependencyComponent.md)
+- [`DependencyIndex`](./DependencyIndex.md)
+- [`DepthTextureRef`](./DepthTextureRef.md)
+- [`Desc`](./Desc.md)
+- [`DeserializeOptions`](./DeserializeOptions.md)
+- [`DisconnectedHandler`](./DisconnectedHandler.md) - Event handler which fires when the WebSocket disconnects from the server.
+- [`DissolveRemoveVertexCondition`](./DissolveRemoveVertexCondition.md)
+- [`DockInfo`](./DockInfo.md) - Description of a dock that is available to create by the backend.
+- [`DockProperty`](./DockProperty.md)
+- [`DoorMode`](./DoorMode.md)
+- [`DoorState`](./DoorState.md) - The door's state
+- [`DownsampleMethod`](./DownsampleMethod.md) - Which method to use when downsampling a texture
+- [`DragDropTarget`](./DragDropTarget.md)
+- [`DragEvent`](./DragEvent.md) - Information about a widget drag and drop event.
+- [`DragTypes`](./DragTypes.md)
+- [`EdgeSmoothMode`](./EdgeSmoothMode.md)
+- [`EncodingPreset`](./EncodingPreset.md) - Controls the speed/quality tradeoff of video encoding.
+- [`EntityObject`](./EntityObject.md)
+- [`Entry`](./Entry.md)
+- [`Entry`](./Entry.md)
+- [`Entry`](./Entry.md) - A facet entry consists of a name, display information and the number of items inside
+- [`Entry`](./Entry.md) - A folder of content stored on disk
+- [`Entry`](./Entry.md)
+- [`Entry`](./Entry.md)
+- [`Entry`](./Entry.md)
+- [`Entry`](./Entry.md) - This is a cleaned up version of gameserveritem_t.
+- [`Entry`](./Entry.md)
+- [`Entry`](./Entry.md)
+- [`Entry`](./Entry.md)
+- [`Entry`](./Entry.md)
+- [`EntryType`](./EntryType.md)
+- [`Enumerator`](./Enumerator.md) - Zero-allocation enumerator for `Sandbox.Utility.CircularBuffer`1`.
+- [`EnvmapProbeMode`](./EnvmapProbeMode.md)
+- [`EvaluationType`](./EvaluationType.md)
+- [`EvaluationType`](./EvaluationType.md)
+- [`Event`](./Event.md) - Describes who pressed it.
+- [`ExportProgress`](./ExportProgress.md)
+- [`ExposureColorSpaceEnum`](./ExposureColorSpaceEnum.md)
+- [`Expression`](./Expression.md) - Base class for all value expressions used as arguments and assignments within blocks.
+- [`ExtentType`](./ExtentType.md)
+- [`Face`](./Face.md) - A list of indices indexing into the `Editor.MeshEditor.PrimitiveBuilder.PolygonMesh.Vertices` list.
+- [`FaceExtents`](./FaceExtents.md)
+- [`FaceMode`](./FaceMode.md)
+- [`Facet`](./Facet.md) - Describes a facet of a group of items, with a limited
+- [`Feature`](./Feature.md) - A feature is usually displayed as a tab, to break things up in the inspector. They can sometimes be turned on and off.
+- [`File`](./File.md)
+- [`Filter`](./Filter.md)
+- [`FilterMode`](./FilterMode.md)
+- [`FilterType`](./FilterType.md)
+- [`FindResult`](./FindResult.md) - A result from the call to FindAsync
+- [`Flag`](./Flag.md) - Command buffer flags allow us to skip command buffers if the camera 
+- [`FlagsAccessor`](./FlagsAccessor.md)
+- [`FogInfluence`](./FogInfluence.md)
+- [`FogLightingMode`](./FogLightingMode.md)
+- [`FogParamInfo`](./FogParamInfo.md)
+- [`FogType`](./FogType.md)
+- [`FootstepEvent`](./FootstepEvent.md)
+- [`ForBlock`](./ForBlock.md) - Run a block of code a certain number of times, with a loop variable.
+- [`ForEachBody<T>`](./ForEachBody-T.md) - Output signal for a `Facepunch.ActionGraphs.Nodes.ControlFlow.ForEach``1(System.Collections.Generic.IEnumerable{``0},Facepunch.ActionGraphs.Nodes.ControlFlow.ForEachBody{``0})` node, fired for each element of an enumerable.
+- [`ForRangeBody`](./ForRangeBody.md) - Output signal for a `Facepunch.ActionGraphs.Nodes.ControlFlow.ForRange(Facepunch.ActionGraphs.Nodes.ControlFlow.ForRangeBody,System.Int32,System.Int32,System.Int32)` node, fired for each value in the range.
+- [`FractalParameters`](./FractalParameters.md) - Parameters for constructing a <a href="https://en.wikipedia.org/wiki/Pink_noise">fractal</a>
+- [`Frame`](./Frame.md) - Keyframes times and values should range between 0 and 1
+- [`Frame`](./Frame.md) - Describes a single animation frame
+- [`Frame`](./Frame.md)
+- [`Frame`](./Frame.md)
+- [`Function`](./Function.md) - An easing function that transforms the linear input into non linear output.
+- [`GameObjectSystemData`](./GameObjectSystemData.md)
+- [`GameObjectUndoFlags`](./GameObjectUndoFlags.md)
+- [`GenericEvent`](./GenericEvent.md)
+- [`GizmoControls`](./GizmoControls.md) - Extendable helper to create common gizmos
+- [`GizmoDraw`](./GizmoDraw.md) - Contains functions to add objects to the Gizmo Scene. This
+- [`GizmoHitbox`](./GizmoHitbox.md) - Contains functions to add objects to the immediate mode Scene. This
+- [`GlobalStat`](./GlobalStat.md)
+- [`GlobalStats`](./GlobalStats.md)
+- [`GradientColorOffset`](./GradientColorOffset.md)
+- [`GradientGenerator`](./GradientGenerator.md)
+- [`GradingType`](./GradingType.md)
+- [`GridAxis`](./GridAxis.md)
+- [`Group`](./Group.md)
+- [`Group`](./Group.md) - A group is a collection of properties that are related to each other, and can be displayed together in the inspector, usually with a title.
+- [`Grouping`](./Grouping.md)
+- [`HAlignment`](./HAlignment.md) - Represents the horizontal alignment of the text.
+- [`HAlignment`](./HAlignment.md)
+- [`Hand`](./Hand.md)
+- [`HandleMode`](./HandleMode.md) - Describes how the line should behave when entering/leaving a frame
+- [`HandleMode`](./HandleMode.md) - Describes how the spline should behave when entering/leaving a point.
+- [`HandSources`](./HandSources.md) - Represents a controller to use when fetching skeletal data (finger curl/splay values)
+- [`Header`](./Header.md)
+- [`HitboxShape`](./HitboxShape.md)
+- [`HoldTypes`](./HoldTypes.md)
+- [`HullPart`](./HullPart.md)
+- [`HullSimplify`](./HullSimplify.md) - Settings for simplifying a hull shape.
+- [`IconModes`](./IconModes.md)
+- [`IconSetup`](./IconSetup.md)
+- [`ImpactEffectData`](./ImpactEffectData.md)
+- [`IndexBufferLockHandler`](./IndexBufferLockHandler.md)
+- [`IndirectDispatchArguments`](./IndirectDispatchArguments.md)
+- [`IndirectDrawArguments`](./IndirectDrawArguments.md)
+- [`IndirectDrawIndexedArguments`](./IndirectDrawIndexedArguments.md)
+- [`Input`](./Input.md) - A named input of a node. Inputs can connect to outputs of other nodes,
+- [`Inputs`](./Inputs.md) - The input state, allows interaction with Gizmos
+- [`InsertMode`](./InsertMode.md)
+- [`InsideGeometryBehavior`](./InsideGeometryBehavior.md) - Behavior when a probe is detected inside geometry.
+- [`InstalledVoice`](./InstalledVoice.md)
+- [`Instance`](./Instance.md) - Holds the backend state for a Gizmo scope. This allows us to have multiple different gizmo
+- [`Instance`](./Instance.md)
+- [`InvokeBlock`](./InvokeBlock.md) - Call a global method or a method on a component.
+- [`InvokeType`](./InvokeType.md) - Determines how an invoke block resolves its target method.
+- [`Item`](./Item.md) - Describes a type of item that can be in the inventory
+- [`ItemDefinition`](./ItemDefinition.md) - Describes a type of item that can be in the inventory
+- [`ItemDragEvent`](./ItemDragEvent.md)
+- [`ItemEdge`](./ItemEdge.md)
+- [`ItemEntry`](./ItemEntry.md) - A leaf item entry widget.
+- [`Joint`](./Joint.md)
+- [`Joint`](./Joint.md) - Represents a `Sandbox.Joint` between two bodies with local frames for each.
+- [`JointType`](./JointType.md)
+- [`JsonConvert`](./JsonConvert.md)
+- [`LightShape`](./LightShape.md)
+- [`Line`](./Line.md) - Represents a line in 3D space.
+- [`LinkTraversalData`](./LinkTraversalData.md) - Holds information about the current link the agent is traversing.
+- [`LipSyncAccessor`](./LipSyncAccessor.md)
+- [`ListenerState`](./ListenerState.md) - One of these is created for every listener that uses an audio processor.
+- [`ListResult`](./ListResult.md) - Represents the actual response from the api
+- [`LiteralExpression`](./LiteralExpression.md) - An expression that evaluates to a constant literal value.
+- [`LoadingScreenSetup`](./LoadingScreenSetup.md)
+- [`LoopedSound`](./LoopedSound.md)
+- [`LoopMode`](./LoopMode.md) - The different loop modes for sprite animation.
+- [`Matrix`](./Matrix.md) - Represents a 4x4 matrix.
+- [`MeshPart`](./MeshPart.md)
+- [`MessageReceivedHandler`](./MessageReceivedHandler.md) - Event handler which processes text messages from the WebSocket service.
+- [`ModelEntry`](./ModelEntry.md) - Entry for a model, including its material group and body group settings.
+- [`ModelSources`](./ModelSources.md) - Represents a controller to use when fetching the model (which device)
+- [`MorphAccessor`](./MorphAccessor.md)
+- [`MotorMode`](./MotorMode.md)
+- [`MotorMode`](./MotorMode.md)
+- [`MovedObject`](./MovedObject.md) - Represents an object that should be moved to a new location during patching.
+- [`MoveStyles`](./MoveStyles.md)
+- [`NegativeTags`](./NegativeTags.md)
+- [`NetworkAccessor`](./NetworkAccessor.md)
+- [`NoiseType`](./NoiseType.md)
+- [`NotificationLevel`](./NotificationLevel.md)
+- [`ObjectEntry`](./ObjectEntry.md) - Holds key values for the map object
+- [`ObjectIdentifier`](./ObjectIdentifier.md) - Uniquely identifies a tracked object by its type and identifier value.
+- [`OldSoundData`](./OldSoundData.md)
+- [`OnInspectArgs`](./OnInspectArgs.md)
+- [`OnSpeechResult`](./OnSpeechResult.md) - Called when we have a result from speech recognition.
+- [`Option`](./Option.md)
+- [`Options`](./Options.md)
+- [`Organization`](./Organization.md) - Represents an organization on Asset Party. Organization owns packages.
+- [`Outcome`](./Outcome.md)
+- [`Outline`](./Outline.md)
+- [`Output`](./Output.md) - A named output of a node. Use `!:Input.SetLink(LinkSource)`,
+- [`Overlay`](./Overlay.md) - Provides static methods for displaying various modal overlays in the game UI.
+- [`OwnerJoinState`](./OwnerJoinState.md) - Used by party members to know when to preload the game package, and when to connect to the party leader's server.
+- [`PackageInteraction`](./PackageInteraction.md)
+- [`PackageManifest`](./PackageManifest.md)
+- [`PackageProperty`](./PackageProperty.md) - A binary category used to divide into two categories. For example, Work In Progress.
+- [`PackageUsageStats`](./PackageUsageStats.md) - Statistics for user interactions with this package
+- [`Pair`](./Pair.md) - A pair of case- and order-insensitive tags, used as a key to look up a `Sandbox.Physics.CollisionRules.Result`.
+- [`Parameter<T>`](./Parameter-T.md) - Base class for properties, inputs, and outputs of nodes.
+- [`ParameterAccessor`](./ParameterAccessor.md)
+- [`Parameters`](./Parameters.md) - Parameters for constructing a noise field. Use `Sandbox.Utility.Noise.FractalParameters` if you
+- [`Part`](./Part.md)
+- [`ParticleSortMode`](./ParticleSortMode.md)
+- [`ParticleSortMode`](./ParticleSortMode.md)
+- [`PasteSpecialOptions`](./PasteSpecialOptions.md)
+- [`Patch`](./Patch.md) - Represents a complete set of changes to be applied to a JSON structure.
+- [`PathElement`](./PathElement.md)
+- [`PeriodMetric`](./PeriodMetric.md)
+- [`PlayerStat`](./PlayerStat.md)
+- [`PlayerStats`](./PlayerStats.md)
+- [`Point`](./Point.md) - Point that defines part of the spline.
+- [`Pointer`](./Pointer.md) - Represents a JSON Pointer as defined in RFC 6901.
+- [`PointerJsonConverter`](./PointerJsonConverter.md) - Custom JSON converter for the Pointer class that serializes a Pointer as a string
+- [`PolygonMesh`](./PolygonMesh.md) - A list of vertices and faces.
+- [`PoseSources`](./PoseSources.md) - Represents tracked devices to use when updating
+- [`PoseTypes`](./PoseTypes.md) - The type of pose to track from the controller
+- [`PositionMode`](./PositionMode.md)
+- [`PositiveTags`](./PositiveTags.md)
+- [`PrefabVariableTarget`](./PrefabVariableTarget.md) - Targets a property in a component or gameobject.
+- [`Primary`](./Primary.md) - A visually distinct button.
+- [`PrimitiveType`](./PrimitiveType.md)
+- [`PrimitiveType`](./PrimitiveType.md)
+- [`Probe`](./Probe.md) - Per-probe data including position offset and active state.
+- [`Program`](./Program.md) - The results of an individual shader program compile (PS, VS etc)
+- [`ProjectFile`](./ProjectFile.md) - A single file in the project revision manifest
+- [`ProjectionMode`](./ProjectionMode.md)
+- [`Property`](./Property.md) - A named constant value stored inside a node.
+- [`PropertyChangedDelegate`](./PropertyChangedDelegate.md)
+- [`PropertyFinishEditDelegate`](./PropertyFinishEditDelegate.md)
+- [`PropertyOverride`](./PropertyOverride.md) - Represents a property change to apply during patching.
+- [`PropertyPath`](./PropertyPath.md) - Describes the path to a `Sandbox.SerializedProperty` from either a `Sandbox.GameObject`
+- [`PropertyPreChangeDelegate`](./PropertyPreChangeDelegate.md)
+- [`PropertyStartEditDelegate`](./PropertyStartEditDelegate.md)
+- [`Proxy`](./Proxy.md) - Allows easily creating SerializedProperty classes that wrap other properties.
+- [`PublishSettings`](./PublishSettings.md) - This is data that is saved in an asset's meta file under "publish" to configure
+- [`Query`](./Query.md) - Query the Steam Workshop for items
+- [`QueryItem`](./QueryItem.md) - Details about a UGC item returned from a Steam Workshop query
+- [`QueryResult`](./QueryResult.md) - The results of a Steam Workshop query
+- [`QueuedFile`](./QueuedFile.md)
+- [`QueuedFileState`](./QueuedFileState.md)
+- [`RangedFloat`](./RangedFloat.md) - A float between two values, which can be randomized or fixed.
+- [`RangeType`](./RangeType.md) - Range type of `RangedFloat`.
+- [`Ray`](./Ray.md) - A struct describing an origin and direction
+- [`Reader`](./Reader.md) - Context for reading binary blob data. Wraps ByteStream for allocation-free deserialization.
+- [`Reason`](./Reason.md)
+- [`ReleaseMode`](./ReleaseMode.md)
+- [`RemovedObject`](./RemovedObject.md) - Represents an object that should be removed during patching.
+- [`Result`](./Result.md)
+- [`Result`](./Result.md) - Result of a collision between <see cref="T:Sandbox.Physics.CollisionRules.Pair">two objects</see>.
+- [`Result`](./Result.md)
+- [`Results`](./Results.md) - The results of a shader compile
+- [`Results`](./Results.md)
+- [`ReturnBlock`](./ReturnBlock.md) - Stops execution of the current Doo immediately.
+- [`ReviewPage`](./ReviewPage.md)
+- [`ReviewScore`](./ReviewScore.md)
+- [`ReviewStats`](./ReviewStats.md)
+- [`Rgba16`](./Rgba16.md)
+- [`Rotation`](./Rotation.md) - Represents a Quaternion rotation. Can be interpreted as a direction unit vector (x,y,z) + rotation around the direction vector (w) which represents the up direction.
+- [`Sample`](./Sample.md) - Information about the spline at a specific distance.
+- [`SampleQuality`](./SampleQuality.md)
+- [`SceneObjectFlagAccessor`](./SceneObjectFlagAccessor.md)
+- [`SceneSettings`](./SceneSettings.md)
+- [`Scope`](./Scope.md) - Defines a scope of text, all using the same style.
+- [`Scope`](./Scope.md)
+- [`ScopeSection`](./ScopeSection.md) - This exists to allow the creation of performance scopes without
+- [`ScrapeEffectData`](./ScrapeEffectData.md)
+- [`Screenshot`](./Screenshot.md)
+- [`SelectionSetEntry`](./SelectionSetEntry.md)
+- [`SelectionSetsData`](./SelectionSetsData.md)
+- [`SequenceAccessor`](./SequenceAccessor.md)
+- [`SerializationOptionsScope`](./SerializationOptionsScope.md)
+- [`SerializeOptions`](./SerializeOptions.md)
+- [`SetBlock`](./SetBlock.md) - Set a variable to a value.
+- [`ShaderSchema`](./ShaderSchema.md)
+- [`Shadow`](./Shadow.md)
+- [`ShadowRenderType`](./ShadowRenderType.md)
+- [`ShowContextMenuEvent`](./ShowContextMenuEvent.md) - Event args for `Editor.EditorEvent.ISceneView.ShowContextMenu(Editor.EditorEvent.ShowContextMenuEvent)` events.
+- [`SimplifyMethod`](./SimplifyMethod.md) - The method used to simplify a hull.
+- [`SimulationSpace`](./SimulationSpace.md)
+- [`SittingStyle`](./SittingStyle.md)
+- [`SizeHandle`](./SizeHandle.md)
+- [`SizeType`](./SizeType.md)
+- [`SkyLightInfo`](./SkyLightInfo.md)
+- [`Slots`](./Slots.md)
+- [`Small`](./Small.md)
+- [`SmoothDamped`](./SmoothDamped.md) - Everything you need to smooth damp a Vector3. Just call Update every frame.
+- [`SortOrder`](./SortOrder.md) - Describes a sort order which can be used with the package/find api
+- [`SortOrder`](./SortOrder.md)
+- [`SoundEvent`](./SoundEvent.md)
+- [`SoundSelectionMode`](./SoundSelectionMode.md)
+- [`SpecialMoveStyle`](./SpecialMoveStyle.md)
+- [`SpherePart`](./SpherePart.md)
+- [`SpringDamped`](./SpringDamped.md) - Everything you need to create a springy Vector3
+- [`SpringForceMode`](./SpringForceMode.md)
+- [`Stage`](./Stage.md) - A list of stages in the scene tick in which we can hook
+- [`State`](./State.md)
+- [`State`](./State.md)
+- [`State`](./State.md)
+- [`State`](./State.md)
+- [`State`](./State.md)
+- [`StingSound`](./StingSound.md)
+- [`StyleProperty`](./StyleProperty.md)
+- [`Subtitle`](./Subtitle.md)
+- [`SurfacePrefabCollection`](./SurfacePrefabCollection.md) - Holds a dictionary of common prefabs associated with a surface
+- [`SurfaceSoundCollection`](./SurfaceSoundCollection.md) - Holds a dictionary of common sounds associated with a surface. This allows you to pick and choose an appropriate sound.
+- [`SyncFlags`](./SyncFlags.md)
+- [`TagDefinition`](./TagDefinition.md)
+- [`TagEntry`](./TagEntry.md) - Represents a tag along with the count of items it contains
+- [`Target`](./Target.md)
+- [`TargetComponent`](./TargetComponent.md) - Abstracts a link to a component - which can be
+- [`TargetType`](./TargetType.md)
+- [`TemporaryEffect`](./TemporaryEffect.md) - Destroys a GameObject after a number of seconds. If the GameObject or its children have any 
+- [`TerrainMaterialInfo`](./TerrainMaterialInfo.md) - Information about terrain materials at a specific position
+- [`TerrainMaterialSettings`](./TerrainMaterialSettings.md)
+- [`TextSceneObject`](./TextSceneObject.md)
+- [`TextureChangedDelegate`](./TextureChangedDelegate.md)
+- [`TextureChangedDelegate`](./TextureChangedDelegate.md)
+- [`TextureDimension`](./TextureDimension.md)
+- [`TextureJustification`](./TextureJustification.md)
+- [`ThumbnailOptions`](./ThumbnailOptions.md)
+- [`TileSizeOption`](./TileSizeOption.md) - Tile size options for streaming mode.
+- [`TimingMode`](./TimingMode.md)
+- [`Timings`](./Timings.md)
+- [`Title`](./Title.md)
+- [`TonemappingMode`](./TonemappingMode.md) - Options to select a tonemapping algorithm to use for color grading.
+- [`Tooltip`](./Tooltip.md) - A tooltip to show when looking at this pressable
+- [`TrackedObjectDefinition`](./TrackedObjectDefinition.md) - Defines characteristics of an object type that should be tracked within a JSON tree structure.
+- [`TrackingTypes`](./TrackingTypes.md) - Represents transform values to update
+- [`Transform`](./Transform.md) - A struct containing a position, rotation and scale. This is commonly used in engine to describe
+- [`TransitionFunction`](./TransitionFunction.md)
+- [`TriggerDelegate`](./TriggerDelegate.md)
+- [`TriggerType`](./TriggerType.md)
+- [`Type`](./Type.md)
+- [`UsageFlags`](./UsageFlags.md) - You can combine these e.g UsageFlags.Index | UsageFlags.ByteAddress for a buffer that can be used as an index buffer and in a compute shader.
+- [`ValidationMessage`](./ValidationMessage.md) - A message generated when attempting to bind a set of named property values and input types.
+- [`VAlignment`](./VAlignment.md) - Represents the vertical alignment of the text.
+- [`VAlignment`](./VAlignment.md)
+- [`ValueType`](./ValueType.md)
+- [`ValueType`](./ValueType.md)
+- [`VariableCollection`](./VariableCollection.md) - A collection of variabnles that have been configured for this scene
+- [`VariableDescription`](./VariableDescription.md)
+- [`VariableExpression`](./VariableExpression.md) - An expression that evaluates to the current value of a named variable.
+- [`Vector2`](./Vector2.md) - A 2-dimensional vector. Typically represents a position, size, or direction in 2D space.
+- [`Vector2Int`](./Vector2Int.md)
+- [`Vector3`](./Vector3.md) - A 3-dimentional vector. Typically represents a position, size, or direction in 3D space.
+- [`Vector3Int`](./Vector3Int.md)
+- [`Vector4`](./Vector4.md) - A 4-dimensional vector/point.
+- [`Vertex`](./Vertex.md) - A vertex to update a particle snapshot with.
+- [`VertexBufferLockHandler<T>`](./VertexBufferLockHandler-T.md)
+- [`VertexDetail`](./VertexDetail.md)
+- [`VideoDisplayMode`](./VideoDisplayMode.md)
+- [`ViewportAnchorType`](./ViewportAnchorType.md)
+- [`Visibility`](./Visibility.md) - This matches ERemoteStoragePublishedFileVisibility in native
+- [`VolumeTypes`](./VolumeTypes.md)
+- [`VR`](./VR.md)
+- [`VSCodeExtensions`](./VSCodeExtensions.md)
+- [`WithCornerIcon`](./WithCornerIcon.md)
+- [`WithNumber`](./WithNumber.md)
+- [`Writer`](./Writer.md) - Context for writing binary blob data. Wraps ByteStream for allocation-free serialization.
+- [`WriteSubGraphDelegate`](./WriteSubGraphDelegate.md)
+
+## Static classes
+
+- [`<M>$52C342ECC3A503D4879A4C578EED277E`](./M-$52C342ECC3A503D4879A4C578EED277E.md)
+- [`Account`](./Account.md)
+- [`AssemblyMetadata`](./AssemblyMetadata.md)
+- [`Clipboard`](./Clipboard.md)
+- [`Colors`](./Colors.md) - Using pure primary colors is horrible. Lets make it easier to avoid.
+- [`Draw`](./Draw.md) - To be used inside `Sandbox.UI.Panel.OnDraw` to add custom shapes, textures and text to a panel.
+- [`Helpers`](./Helpers.md) - Utility methods for the Doo scripting system.
+- [`Keyboard`](./Keyboard.md) - Keyboard related glyph methods.
+- [`Map`](./Map.md) - Stats for the current map
+- [`Map`](./Map.md) - Stats for the current map
+- [`MapEditor`](./MapEditor.md) - Events that happen within the map editor.
+- [`Methods`](./Methods.md) - Built-in static methods available to Doo scripts.
+- [`Mounting`](./Mounting.md)
+- [`Network`](./Network.md)
+- [`Prefabs`](./Prefabs.md)
+- [`Pressed`](./Pressed.md) - Access to the currently pressed path information
+- [`Projects`](./Projects.md)
+- [`SandboxSystemExtensions`](./SandboxSystemExtensions.md)
+- [`SandboxSystemExtensions`](./SandboxSystemExtensions.md)
+- [`UI`](./UI.md) - Static materials for UI rendering purposes.
+- [`VoiceRecording`](./VoiceRecording.md)
+
+## Attributes
+
+- [`AliasAttribute`](./AliasAttribute.md) - Alternate class name(s) for this type to the one specified via LibraryAttribute. This info can then be retrieved via DisplayInfo library.
+- [`ArgumentHintAttribute`](./ArgumentHintAttribute.md) - Specify a hint on a Doo explaining that we're going to be passing in an expected argument when calling it.
+- [`ArgumentHintAttribute<T>`](./ArgumentHintAttribute-T.md) - Specify a hint on a Doo explaining that we're going to be passing in an expected argument when calling it.
+- [`AssetAttribute`](./AssetAttribute.md) - Automatically addeded to a type as a result of using Cloud.Model etc inside.
+- [`BaseAttribute`](./BaseAttribute.md)
+- [`BlendIndices`](./BlendIndices.md)
+- [`BlendWeight`](./BlendWeight.md)
+- [`BodyGroupMaskAttribute`](./BodyGroupMaskAttribute.md) - Used to mark properties as a body group mask, so the correct editor can be used
+- [`BroadcastAttribute`](./BroadcastAttribute.md) - Marks a method as being an RPC. It will be called for everyone.
+- [`CategoryAttribute`](./CategoryAttribute.md) - Sets the category or the group of a type or a type member.
+- [`ClassNameAttribute`](./ClassNameAttribute.md) - Set the class name for this type or member.
+- [`Color`](./Color.md)
+- [`ConditionalVisibilityAttribute`](./ConditionalVisibilityAttribute.md) - Hide a property if a condition matches.
+- [`ConvertAttribute`](./ConvertAttribute.md) - To allow redirecting in the case where a class has both a string and StringToken version of a method.
+- [`DefaultValueAttribute`](./DefaultValueAttribute.md) - Sometimes with CodeGen we want reflection to be able to get the original initial value
+- [`DescriptionAttribute`](./DescriptionAttribute.md) - Sets the description of a type or a type member. This attribute is usually applied automatically by codegen based on the XML comment of the type or member.
+- [`EditorAttribute`](./EditorAttribute.md) - Tell the tools or gameui property editor which editor we should be using for this property or type.
+- [`EditorModelAttribute`](./EditorModelAttribute.md) - Declare a model to represent this entity in editor. This is a common attribute so it's leaked out of the Editor namespace.
+- [`FrameAttribute`](./FrameAttribute.md) - Called every frame for tools
+- [`GroupAttribute`](./GroupAttribute.md) - Sets the category or the group of a type or a type member.
+- [`HideIfAttribute`](./HideIfAttribute.md) - Hide this property if a given property within the same class has the given value. Used typically in the Editor Inspector.
+- [`HideInEditorAttribute`](./HideInEditorAttribute.md) - Hide this in tools/editors.
+- [`HostAttribute`](./HostAttribute.md) - Marks a method as being an RPC. It will only be called on the host.
+- [`HotloadAttribute`](./HotloadAttribute.md)
+- [`IconAttribute`](./IconAttribute.md) - Sets the icon of a type or a type member. Colors are expected in HTML formats, like "rgb(255,255,255)" or "#FFFFFF".
+- [`MapViewContextMenu`](./MapViewContextMenu.md) - Called when the map view is right clicked, `Editor.Menu` is passed.
+- [`MaterialGroupAttribute`](./MaterialGroupAttribute.md) - Used to mark a property as a material group, for the editor
+- [`MaterialOverrideAttribute`](./MaterialOverrideAttribute.md) - Used to mark a property as a material material override dictionary, for the editor
+- [`MethodAttribute`](./MethodAttribute.md) - Marks a static method as callable from within a Doo script.
+- [`MinMaxAttribute`](./MinMaxAttribute.md) - Mark property as having a minimum and maximum value.
+- [`Normal`](./Normal.md)
+- [`OrderAttribute`](./OrderAttribute.md) - Visual order of this member for UI purposes.
+- [`OwnerAttribute`](./OwnerAttribute.md) - Marks a method as being an RPC. It will only be called on owner of this object.
+- [`PlaceholderAttribute`](./PlaceholderAttribute.md) - Add placeholder text, typically displayed for string properties when the text entry field is empty.
+- [`Position`](./Position.md)
+- [`ResourceIdentityAttribute`](./ResourceIdentityAttribute.md) - Mark a ResourceCompiler. This is used to identify the compiler for a specific file extension, or compiler.
+- [`SelectionChanged`](./SelectionChanged.md) - Called when the user selects / deselects any object in the map and <see cref="P:Editor.MapEditor.Selection.All"></see> is changed.
+- [`ShowIfAttribute`](./ShowIfAttribute.md) - Show this property if a given property within the same class has the given value. Used typically in the Editor Inspector.
+- [`SpawnableAttribute`](./SpawnableAttribute.md) - This entity is expected to be spawnable in-game, like from Sandbox's spawnmenu.
+- [`TagAttribute`](./TagAttribute.md) - Adds a single or multiple tags for this type or member. Tags can then be retrieved via DisplayInfo library.
+- [`Tangent`](./Tangent.md)
+- [`TexCoord`](./TexCoord.md)
+- [`ThumbnailRendererAttribute`](./ThumbnailRendererAttribute.md) - Should target a static method like 
+- [`TimeRangeAttribute`](./TimeRangeAttribute.md) - For use with Curves, allows you to define a custom range for the time
+- [`TitleAttribute`](./TitleAttribute.md) - Sets the title or a "nice name" of a type or a type member.
+- [`ToggleGroupAttribute`](./ToggleGroupAttribute.md) - Very much like a GroupAttribute, except we're indicating that the group can be toggle on and off using the named property
+- [`TypeHintAttribute`](./TypeHintAttribute.md) - Hint that this type is expected to be this. This is used internally for
+- [`ValidateAttribute`](./ValidateAttribute.md) - Validates a property using a method.
+- [`ValueRangeAttribute`](./ValueRangeAttribute.md) - For use with Curves, allows you to define a custom range for the value
+
+## Interfaces
+
+- [`DontExecuteOnServer`](./DontExecuteOnServer.md) - A component with this interface will not run on dedicated servers.
+- [`ExecuteInEditor`](./ExecuteInEditor.md) - A component with this interface will run in the editor.
+- [`ICollisionListener`](./ICollisionListener.md) - A `Sandbox.Component` with this interface can react to collisions.
+- [`IColorProvider`](./IColorProvider.md) - When applied to a `Sandbox.Component`, the component will be able to provide the color to use for certain UI editor elements.
+- [`IDamageable`](./IDamageable.md) - A component that can be damaged by something.
+- [`IEventListener`](./IEventListener.md)
+- [`IEventListener`](./IEventListener.md)
+- [`IEventListener`](./IEventListener.md) - Implement this interface to receive navmesh editor events.
+- [`IEventListener`](./IEventListener.md) - Callbacks for the asset system. Add this interface to your Widget to get events.
+- [`IEventListener`](./IEventListener.md)
+- [`IEvents`](./IEvents.md) - Events from the PlayerController
+- [`IHasBounds`](./IHasBounds.md) - A component that has bounds
+- [`IMaterialSetter`](./IMaterialSetter.md)
+- [`INetworkListener`](./INetworkListener.md) - A `Sandbox.Component` with this interface can react to network events.
+- [`INetworkSnapshot`](./INetworkSnapshot.md) - When implemented on a `Sandbox.Component` or `Sandbox.GameObjectSystem` it can read and write
+- [`INetworkSpawn`](./INetworkSpawn.md) - A `Sandbox.Component` with this interface can listen for when a GameObject
+- [`INetworkVisible`](./INetworkVisible.md) - A `Sandbox.Component` with this interface can determine whether a networked object
+- [`IParameter`](./IParameter.md)
+- [`IPressable`](./IPressable.md) - A component that can be pressed. Like a button. This could be by 
+- [`IRevision`](./IRevision.md)
+- [`ISceneCameraSetup`](./ISceneCameraSetup.md) - Obsolete 02/10/2025
+- [`ISceneEdited`](./ISceneEdited.md)
+- [`ISceneEditorSession`](./ISceneEditorSession.md)
+- [`ISceneStage`](./ISceneStage.md) - Called on update start. This is the very first thing called.
+- [`ISceneUndoScope`](./ISceneUndoScope.md)
+- [`ISceneView`](./ISceneView.md) - Allows tools to inject behaviour in the scene editor.
+- [`ITarget`](./ITarget.md) - The target of a MaterialAccessor. This is the object that will be modified when setting or clearing material overrides.
+- [`ITemporaryEffect`](./ITemporaryEffect.md) - Allows components to indicate their state in a generic way. This is useful if you have a temporary effect system in which
+- [`ITintable`](./ITintable.md) - A `Sandbox.Component` that lets you change its color.
+- [`ITraceProvider`](./ITraceProvider.md) - When implementing an ITraceProvider, the most important thing to keep in mind
+- [`ITriggerListener`](./ITriggerListener.md) - A `Sandbox.Component` with this interface can react to interactions with triggers.
+- [`IVolume`](./IVolume.md)
+
+## Structs
+
+- [`AddedObject`](./AddedObject.md) - Represents an object that needs to be added during patching.
+- [`AlphaFrame`](./AlphaFrame.md) - Keyframes times and values should range between 0 and 1
+- [`Angles`](./Angles.md) - Euler angles. Unlike a <see cref="T:Rotation">Rotation</see>, Euler angles can represent multiple revolutions (rotations) around an axis,
+- [`AnimTagEvent`](./AnimTagEvent.md)
+- [`AsAccessor`](./AsAccessor.md)
+- [`AssetPickerParameters`](./AssetPickerParameters.md) - Passed parameters for the AssetPicker going from engine to addon code
+- [`AssetTags`](./AssetTags.md) - Represents a collection of tags for an asset.
+- [`Attribute`](./Attribute.md)
+- [`AutocompleteEntry`](./AutocompleteEntry.md)
+- [`AutoCompleteResult`](./AutoCompleteResult.md)
+- [`BBox`](./BBox.md) - An <a href="https://en.wikipedia.org/wiki/Minimum_bounding_box">Axis Aligned Bounding Box</a>.
+- [`BindEntry`](./BindEntry.md)
+- [`BlitMode`](./BlitMode.md)
+- [`Block`](./Block.md)
+- [`Body`](./Body.md) - Represents a `Sandbox.Rigidbody` attached to a specific bone with a local transform.
+- [`Bone`](./Bone.md) - A bone definition for use with `Sandbox.ModelBuilder`.
+- [`BoneVelocity`](./BoneVelocity.md)
+- [`BridgeInterpolationParameters`](./BridgeInterpolationParameters.md)
+- [`ByteParseOptions`](./ByteParseOptions.md)
+- [`Capsule`](./Capsule.md) - A capsule object, defined by 2 points and a radius. A capsule is a cylinder with round ends (inset half spheres on each end).
+- [`Choice`](./Choice.md)
+- [`Color`](./Color.md) - Represents a color using 4 floats (rgba), with 0-1 range.
+- [`Color32`](./Color32.md) - A 32bit color, commonly used by things like vertex buffers.
+- [`ColorFrame`](./ColorFrame.md) - Keyframes times and values should range between 0 and 1
+- [`ColorHsv`](./ColorHsv.md) - A color in <a href="https://upload.wikimedia.org/wikipedia/commons/a/a0/Hsl-hsv_models.svg">Hue-Saturation-Value/Brightness</a> format.
+- [`ColorIndexRef`](./ColorIndexRef.md)
+- [`ColorTextureRef`](./ColorTextureRef.md)
+- [`ComboDescription`](./ComboDescription.md)
+- [`Cone`](./Cone.md) - A tapered shape between two points with a radius at each end.
+- [`Config`](./Config.md)
+- [`Configuration`](./Configuration.md)
+- [`Configure`](./Configure.md) - Provides configuration for a Doo run, such as setting initial argument values.
+- [`Cursor`](./Cursor.md)
+- [`DepthTextureRef`](./DepthTextureRef.md)
+- [`Desc`](./Desc.md)
+- [`DeserializeOptions`](./DeserializeOptions.md)
+- [`Entry`](./Entry.md)
+- [`Entry`](./Entry.md)
+- [`Entry`](./Entry.md)
+- [`Entry`](./Entry.md)
+- [`Entry`](./Entry.md)
+- [`Entry`](./Entry.md) - This is a cleaned up version of gameserveritem_t.
+- [`Entry`](./Entry.md)
+- [`Entry`](./Entry.md)
+- [`Enumerator`](./Enumerator.md) - Zero-allocation enumerator for `Sandbox.Utility.CircularBuffer`1`.
+- [`Event`](./Event.md) - Describes who pressed it.
+- [`ExportProgress`](./ExportProgress.md)
+- [`File`](./File.md)
+- [`Filter`](./Filter.md)
+- [`FlagsAccessor`](./FlagsAccessor.md)
+- [`FogParamInfo`](./FogParamInfo.md)
+- [`FootstepEvent`](./FootstepEvent.md)
+- [`Frame`](./Frame.md) - Keyframes times and values should range between 0 and 1
+- [`Frame`](./Frame.md)
+- [`Frame`](./Frame.md)
+- [`GameObjectSystemData`](./GameObjectSystemData.md)
+- [`GenericEvent`](./GenericEvent.md)
+- [`GlobalStat`](./GlobalStat.md)
+- [`GradientColorOffset`](./GradientColorOffset.md)
+- [`GradientGenerator`](./GradientGenerator.md)
+- [`Group`](./Group.md)
+- [`HullSimplify`](./HullSimplify.md) - Settings for simplifying a hull shape.
+- [`IconSetup`](./IconSetup.md)
+- [`ImpactEffectData`](./ImpactEffectData.md)
+- [`IndirectDispatchArguments`](./IndirectDispatchArguments.md)
+- [`IndirectDrawArguments`](./IndirectDrawArguments.md)
+- [`IndirectDrawIndexedArguments`](./IndirectDrawIndexedArguments.md)
+- [`Inputs`](./Inputs.md) - The input state, allows interaction with Gizmos
+- [`InstalledVoice`](./InstalledVoice.md)
+- [`Instance`](./Instance.md)
+- [`ItemDragEvent`](./ItemDragEvent.md)
+- [`Joint`](./Joint.md) - Represents a `Sandbox.Joint` between two bodies with local frames for each.
+- [`Line`](./Line.md) - Represents a line in 3D space.
+- [`LinkTraversalData`](./LinkTraversalData.md) - Holds information about the current link the agent is traversing.
+- [`LoadingScreenSetup`](./LoadingScreenSetup.md)
+- [`Matrix`](./Matrix.md) - Represents a 4x4 matrix.
+- [`MovedObject`](./MovedObject.md) - Represents an object that should be moved to a new location during patching.
+- [`ObjectEntry`](./ObjectEntry.md) - Holds key values for the map object
+- [`ObjectIdentifier`](./ObjectIdentifier.md) - Uniquely identifies a tracked object by its type and identifier value.
+- [`OldSoundData`](./OldSoundData.md)
+- [`Option`](./Option.md)
+- [`Options`](./Options.md)
+- [`Outcome`](./Outcome.md)
+- [`Outline`](./Outline.md)
+- [`PackageInteraction`](./PackageInteraction.md)
+- [`PackageProperty`](./PackageProperty.md) - A binary category used to divide into two categories. For example, Work In Progress.
+- [`PackageUsageStats`](./PackageUsageStats.md) - Statistics for user interactions with this package
+- [`Pair`](./Pair.md) - A pair of case- and order-insensitive tags, used as a key to look up a `Sandbox.Physics.CollisionRules.Result`.
+- [`PathElement`](./PathElement.md)
+- [`PeriodMetric`](./PeriodMetric.md)
+- [`PlayerStat`](./PlayerStat.md)
+- [`Point`](./Point.md) - Point that defines part of the spline.
+- [`PrefabVariableTarget`](./PrefabVariableTarget.md) - Targets a property in a component or gameobject.
+- [`PropertyOverride`](./PropertyOverride.md) - Represents a property change to apply during patching.
+- [`RangedFloat`](./RangedFloat.md) - A float between two values, which can be randomized or fixed.
+- [`Ray`](./Ray.md) - A struct describing an origin and direction
+- [`Reader`](./Reader.md) - Context for reading binary blob data. Wraps ByteStream for allocation-free deserialization.
+- [`RemovedObject`](./RemovedObject.md) - Represents an object that should be removed during patching.
+- [`Result`](./Result.md)
+- [`Result`](./Result.md)
+- [`Results`](./Results.md)
+- [`ReviewStats`](./ReviewStats.md)
+- [`Rgba16`](./Rgba16.md)
+- [`Rotation`](./Rotation.md) - Represents a Quaternion rotation. Can be interpreted as a direction unit vector (x,y,z) + rotation around the direction vector (w) which represents the up direction.
+- [`Sample`](./Sample.md) - Information about the spline at a specific distance.
+- [`Scope`](./Scope.md) - Defines a scope of text, all using the same style.
+- [`ScopeSection`](./ScopeSection.md) - This exists to allow the creation of performance scopes without
+- [`ScrapeEffectData`](./ScrapeEffectData.md)
+- [`SerializationOptionsScope`](./SerializationOptionsScope.md)
+- [`Shadow`](./Shadow.md)
+- [`SizeHandle`](./SizeHandle.md)
+- [`SkyLightInfo`](./SkyLightInfo.md)
+- [`SmoothDamped`](./SmoothDamped.md) - Everything you need to smooth damp a Vector3. Just call Update every frame.
+- [`SortOrder`](./SortOrder.md) - Describes a sort order which can be used with the package/find api
+- [`SoundEvent`](./SoundEvent.md)
+- [`SpringDamped`](./SpringDamped.md) - Everything you need to create a springy Vector3
+- [`StyleProperty`](./StyleProperty.md)
+- [`SurfacePrefabCollection`](./SurfacePrefabCollection.md) - Holds a dictionary of common prefabs associated with a surface
+- [`SurfaceSoundCollection`](./SurfaceSoundCollection.md) - Holds a dictionary of common sounds associated with a surface. This allows you to pick and choose an appropriate sound.
+- [`TagDefinition`](./TagDefinition.md)
+- [`TagEntry`](./TagEntry.md) - Represents a tag along with the count of items it contains
+- [`Target`](./Target.md)
+- [`TerrainMaterialInfo`](./TerrainMaterialInfo.md) - Information about terrain materials at a specific position
+- [`ThumbnailOptions`](./ThumbnailOptions.md)
+- [`Tooltip`](./Tooltip.md) - A tooltip to show when looking at this pressable
+- [`Transform`](./Transform.md) - A struct containing a position, rotation and scale. This is commonly used in engine to describe
+- [`ValidationMessage`](./ValidationMessage.md) - A message generated when attempting to bind a set of named property values and input types.
+- [`VariableDescription`](./VariableDescription.md)
+- [`Vector2`](./Vector2.md) - A 2-dimensional vector. Typically represents a position, size, or direction in 2D space.
+- [`Vector2Int`](./Vector2Int.md)
+- [`Vector3`](./Vector3.md) - A 3-dimentional vector. Typically represents a position, size, or direction in 3D space.
+- [`Vector3Int`](./Vector3Int.md)
+- [`Vector4`](./Vector4.md) - A 4-dimensional vector/point.
+- [`Vertex`](./Vertex.md) - A vertex to update a particle snapshot with.
+- [`VertexDetail`](./VertexDetail.md)
+- [`VideoDisplayMode`](./VideoDisplayMode.md)
+- [`Writer`](./Writer.md) - Context for writing binary blob data. Wraps ByteStream for allocation-free serialization.
+
+## Enums
+
+- [`AccountTypes`](./AccountTypes.md) - The different types of Steam accounts.
+- [`ActivateMode`](./ActivateMode.md)
+- [`AnimatorSitPose`](./AnimatorSitPose.md)
+- [`AnimTagStatus`](./AnimTagStatus.md) - Enumeration that describes how the AnimGraph tag state changed. Used in `Sandbox.SceneModel.AnimTagEvent`.
+- [`AttachmentMode`](./AttachmentMode.md)
+- [`AudioCodec`](./AudioCodec.md) - Audio codec to use for encoding.
+- [`AutoScale`](./AutoScale.md)
+- [`Axis`](./Axis.md)
+- [`BevelEdgesMode`](./BevelEdgesMode.md)
+- [`BillboardAlignment`](./BillboardAlignment.md)
+- [`BillboardMode`](./BillboardMode.md)
+- [`BlendMode`](./BlendMode.md) - Describes how the line should behave when entering/leaving a frame
+- [`BloomMode`](./BloomMode.md)
+- [`BodyGroups`](./BodyGroups.md)
+- [`BooleanOperation`](./BooleanOperation.md)
+- [`BridgeUVMode`](./BridgeUVMode.md)
+- [`BroadcastEventType`](./BroadcastEventType.md)
+- [`BuildStep`](./BuildStep.md)
+- [`ButtonMode`](./ButtonMode.md) - The button's behavior mode.
+- [`CableTextureOrientation`](./CableTextureOrientation.md)
+- [`CapStyle`](./CapStyle.md)
+- [`ClothingCategory`](./ClothingCategory.md)
+- [`ClothingSource`](./ClothingSource.md)
+- [`ClutterMode`](./ClutterMode.md) - Clutter generation mode.
+- [`Codec`](./Codec.md)
+- [`CollisionType`](./CollisionType.md)
+- [`ColorSpaceEnum`](./ColorSpaceEnum.md)
+- [`Container`](./Container.md)
+- [`ControlPointValueInput`](./ControlPointValueInput.md)
+- [`CubemapDynamicUpdate`](./CubemapDynamicUpdate.md)
+- [`CubemapResolution`](./CubemapResolution.md)
+- [`CullMode`](./CullMode.md) - Cull mode, either inside or outside
+- [`DenoiseModes`](./DenoiseModes.md)
+- [`DissolveRemoveVertexCondition`](./DissolveRemoveVertexCondition.md)
+- [`DockProperty`](./DockProperty.md)
+- [`DoorMode`](./DoorMode.md)
+- [`DoorState`](./DoorState.md) - The door's state
+- [`DownsampleMethod`](./DownsampleMethod.md) - Which method to use when downsampling a texture
+- [`DragDropTarget`](./DragDropTarget.md)
+- [`DragTypes`](./DragTypes.md)
+- [`EdgeSmoothMode`](./EdgeSmoothMode.md)
+- [`EncodingPreset`](./EncodingPreset.md) - Controls the speed/quality tradeoff of video encoding.
+- [`EntryType`](./EntryType.md)
+- [`EnvmapProbeMode`](./EnvmapProbeMode.md)
+- [`EvaluationType`](./EvaluationType.md)
+- [`EvaluationType`](./EvaluationType.md)
+- [`ExposureColorSpaceEnum`](./ExposureColorSpaceEnum.md)
+- [`ExtentType`](./ExtentType.md)
+- [`FaceMode`](./FaceMode.md)
+- [`FilterMode`](./FilterMode.md)
+- [`FilterType`](./FilterType.md)
+- [`Flag`](./Flag.md) - Command buffer flags allow us to skip command buffers if the camera 
+- [`FogInfluence`](./FogInfluence.md)
+- [`FogLightingMode`](./FogLightingMode.md)
+- [`FogType`](./FogType.md)
+- [`GameObjectUndoFlags`](./GameObjectUndoFlags.md)
+- [`GradingType`](./GradingType.md)
+- [`GridAxis`](./GridAxis.md)
+- [`HAlignment`](./HAlignment.md) - Represents the horizontal alignment of the text.
+- [`HAlignment`](./HAlignment.md)
+- [`Hand`](./Hand.md)
+- [`HandleMode`](./HandleMode.md) - Describes how the line should behave when entering/leaving a frame
+- [`HandleMode`](./HandleMode.md) - Describes how the spline should behave when entering/leaving a point.
+- [`HandSources`](./HandSources.md) - Represents a controller to use when fetching skeletal data (finger curl/splay values)
+- [`HitboxShape`](./HitboxShape.md)
+- [`HoldTypes`](./HoldTypes.md)
+- [`IconModes`](./IconModes.md)
+- [`InsertMode`](./InsertMode.md)
+- [`InsideGeometryBehavior`](./InsideGeometryBehavior.md) - Behavior when a probe is detected inside geometry.
+- [`InvokeType`](./InvokeType.md) - Determines how an invoke block resolves its target method.
+- [`ItemEdge`](./ItemEdge.md)
+- [`JointType`](./JointType.md)
+- [`LightShape`](./LightShape.md)
+- [`LoopMode`](./LoopMode.md) - The different loop modes for sprite animation.
+- [`ModelSources`](./ModelSources.md) - Represents a controller to use when fetching the model (which device)
+- [`MotorMode`](./MotorMode.md)
+- [`MotorMode`](./MotorMode.md)
+- [`MoveStyles`](./MoveStyles.md)
+- [`NegativeTags`](./NegativeTags.md)
+- [`NoiseType`](./NoiseType.md)
+- [`NotificationLevel`](./NotificationLevel.md)
+- [`OwnerJoinState`](./OwnerJoinState.md) - Used by party members to know when to preload the game package, and when to connect to the party leader's server.
+- [`ParticleSortMode`](./ParticleSortMode.md)
+- [`ParticleSortMode`](./ParticleSortMode.md)
+- [`PoseSources`](./PoseSources.md) - Represents tracked devices to use when updating
+- [`PoseTypes`](./PoseTypes.md) - The type of pose to track from the controller
+- [`PositionMode`](./PositionMode.md)
+- [`PositiveTags`](./PositiveTags.md)
+- [`PrimitiveType`](./PrimitiveType.md)
+- [`PrimitiveType`](./PrimitiveType.md)
+- [`ProjectionMode`](./ProjectionMode.md)
+- [`QueuedFileState`](./QueuedFileState.md)
+- [`RangeType`](./RangeType.md) - Range type of `RangedFloat`.
+- [`Reason`](./Reason.md)
+- [`ReleaseMode`](./ReleaseMode.md)
+- [`Result`](./Result.md) - Result of a collision between <see cref="T:Sandbox.Physics.CollisionRules.Pair">two objects</see>.
+- [`ReviewScore`](./ReviewScore.md)
+- [`SampleQuality`](./SampleQuality.md)
+- [`ShadowRenderType`](./ShadowRenderType.md)
+- [`SimplifyMethod`](./SimplifyMethod.md) - The method used to simplify a hull.
+- [`SimulationSpace`](./SimulationSpace.md)
+- [`SittingStyle`](./SittingStyle.md)
+- [`SizeType`](./SizeType.md)
+- [`Slots`](./Slots.md)
+- [`SortOrder`](./SortOrder.md)
+- [`SoundSelectionMode`](./SoundSelectionMode.md)
+- [`SpecialMoveStyle`](./SpecialMoveStyle.md)
+- [`SpringForceMode`](./SpringForceMode.md)
+- [`Stage`](./Stage.md) - A list of stages in the scene tick in which we can hook
+- [`SyncFlags`](./SyncFlags.md)
+- [`TargetType`](./TargetType.md)
+- [`TextureDimension`](./TextureDimension.md)
+- [`TextureJustification`](./TextureJustification.md)
+- [`TileSizeOption`](./TileSizeOption.md) - Tile size options for streaming mode.
+- [`TimingMode`](./TimingMode.md)
+- [`TonemappingMode`](./TonemappingMode.md) - Options to select a tonemapping algorithm to use for color grading.
+- [`TrackingTypes`](./TrackingTypes.md) - Represents transform values to update
+- [`TriggerType`](./TriggerType.md)
+- [`Type`](./Type.md)
+- [`UsageFlags`](./UsageFlags.md) - You can combine these e.g UsageFlags.Index | UsageFlags.ByteAddress for a buffer that can be used as an index buffer and in a compute shader.
+- [`VAlignment`](./VAlignment.md) - Represents the vertical alignment of the text.
+- [`VAlignment`](./VAlignment.md)
+- [`ValueType`](./ValueType.md)
+- [`ValueType`](./ValueType.md)
+- [`ViewportAnchorType`](./ViewportAnchorType.md)
+- [`Visibility`](./Visibility.md) - This matches ERemoteStoragePublishedFileVisibility in native
+- [`VolumeTypes`](./VolumeTypes.md)

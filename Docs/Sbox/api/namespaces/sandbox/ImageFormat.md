@@ -1,0 +1,84 @@
+# Sandbox.ImageFormat
+
+Format used when creating textures.
+
+- **Kind:** enum
+- **Namespace:** `Sandbox`
+- **Assembly:** `Sandbox.Engine`
+- **Base:** `System.Enum`
+
+## Values
+
+- `None`
+- `Default`
+- `RGBA8888` - Four 8-bit components representing RGBA.
+- `ABGR8888` - Four 8-bit components representing ABGR.
+- `RGB888` - Three 8-bit components representing RGB.
+- `BGR888` - Three 8-bit components representing BGR.
+- `RGB565` - Three components representing RGB.
+Red and blue are 5 bit components, green is 6 bit totalling 16 bits.
+- `I8` - Single 8-bit component representing luminance.
+- `IA88` - Two 8-bit components representing luminance and alpha.
+- `A8` - Single 8-bit component representing alpha.
+- `ARGB8888`
+- `BGRA8888`
+- `DXT1` - Compressed texture format with no alpha.
+- `DXT3` - Compressed texture format with alpha.
+- `DXT5` - Compressed texture format with alpha, generally better than DXT3.
+- `BGRX8888`
+- `BGR565`
+- `BGRX5551`
+- `BGRA4444`
+- `DXT1_ONEBITALPHA`
+- `BGRA5551`
+- `RGBA16161616F` - Four 16-bit float components representing RGBA.
+- `RGBA16161616` - Four 16-bit integer components representing RGBA.
+- `RGB323232F` - Three 32-bit float components representing RGB.
+- `R32F` - Single 32-bit float component representing R.
+- `RGBA32323232F` - Four 32-bit float components representing RGBA.
+- `ATI2N`
+- `ATI1N`
+- `LINEAR_BGRX8888`
+- `LINEAR_RGBA8888`
+- `LINEAR_ABGR8888`
+- `LINEAR_ARGB8888`
+- `LINEAR_BGRA8888`
+- `LINEAR_RGB888`
+- `LINEAR_BGR888`
+- `LINEAR_BGRX5551`
+- `LINEAR_I8`
+- `LINEAR_RGBA16161616`
+- `LE_BGRX8888`
+- `LE_BGRA8888`
+- `RG1616F`
+- `RG3232F`
+- `RGBX8888`
+- `RGBA1010102`
+- `BGRA1010102`
+- `R16F`
+- `D16`
+- `D15S1`
+- `D32`
+- `D24S8`
+- `LINEAR_D24S8`
+- `D24X8`
+- `D24X4S4`
+- `D24FS8`
+- `DXT5_NM`
+- `RG1616`
+- `R16`
+- `RGBA8888_LINEAR`
+- `BGRA8888_LINEAR`
+- `BGRX8888_LINEAR`
+- `RGBX555`
+- `BC6H`
+- `BC7`
+- `R32_UINT`
+- `R8G8B8_ETC2`
+- `R8G8B8A8_ETC2_EAC`
+- `R11_EAC`
+- `RG11_EAC`
+- `D32FS8`
+- `RGBA32323232`
+- `I16F`
+- `RG3232`

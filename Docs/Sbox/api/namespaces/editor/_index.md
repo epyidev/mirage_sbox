@@ -1,0 +1,229 @@
+# Namespace `Editor`
+
+179 types.
+
+## Classes
+
+- [`AboutWidget`](./AboutWidget.md)
+- [`AdvancedDropdownItem`](./AdvancedDropdownItem.md) - A tree node for use with `Editor.AdvancedDropdownWidget`.
+- [`AdvancedDropdownPopup`](./AdvancedDropdownPopup.md) - A popup wrapper around `Editor.AdvancedDropdownWidget`.
+- [`AdvancedDropdownWidget`](./AdvancedDropdownWidget.md) - A generic sliding hierarchical selector widget.
+- [`AnglesControlWidget`](./AnglesControlWidget.md)
+- [`Asset`](./Asset.md)
+- [`AssetType`](./AssetType.md)
+- [`AutoComplete`](./AutoComplete.md)
+- [`BaseItemWidget`](./BaseItemWidget.md)
+- [`BaseScrollWidget`](./BaseScrollWidget.md)
+- [`BaseWindow`](./BaseWindow.md)
+- [`BBoxControlWidget`](./BBoxControlWidget.md)
+- [`BoolControlWidget`](./BoolControlWidget.md)
+- [`BoxLayout`](./BoxLayout.md) - A widget layout. You can think of it as an invisible box of rows or columns, each one containing a widget, useful for automatic positioning and scaling.
+- [`Button`](./Button.md) - A simple button widget.
+- [`Checkbox`](./Checkbox.md) - A generic checkbox widget.
+- [`CheckState`](./CheckState.md) - Check state of a `Editor.Checkbox`.
+- [`CloudAsset`](./CloudAsset.md)
+- [`ColorSampler`](./ColorSampler.md)
+- [`ComboBox`](./ComboBox.md)
+- [`ComponentEditorWidget`](./ComponentEditorWidget.md) - A control widget is used to edit the value of a single SerializedProperty.
+- [`ContextMenu`](./ContextMenu.md) - Identical to Menu except DeleteOnClose defaults to true.
+- [`ContextMenuEvent`](./ContextMenuEvent.md) - Information about a `Editor.Widget`s context menu event.
+- [`ControlWidget`](./ControlWidget.md) - A control widget is used to edit the value of a single SerializedProperty.
+- [`CursorShape`](./CursorShape.md) - TODO: Make this match whatever we do in game
+- [`Dialog`](./Dialog.md) - A wrapper to more easily create dialog windows.
+- [`DockArea`](./DockArea.md)
+- [`DockManager`](./DockManager.md)
+- [`DockWindow`](./DockWindow.md) - A window that is built from docking windows
+- [`Drag`](./Drag.md)
+- [`DragAssetData`](./DragAssetData.md) - Represents an asset being dragged into an editor window. Assets will either
+- [`DragData`](./DragData.md) - Contains drag and drop data for tool widgets. See `Editor.Widget.DragEvent`.
+- [`DropAction`](./DropAction.md) - Used to tell the user what kind of action will happen during a drag and drop event on mouse release.
+- [`DropdownControlWidget`](./DropdownControlWidget.md) - Base class for dropdown control widgets with multi-select support.
+- [`EditorMainWindow`](./EditorMainWindow.md)
+- [`EditorSystem`](./EditorSystem.md)
+- [`ElideMode`](./ElideMode.md)
+- [`EnumControlWidget`](./EnumControlWidget.md)
+- [`ExportConfig`](./ExportConfig.md)
+- [`FileDialog`](./FileDialog.md)
+- [`FloatControlWidget`](./FloatControlWidget.md)
+- [`FloatSlider`](./FloatSlider.md)
+- [`FocusChangeReason`](./FocusChangeReason.md) - Describes why a `Editor.Widget`s' keyboard focus has changed via `Editor.Widget.OnFocus(Editor.FocusChangeReason)` and `Editor.Widget.OnBlur(Editor.FocusChangeReason)` callbacks.
+- [`FocusMode`](./FocusMode.md)
+- [`FolderEdit`](./FolderEdit.md) - An editable text box with a button to browse for an arbitrary folder using OS file browser dialog.
+- [`Frame`](./Frame.md) - Like a widget - but is drawn
+- [`GameEditorSession`](./GameEditorSession.md)
+- [`GameScenePicker`](./GameScenePicker.md) - Opens an invisible popup above the game screen which allows you to left click once on the scene.
+- [`GraphicsHoverEvent`](./GraphicsHoverEvent.md) - Information about a `Editor.GraphicsItem`s mouse hover event.
+- [`GraphicsItem`](./GraphicsItem.md)
+- [`GraphicsLine`](./GraphicsLine.md)
+- [`GraphicsMouseEvent`](./GraphicsMouseEvent.md) - Information about a `Editor.GraphicsItem`s mouse click event.
+- [`GraphicsView`](./GraphicsView.md)
+- [`GraphicsWidget`](./GraphicsWidget.md)
+- [`GridLayout`](./GridLayout.md) - A widget layout. You can think of it as an invisible box of rows or columns, each one containing a widget, useful for automatic positioning and scaling.
+- [`GroupButtonControlWidget`](./GroupButtonControlWidget.md)
+- [`HistoryList<T>`](./HistoryList-T.md) - A helper class to store a list of strings, which can then be navigated around, saved, restored
+- [`IconButton`](./IconButton.md)
+- [`IconLabel`](./IconLabel.md) - A material icon label
+- [`Input`](./Input.md)
+- [`InputOutputBase`](./InputOutputBase.md) - Represents a variable
+- [`InputOutputType`](./InputOutputType.md)
+- [`InspectorWidget`](./InspectorWidget.md) - When using `Editor.InspectorAttribute` with a type that inherits from InspectorWidget, when you inspect an object of that class, it will create an instance of the widget and display it in the inspector.
+- [`IntegerControlWidget`](./IntegerControlWidget.md)
+- [`KeyCode`](./KeyCode.md)
+- [`KeyEvent`](./KeyEvent.md) - Information about a `Editor.Widget`s keyboard event.
+- [`Label`](./Label.md) - A simple text label.
+- [`Layout`](./Layout.md)
+- [`LibraryProject`](./LibraryProject.md)
+- [`LineEdit`](./LineEdit.md) - A single line text entry. See `Editor.TextEdit` for multi line version.
+- [`LinkableSplitter`](./LinkableSplitter.md) - Splitter that can be linked to move alongside others
+- [`ListView`](./ListView.md)
+- [`MapClass`](./MapClass.md) - Represents an entity class used by the map editor
+- [`MapClassVariable`](./MapClassVariable.md) - Represents a variable.
+- [`MarginControlWidget`](./MarginControlWidget.md)
+- [`Menu`](./Menu.md)
+- [`MenuBar`](./MenuBar.md)
+- [`MetaData`](./MetaData.md) - A class to CRUD json files. This should probably be a generic class since it seems
+- [`MouseEvent`](./MouseEvent.md) - Information about a `Editor.Widget`s mouse event.
+- [`Option`](./Option.md)
+- [`Orientation`](./Orientation.md)
+- [`Output`](./Output.md)
+- [`PenStyle`](./PenStyle.md)
+- [`Pixmap`](./Pixmap.md) - A pixel map, or just a simple image.
+- [`PopupDialogWidget`](./PopupDialogWidget.md)
+- [`PopupWidget`](./PopupWidget.md) - A popup widget that automatically deletes itself once it stops being visible
+- [`ProjectList`](./ProjectList.md)
+- [`ProjectPublisher`](./ProjectPublisher.md)
+- [`QObject`](./QObject.md)
+- [`QStringList`](./QStringList.md)
+- [`QTextBlock`](./QTextBlock.md)
+- [`RectControlWidget`](./RectControlWidget.md)
+- [`RenderMode`](./RenderMode.md)
+- [`RotationControlWidget`](./RotationControlWidget.md)
+- [`SceneEditorSession`](./SceneEditorSession.md) - A SceneEditorSession holds a Scene that is open in the editor.
+- [`SceneFolder`](./SceneFolder.md)
+- [`ScenePasteSpecialDialog`](./ScenePasteSpecialDialog.md)
+- [`SceneRenderingWidget`](./SceneRenderingWidget.md) - Render a scene to a native widget. This replaces NativeRenderingWidget.
+- [`ScrollArea`](./ScrollArea.md) - A widget that can scroll its `Editor.ScrollArea.Canvas`.
+- [`ScrollBar`](./ScrollBar.md)
+- [`ScrollbarMode`](./ScrollbarMode.md)
+- [`SegmentedControl`](./SegmentedControl.md)
+- [`Separator`](./Separator.md)
+- [`ShortcutContext`](./ShortcutContext.md) - Scope of the shortcut. Requires focus at this level for the shortcut to be active.
+- [`ShortcutType`](./ShortcutType.md)
+- [`SizeConstraint`](./SizeConstraint.md)
+- [`SizeMode`](./SizeMode.md)
+- [`SphereControlWidget`](./SphereControlWidget.md)
+- [`Splitter`](./Splitter.md) - Split frame, allows dragging to resize panels
+- [`SpriteAnimationControlWidget`](./SpriteAnimationControlWidget.md)
+- [`StackRow`](./StackRow.md)
+- [`StandaloneExporter`](./StandaloneExporter.md)
+- [`StatusBar`](./StatusBar.md)
+- [`StringControlWidget`](./StringControlWidget.md)
+- [`SuspendUpdates`](./SuspendUpdates.md) - Suspends updates in the widget for this using scope.
+- [`TabBar`](./TabBar.md)
+- [`TextAreaControlWidget`](./TextAreaControlWidget.md)
+- [`TextCursor`](./TextCursor.md)
+- [`TextEdit`](./TextEdit.md) - A multi-line text entry. See `Editor.LineEdit` for a single line version.
+- [`TextureResidencyInfo`](./TextureResidencyInfo.md) - Provides information about currently resident textures on the GPU
+- [`TextureResourceCompiler`](./TextureResourceCompiler.md)
+- [`TitleBarButtons`](./TitleBarButtons.md) - A list of title bar buttons, at the top right of a window.
+- [`ToolBar`](./ToolBar.md)
+- [`ToolbarPosition`](./ToolbarPosition.md)
+- [`ToolButton`](./ToolButton.md) - A button that shows as an icon and tries to keep itself square.
+- [`ToolButtonStyle`](./ToolButtonStyle.md)
+- [`Trace`](./Trace.md) - Trace for tools, not to be confused with `Sandbox.SceneTrace`
+- [`TraceResult`](./TraceResult.md)
+- [`TransformControlWidget`](./TransformControlWidget.md)
+- [`TrayIcon`](./TrayIcon.md) - Like a widget - but is drawn
+- [`VariantControlWidget`](./VariantControlWidget.md)
+- [`VectorControlWidget`](./VectorControlWidget.md)
+- [`VectorIntControlWidget`](./VectorIntControlWidget.md)
+- [`VirtualWidget`](./VirtualWidget.md)
+- [`WheelEvent`](./WheelEvent.md) - Information about a mouse wheel scroll event of a `Editor.Widget`.
+- [`Widget`](./Widget.md) - A generic widget.
+- [`WidgetSignal`](./WidgetSignal.md)
+- [`Window`](./Window.md)
+- [`WindowFlags`](./WindowFlags.md)
+
+## Static classes
+
+- [`Animate`](./Animate.md)
+- [`Application`](./Application.md)
+- [`AssetSystem`](./AssetSystem.md) - The asset system, provides access to all the assets.
+- [`AssetTagSystem`](./AssetTagSystem.md) - Handles asset tags.
+- [`BuildStepExtensions`](./BuildStepExtensions.md)
+- [`CodeEditor`](./CodeEditor.md) - For opening source code files in whatever code editor the user has selected.
+- [`ConsoleSystem`](./ConsoleSystem.md)
+- [`EditorEvent`](./EditorEvent.md)
+- [`EditorPreferences`](./EditorPreferences.md)
+- [`EditorScene`](./EditorScene.md)
+- [`EditorShortcuts`](./EditorShortcuts.md)
+- [`EditorUtility`](./EditorUtility.md)
+- [`FileSystem`](./FileSystem.md) - A filesystem that can be accessed by the game.
+- [`GameData`](./GameData.md) - Lets all native and managed tools know about any engine / game entities.
+- [`GameMode`](./GameMode.md) - Registers a widget with the input system, so it uses SDL.
+- [`InputSystem`](./InputSystem.md)
+- [`LibrarySystem`](./LibrarySystem.md)
+- [`Paint`](./Paint.md)
+- [`SceneEditor`](./SceneEditor.md)
+- [`Theme`](./Theme.md)
+- [`ToolRender`](./ToolRender.md) - Renders basic stuff for tool views
+
+## Attributes
+
+- [`AssetPreviewAttribute`](./AssetPreviewAttribute.md)
+- [`CanEditAttribute`](./CanEditAttribute.md)
+- [`DockAttribute`](./DockAttribute.md)
+- [`EditorAppAttribute`](./EditorAppAttribute.md)
+- [`EditorForAssetTypeAttribute`](./EditorForAssetTypeAttribute.md) - Used in conjunction with IAssetEditor to declare a window that can edit an asset type
+- [`EnableColorAlphaAttribute`](./EnableColorAlphaAttribute.md) - If used on a Color or Color32 property, enables alpha modification in editors.
+- [`FieldMetaDataAttribute`](./FieldMetaDataAttribute.md) - Base attribute which allows adding metadata to properties.
+- [`HidePropertyAttribute`](./HidePropertyAttribute.md) - A way to hide properties from parent classes in tools.
+- [`InspectorAttribute`](./InspectorAttribute.md)
+- [`MenuAttribute`](./MenuAttribute.md)
+- [`MetaDataAttribute`](./MetaDataAttribute.md) - Base attribute which allows adding FGD metadata to classes.
+- [`ShortcutAttribute`](./ShortcutAttribute.md)
+- [`StackLineHandlerAttribute`](./StackLineHandlerAttribute.md) - Marks a method as a custom handler for stack trace lines matching a certain pattern.
+
+## Interfaces
+
+- [`IAssetEditor`](./IAssetEditor.md) - A widget (usually window) implementing this will be able to edit assets via the asset browser.
+- [`ICodeEditor`](./ICodeEditor.md) - Interface for editors to open code files.
+- [`IEditorAttribute<T>`](./IEditorAttribute-T.md) - Allows an editor widget to provide an attribute that it can use. Editors with attributes are chosen
+- [`IPopupEditor<T>`](./IPopupEditor-T.md) - An popup editor capable of editing type T. This is created when EditorUtility.OpenControlSheet is called, 
+- [`IProgress`](./IProgress.md)
+- [`IProgressSection`](./IProgressSection.md)
+
+## Structs
+
+- [`ContextMenuEvent`](./ContextMenuEvent.md) - Information about a `Editor.Widget`s context menu event.
+- [`GraphicsHoverEvent`](./GraphicsHoverEvent.md) - Information about a `Editor.GraphicsItem`s mouse hover event.
+- [`GraphicsMouseEvent`](./GraphicsMouseEvent.md) - Information about a `Editor.GraphicsItem`s mouse click event.
+- [`KeyEvent`](./KeyEvent.md) - Information about a `Editor.Widget`s keyboard event.
+- [`MouseEvent`](./MouseEvent.md) - Information about a `Editor.Widget`s mouse event.
+- [`TextureResidencyInfo`](./TextureResidencyInfo.md) - Provides information about currently resident textures on the GPU
+- [`Trace`](./Trace.md) - Trace for tools, not to be confused with `Sandbox.SceneTrace`
+- [`TraceResult`](./TraceResult.md)
+- [`WheelEvent`](./WheelEvent.md) - Information about a mouse wheel scroll event of a `Editor.Widget`.
+
+## Enums
+
+- [`CheckState`](./CheckState.md) - Check state of a `Editor.Checkbox`.
+- [`CursorShape`](./CursorShape.md) - TODO: Make this match whatever we do in game
+- [`DockArea`](./DockArea.md)
+- [`DropAction`](./DropAction.md) - Used to tell the user what kind of action will happen during a drag and drop event on mouse release.
+- [`ElideMode`](./ElideMode.md)
+- [`FocusChangeReason`](./FocusChangeReason.md) - Describes why a `Editor.Widget`s' keyboard focus has changed via `Editor.Widget.OnFocus(Editor.FocusChangeReason)` and `Editor.Widget.OnBlur(Editor.FocusChangeReason)` callbacks.
+- [`FocusMode`](./FocusMode.md)
+- [`InputOutputType`](./InputOutputType.md)
+- [`KeyCode`](./KeyCode.md)
+- [`Orientation`](./Orientation.md)
+- [`PenStyle`](./PenStyle.md)
+- [`RenderMode`](./RenderMode.md)
+- [`ScrollbarMode`](./ScrollbarMode.md)
+- [`ShortcutContext`](./ShortcutContext.md) - Scope of the shortcut. Requires focus at this level for the shortcut to be active.
+- [`ShortcutType`](./ShortcutType.md)
+- [`SizeConstraint`](./SizeConstraint.md)
+- [`SizeMode`](./SizeMode.md)
+- [`ToolbarPosition`](./ToolbarPosition.md)
+- [`ToolButtonStyle`](./ToolButtonStyle.md)
+- [`WindowFlags`](./WindowFlags.md)

@@ -1,0 +1,267 @@
+# Sandbox.SandboxSystemExtensions
+
+- **Kind:** static class
+- **Namespace:** `Sandbox`
+- **Assembly:** `Sandbox.System`
+
+## Methods
+
+### Static methods
+
+- `static System.Void InvokeWithWarning(System.Action action)`
+  - Call an action, swallow any exceptions with a warning
+- `static System.Void InvokeWithWarning(System.Action<T> action, T arg0)`
+- `static System.Void InvokeWithWarning(System.Action<T1,T2> action, T1 arg0, T2 arg1)`
+- `static System.String ToBase36(T i)`
+  - Encode the given number into a Base36 string
+- `static System.Int64 FromBase36(System.String input)`
+  - Decode the Base36 Encoded string into a number
+- `static System.Int32 GetEpoch(System.DateTime d)`
+  - Returns the UNIX time stamp - number of seconds since 1st of January, 1970.
+- `static System.DateTime ToDateTime(System.Int32 seconds)`
+  - Converts UNIX time stamp to a DateTime object.
+  - `seconds`: UNIX time stamp in seconds.
+- `static System.DateTime ToDateTime(System.Int64 seconds)`
+- `static System.String ToRelativeTimeString(System.DateTime dateTime)`
+- `static System.String Humanize(System.DateTime dateTime)`
+  - Convert date into a human readable relative time string.
+- `static System.String Humanize(System.DateTimeOffset dateTime)`
+  - Convert date into a human readable relative time string.
+- `static System.String Humanize(System.TimeOnly dateTime)`
+  - Convert date into a human readable relative time string.
+- `static System.String Humanize(System.DateOnly dateTime)`
+  - Convert date into a human readable relative time string.
+- `static System.String Humanize(System.TimeSpan dateTime, System.Int32 precision)`
+  - Convert date into a human readable relative time string.
+- `static TValue GetOrCreate(System.Collections.Generic.IDictionary<TKey,TValue> dict, TKey key)`
+- `static System.Collections.Generic.Dictionary<TKey,TValue> Clone(System.Collections.Generic.Dictionary<TKey,TValue> dict)`
+- `static System.Threading.Tasks.Task ForEachTaskAsync(System.Collections.Generic.IEnumerable<T> source, System.Func<T,System.Threading.Tasks.Task> body, System.Int32 maxRunning, System.Threading.CancellationToken token)`
+- `static System.Type GetCommonBaseType(System.Collections.Generic.IEnumerable<System.Type> types)`
+- `static T GetPropertyValue(System.Text.Json.Nodes.JsonObject jso, System.String membername, T defaultvalue)`
+  - Get a property value by name, from a JsonObject. Return defaultValue if it's not found.
+- `static System.String FormatBytes(T input, System.Boolean shortFormat)`
+  - Given a number, will format as a memory value, ie 10gb, 4mb
+- `static T Clamp(T input, T min, T max)`
+  - Clamp a number between two values.
+- `static System.String FormatSeconds(System.Int64 secs)`
+  - Formats the given value in format "1w2d3h4m5s". Will not display 0 values.
+  - `secs`: Time to format, in seconds.
+- `static System.String FormatSeconds(System.UInt64 secs)`
+- `static System.String FormatSecondsLong(System.Int64 secs)`
+  - Formats the given value in format "4 weeks, 3 days, 2 hours and 1 minutes".
+Will not display 0 values. Will not display seconds if value is more than 1 hour.
+  - `secs`: Time to format, in seconds.
+- `static System.String FormatSecondsLong(System.UInt64 secs)`
+- `static System.String FormatNumberShort(System.Int64 num)`
+  - "1500" becomes "1,500", "15 000" becomes "15K", "15 000 000" becomes "15KK", etc.
+- `static System.String FormatNumberShort(System.UInt64 num)`
+- `static System.Int32 UnsignedMod(System.Int32 a, System.Int32 b)`
+  - Does what you expected to happen when you did "a % b", that is, handles negative `a` values by returning a positive number from the end.
+- `static System.Int32 BitsSet(System.Int32 i)`
+  - Returns the number of bits set in an integer. This us usually used for flags to count
+the amount of flags set.
+- `static System.String Plural(System.Int32 a, System.String single, System.String plural)`
+  - Return single if 1 else plural
+- `static System.String FormatWithSuffix(System.Int32 num)`
+  - Change 1 to 1st, 2 to 2nd etc
+- `static System.String SizeFormat(System.Int64 bytes)`
+- `static System.String SizeFormat(System.Int32 bytes)`
+- `static System.String KiloFormat(System.Int32 num)`
+  - Format a large number into "1045M", "56K"
+- `static System.String KiloFormat(System.Int64 num)`
+  - Format a large number into "1045M", "56K"
+- `static System.String Humanize(System.TimeSpan timespan, System.Boolean shortVersion, System.Boolean minutes, System.Boolean hours, System.Boolean days)`
+  - Humanize a timespan into "x hours", "x seconds"
+- `static System.Boolean Contains(T value, T flag)`
+- `static T WithFlag(T value, T flag, System.Boolean set)`
+- `static System.Int32 AsInt(T value)`
+- `static System.String ToMetric(System.Int32 input, System.Int32 decimals)`
+  - Convert 1100 to 1.1k
+- `static System.Boolean IsPowerOfTwo(System.Int32 x)`
+  - Return true if the number is a power of two (2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, etc)
+- `static System.String ToMetric(System.Int64 input, System.Int32 decimals)`
+  - Convert 1100 to 1.1k
+- `static System.String ToMetric(System.Double input, System.Int32 decimals)`
+  - Convert 1100 to 1.1k
+- `static System.String ToMetric(System.Single input, System.Int32 decimals)`
+  - Convert 1100 to 1.1k
+- `static System.Double Double(System.Random self, System.Double min, System.Double max)`
+  - Returns a double between min and max
+- `static System.Single Float(System.Random self)`
+  - Returns a random float between 0 and 1
+- `static System.Single Float(System.Random self, System.Single min, System.Single max)`
+  - Returns a random float between min and max
+- `static System.Single Float(System.Random self, System.Single max)`
+  - Returns a random float between 0 and max (or 1)
+- `static System.Double Double(System.Random self, System.Double max)`
+  - Returns a random double between 0 and max (or 1)
+- `static System.Int32 Int(System.Random self, System.Int32 min, System.Int32 max)`
+  - Returns a random int between min and max (inclusive)
+- `static System.Int32 Int(System.Random self, System.Int32 max)`
+  - Returns a random int between 0 and max (inclusive)
+- `static Color Color(System.Random self)`
+  - Returns a random Color
+- `static Rotation Rotation(System.Random self)`
+  - Returns a uniformly random rotation.
+- `static Angles Angles(System.Random self)`
+  - Returns the angles of a uniformly random rotation.
+- `static System.Single Gaussian(System.Random self, System.Single mean, System.Single stdDev)`
+  - Sample from a Gaussian distribution with a given mean and standard deviation.
+- `static Vector2 Gaussian2D(System.Random self, System.Nullable<Vector2> mean, System.Nullable<Vector2> stdDev)`
+- `static Vector3 Gaussian3D(System.Random self, System.Nullable<Vector3> mean, System.Nullable<Vector3> stdDev)`
+- `static Vector4 Gaussian4D(System.Random self, System.Nullable<Vector4> mean, System.Nullable<Vector4> stdDev)`
+- `static Vector2 VectorInSquare(System.Random self, System.Single extents)`
+  - Uniformly samples a 2D position from a square with coordinates in the range -`extents` to +`extents`.
+- `static Vector3 VectorInCube(System.Random self, System.Single extents)`
+  - Uniformly samples a 3D position from a cube with coordinates in the range -`extents` to +`extents`.
+- `static Vector3 VectorInCube(System.Random self, BBox box)`
+  - Uniformly samples a 3D position from a cube
+- `static Vector2 VectorInCircle(System.Random self, System.Single radius)`
+  - Uniformly samples a 2D position from all points with distance at most `radius` from the origin.
+- `static Vector3 VectorInSphere(System.Random self, System.Single radius)`
+  - Uniformly samples a 3D position from all points with distance at most `radius` from the origin.
+- `static T FromArray(System.Random self, T[] array, T defVal)`
+  - Returns a random value in an array
+- `static T FromList(System.Random self, System.Collections.Generic.List<T> array, T defVal)`
+- `static System.Single FloatDeterministic(System.Random self, System.Int32 i)`
+  - Get a random float (0-1) from a pre-calculated list. This is faster, and if you put the same seed in, it will always return the same number.
+The downside is that it only has 8192 variations of floats, but that seem like enough for most things.
+- `static T GetAttributeOfType(System.Enum enumVal)`
+  - Gets an attribute on an enum field value
+  - `enumVal`: The enum value
+  - returns: The attribute of type T that exists on the enum value
+- `static System.Boolean IsBasedOnGenericType(System.Type src, System.Type test)`
+  - Returns if this type is based on a given generic type.
+  - `src`: The type to test.
+  - `test`: The type to test against. Typically this will be something like 
+
+```
+typeof( MyType&lt;&gt; )
+```
+- `static System.Boolean CheckValidationAttributes(System.Reflection.PropertyInfo prop, System.Object obj, System.String[] errors, System.String name)`
+  - Check all `System.ComponentModel.DataAnnotations.ValidationAttribute`s on this property, and get the error messages if there are any.
+  - `prop`: The property whose arguments to test.
+  - `obj`: Instance of the object this property is of.
+  - `errors`: If returned false, these will be the error messages to display.
+  - `name`: Override the property name in error messages.
+  - returns: Returns true if all checks have passed or there is no attributes to test, false if there were errors.
+- `static System.Boolean IsInitOnly(System.Reflection.PropertyInfo property)`
+  - Determine if this property is init-only.
+  - `property`: The property to test.
+  - returns: Returns true if the property is init-only, false otherwise.
+- `static System.String ToSimpleString(System.Type type, System.Boolean includeNamespace)`
+  - Returns this type's name, with nicer formatting for generic types.
+- `static System.String ToSimpleString(System.Reflection.MemberInfo member, System.Boolean includeNamespace)`
+  - Returns this member's name qualified by its declaring type, with nicer formatting for generics.
+- `static System.String ToSimpleString(System.Delegate deleg, System.Boolean includeNamespace)`
+  - Returns a nice name for the given delegate, based on the method that implements it.
+- `static System.String ReadNullTerminatedString(System.IO.Stream stream, System.Int64 offset)`
+  - Read a null terminated string from the stream, at given offset.
+  - `stream`: The stream to read from.
+  - `offset`: Offset where to start reading, from the beginning of the stream.
+- `static System.String QuoteSafe(System.String str, System.Boolean optional)`
+  - Puts quote marks around a string. Internal quotes are backslashed.
+- `static System.String HtmlEncode(System.String str)`
+- `static System.String UrlEncode(System.String str)`
+- `static System.String CollapseWhiteSpace(System.String str)`
+  - Collapse sequences of whitespace into a single whitespace
+- `static System.String CollapseSpacesAndPreserveLines(System.String str)`
+  - Collapse sequences of spaces and tabs into a single space, preserving newlines
+- `static System.String NormalizeFilename(System.String str, System.Boolean enforceInitialSlash)`
+  - Puts a filename into the format /path/filename.ext (from path\FileName.EXT)
+- `static System.String NormalizeFilename(System.String str, System.Boolean enforceInitialSlash, System.Boolean enforceLowerCase, System.Char targetSeparator)`
+  - Puts a filename into the format /path/filename.ext (from path\FileName.EXT)
+- `static System.String WithExtension(System.String path, System.String ext)`
+  - Adds or replaces the extension of `path` to `ext`.
+  - `path`: A file path with or without an extension.
+  - `ext`: A file extension with or without a leading period.
+- `static System.String SimplifyPath(System.String str)`
+  - Gets rid of ../'s (from /path/folder/../file.txt to /path/file.txt)
+- `static System.String[] SplitQuotesStrings(System.String input)`
+  - in  : I am "splitting a" string "because it's fun "
+out : ["I", "am", "splitting a", "string", "because it's fun"]
+- `static System.Single ToFloat(System.String str, System.Single Default)`
+  - Convert to `System.Single`, if not then return `Default`.
+- `static System.Single ToFloatEval(System.String expression, System.Single Default)`
+  - Convert to `System.Single`. Might be a string formula. This is always going to be slower than a call to `Sandbox.SandboxSystemExtensions.ToFloat(System.String,System.Single)`.
+- `static System.Single ToDouble(System.String str, System.Single Default)`
+  - Convert to `System.Double`, if not then return `Default`.
+- `static System.Double ToDoubleEval(System.String expression, System.Double Default)`
+  - Convert to `System.Double`. Might be a string formula. This is always going to be slower than a call to `Sandbox.SandboxSystemExtensions.ToDouble(System.String,System.Single)`.
+- `static System.Decimal ToDecimal(System.String str, System.Decimal Default)`
+  - 128-bit data type that returns sane results for almost any input.
+All other numeric types can cast from this.
+- `static System.UInt32 ToUInt(System.String str, System.Int32 Default)`
+  - Convert to `System.UInt32`, if not then return `Default`.
+- `static System.Int32 ToInt(System.String str, System.Int32 Default)`
+  - Convert to `System.Int32`, if not then return `Default`.
+- `static System.Int32 ToIntEval(System.String expression, System.Int32 Default)`
+  - Convert to `System.Int32`. Might be a string formula. This is always going to be slower than a call to `Sandbox.SandboxSystemExtensions.ToInt(System.String,System.Int32)`.
+- `static System.UInt64 ToULong(System.String str, System.UInt64 Default)`
+  - Convert to `System.UInt64`, if not then return `Default`.
+- `static System.Int64 ToLong(System.String str, System.Int64 Default)`
+  - Convert to `System.Int64`, if not then return `Default`.
+- `static System.Int64 ToLongEval(System.String expression, System.Int64 Default)`
+  - Convert to `System.Int64`. Might be a string formula. This is always going to be slower than a call to `Sandbox.SandboxSystemExtensions.ToLong(System.String,System.Int64)`.
+- `static System.Boolean ToBool(System.String str)`
+  - Try to convert to bool. Inputs can be true, false, yes, no, 0, 1, null (caps insensitive)
+- `static System.String Truncate(System.String str, System.Int32 maxLength, System.String appendage)`
+  - If the string is longer than this amount of characters then truncate it
+If appendage is defined, it will be appended to the end of truncated strings (ie, "..")
+- `static System.String TruncateFilename(System.String str, System.Int32 maxLength, System.String appendage)`
+  - If the string is longer than this amount of characters then truncate it
+If appendage is defined, it will be appended to the end of truncated strings (ie, "..")
+- `static System.Boolean Contains(System.String source, System.String toCheck, System.StringComparison comp)`
+  - An extended Contains which takes a StringComparison.
+- `static System.String Snippet(System.String source, System.String find, System.Int32 padding)`
+  - Given a large string, find all occurrences of a substring and return them with padding.
+This is useful in situations where you're searching for a word in a hug body of text, and
+want to show how it's used without displaying the whole text.
+- `static System.String ToTitleCase(System.String source)`
+  - Convert a variable name to something more user friendly.
+- `static System.String RemoveBadCharacters(System.String str)`
+  - Removes bad, invisible characters that are commonly used to exploit.
+https://en.wikipedia.org/wiki/Zero-width_non-joiner
+- `static System.String Base64Encode(System.String plainText)`
+  - Convert to a base64 encoded string
+- `static System.String Base64Decode(System.String base64EncodedData)`
+  - Convert from a base64 encoded string
+- `static System.Object ToType(System.String str, System.Type t)`
+  - Try to politely convert from a string to another type
+- `static System.Boolean TryToType(System.String str, System.Type t, System.Object Value)`
+  - Try to politely convert from a string to another type
+- `static System.Int32 FastHash(System.String str)`
+  - Generate a 32-bit truncated xxhash3 hash from given string.
+- `static System.UInt64 FastHash64(System.String str)`
+  - Generate a 64-bit xxhash3 hash from given string.
+- `static System.Guid ToGuid(System.String input)`
+  - Take a string and create a deterministic guid.
+- `static System.String Md5(System.String input)`
+  - Get the md5 hash of a string.
+- `static System.String Columnize(System.String str, System.Int32 maxLength, System.Boolean right)`
+  - convert "string" into "string       " or "      string"
+- `static System.Boolean WildcardMatch(System.String str, System.String wildcard)`
+  - Returns true if this string matches a wildcard match. Check is case insensitive.
+Supports '*' (zero or more chars) and '?' (exactly one char) wildcards.
+The backslash character '\' escapes '*' to match it literally.
+- `static System.String TrimQuoted(System.String str, System.Boolean ignoreSurroundingSpaces)`
+  - The string might start and end in quotes ( ", ' ), remove those if that is the case.
+- `static System.Int32 Distance(System.String source, System.String target)`
+  - Return the distance between two strings. Useful for ordering strings by similarity
+- `static System.Boolean IsValidTag(System.String source)`
+  - Is this string a valid Tag. This is a way to check if a string is a valid tag, project wide. So our logic is always the same.
+
+- not null
+- between 1 and 32 chars
+- a-z
+- `static System.String GetFilenameSafe(System.String input)`
+  - Make the passed in string filename safe. This replaces any invalid characters with "_".
+- `static System.String ToRelativeTimeString(System.TimeSpan span)`
+- `static System.String ToRemainingTimeString(System.TimeSpan span)`
+- `static System.Int32 GetManagedSize(System.Type t)`
+  - Get the managed size of a given type. This matches an IL-level sizeof(t), even if it cannot be determined normally in C#.
+Note that `sizeof(t) != Marshal.SizeOf(t)` when t is char or bool.
+- `static System.Collections.Generic.IEnumerable<Vector3> CatmullRomSpline(System.Collections.Generic.IEnumerable<Vector3> points, System.Int32 interpolation)`
+- `static System.Collections.Generic.IEnumerable<Vector3> TcbSpline(System.Collections.Generic.IEnumerable<Vector3> points, System.Int32 interpolation, System.Single tension, System.Single continuity, System.Single bias)`
+- `static System.Boolean IsValid(Sandbox.IValid obj)`
+  - Returns false if `Sandbox.IValid` object is null or if `Sandbox.IValid.IsValid` returns false.

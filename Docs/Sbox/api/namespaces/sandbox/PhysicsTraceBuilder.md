@@ -1,0 +1,115 @@
+# Sandbox.PhysicsTraceBuilder
+
+- **Kind:** struct
+- **Namespace:** `Sandbox`
+- **Assembly:** `Sandbox.Engine`
+
+## Methods
+
+### Instance methods
+
+- `Sandbox.PhysicsTraceBuilder Sphere(System.Single radius, Vector3 from, Vector3 to)`
+  - Casts a sphere from point A to point B.
+- `Sandbox.PhysicsTraceBuilder Sphere(System.Single radius, Ray ray, System.Single distance)`
+  - Casts a sphere from a given position and direction, up to a given distance.
+- `Sandbox.PhysicsTraceBuilder Box(Vector3 extents, Vector3 from, Vector3 to)`
+  - Casts a box from point A to point B.
+- `Sandbox.PhysicsTraceBuilder Box(Vector3 extents, Ray ray, System.Single distance)`
+  - Casts a box from a given position and direction, up to a given distance.
+- `Sandbox.PhysicsTraceBuilder Box(BBox bbox, Vector3 from, Vector3 to)`
+  - Casts a box from point A to point B.
+- `Sandbox.PhysicsTraceBuilder Box(BBox bbox, Ray ray, System.Single distance)`
+  - Casts a box from a given position and direction, up to a given distance.
+- `Sandbox.PhysicsTraceBuilder Capsule(Capsule capsule)`
+  - Casts a capsule
+- `Sandbox.PhysicsTraceBuilder Capsule(Capsule capsule, Vector3 from, Vector3 to)`
+  - Casts a capsule from point A to point B.
+- `Sandbox.PhysicsTraceBuilder Capsule(Capsule capsule, Ray ray, System.Single distance)`
+  - Casts a capsule from a given position and direction, up to a given distance.
+- `Sandbox.PhysicsTraceBuilder Cylinder(System.Single height, System.Single radius)`
+  - Casts a cylinder
+- `Sandbox.PhysicsTraceBuilder Cylinder(System.Single height, System.Single radius, Vector3 from, Vector3 to)`
+  - Casts a cylinder from point A to point B.
+- `Sandbox.PhysicsTraceBuilder Cylinder(System.Single height, System.Single radius, Ray ray, System.Single distance)`
+  - Casts a cylinder from a given position and direction, up to a given distance.
+- `Sandbox.PhysicsTraceBuilder Ray(Vector3 from, Vector3 to)`
+  - Casts a ray from point A to point B.
+- `Sandbox.PhysicsTraceBuilder Ray(Ray ray, System.Single distance)`
+  - Casts a ray from a given position and direction, up to a given distance.
+- `Sandbox.PhysicsTraceBuilder Body(Sandbox.PhysicsBody body, Vector3 to)`
+  - Casts a PhysicsBody from its current position and rotation to desired end point.
+- `Sandbox.PhysicsTraceBuilder Body(Sandbox.PhysicsBody body, Transform from, Vector3 to)`
+  - Casts a PhysicsBody from a position and rotation to desired end point.
+- `Sandbox.PhysicsTraceBuilder Sweep(Sandbox.PhysicsBody body, Transform from, Transform to)`
+  - Sweeps each <see cref="T:Sandbox.PhysicsShape">PhysicsShape</see> of given PhysicsBody and returns the closest collision. Does not support Mesh PhysicsShapes.
+Basically 'hull traces' but with physics shapes.
+Same as tracing a body but allows rotation to change during the sweep.
+- `Sandbox.PhysicsTraceBuilder Sweep(Sandbox.PhysicsBody body, Transform to)`
+  - Creates a Trace.Sweep using the <see cref="T:Sandbox.PhysicsBody">PhysicsBody</see>'s position as the starting position.
+- `Sandbox.PhysicsTraceBuilder FromTo(Vector3 from, Vector3 to)`
+  - Sets the start and end positions of the trace request
+- `Sandbox.PhysicsTraceBuilder FromTo(Transform from, Vector3 to)`
+  - Sets the start transform and end position of the trace request
+- `Sandbox.PhysicsTraceBuilder Rotated(Rotation rotation)`
+  - Sets the start rotation of the trace request
+- `Sandbox.PhysicsTraceBuilder HitTriggers()`
+  - Include triggers in the trace
+- `Sandbox.PhysicsTraceBuilder HitTriggersOnly()`
+  - Only hit triggers
+- `Sandbox.PhysicsTraceBuilder IgnoreStatic()`
+  - Ignore static objects in the trace
+- `Sandbox.PhysicsTraceBuilder IgnoreDynamic()`
+  - Ignore dynamic objects in the trace
+- `Sandbox.PhysicsTraceBuilder IgnoreKeyframed()`
+  - Ignore keyframed objects in the trace
+- `Sandbox.PhysicsTraceBuilder UseHitPosition(System.Boolean enabled)`
+  - Compute hit position.
+- `Sandbox.PhysicsTraceBuilder Size(BBox hull)`
+  - Makes this trace an axis aligned box of given size. Extracts mins and maxs from the Bounding Box.
+- `Sandbox.PhysicsTraceBuilder Size(Vector3 size)`
+  - Makes this trace an axis aligned box of given size. Calculates mins and maxs by assuming given size is (maxs-mins) and the center is in the middle.
+- `Sandbox.PhysicsTraceBuilder Size(Vector3 mins, Vector3 maxs)`
+  - Makes this trace an axis aligned box of given size.
+- `Sandbox.PhysicsTraceBuilder Radius(System.Single radius)`
+  - Makes this trace a sphere of given radius.
+- `Sandbox.PhysicsTraceResult Run()`
+  - Run the trace and return the result. The result will return the first hit.
+- `Sandbox.PhysicsTraceResult[] RunAll()`
+  - Run the trace and return all hits as a result.
+- `Sandbox.PhysicsTraceResult RunAgainstCapsule(Capsule capsule, Transform transform)`
+  - Traces only against the given capsule at the specified transform.
+  - `capsule`: The capsule to test against.
+  - `transform`: Transform applied to the capsule.
+  - returns: The trace result.
+- `Sandbox.PhysicsTraceResult RunAgainstSphere(Sandbox.Sphere sphere, Transform transform)`
+  - Traces only against the given sphere at the specified transform.
+  - `sphere`: The sphere to test against.
+  - `transform`: Transform applied to the sphere.
+  - returns: The trace result.
+- `Sandbox.PhysicsTraceResult RunAgainstBBox(BBox box, Transform transform)`
+  - Traces only against the given bounding box at the specified transform.
+  - `box`: The bounding box to test against.
+  - `transform`: Transform applied to the box.
+  - returns: The trace result.
+- `Sandbox.PhysicsTraceBuilder WithTag(Sandbox.StringToken ident)`
+  - Only return entities with this tag. Subsequent calls to this will add multiple requirements
+and they'll all have to be met (ie, the entity will need all tags).
+- `Sandbox.PhysicsTraceBuilder WithAllTags(System.String[] tags)`
+  - Only return with all of these tags
+- `Sandbox.PhysicsTraceBuilder WithAllTags(Sandbox.ITagSet tags)`
+  - Only return with all of these tags
+- `Sandbox.PhysicsTraceBuilder WithAnyTags(System.String[] tags)`
+  - Only return entities with any of these tags
+- `Sandbox.PhysicsTraceBuilder WithAnyTags(Sandbox.ITagSet tags)`
+  - Only return with any of these tags
+- `Sandbox.PhysicsTraceBuilder WithoutTag(Sandbox.StringToken tag)`
+  - Only return without this tag
+- `Sandbox.PhysicsTraceBuilder WithoutTags(System.String[] tags)`
+  - Only return without any of these tags
+- `Sandbox.PhysicsTraceBuilder WithoutTags(Sandbox.ITagSet tags)`
+  - Only return without any of these tags
+- `Sandbox.PhysicsTraceBuilder WithCollisionRules(System.String tag, System.Boolean asTrigger)`
+  - Use the collision rules of the given tag.
+  - `tag`: Which tag this trace will adopt the collision rules of.
+  - `asTrigger`: If true, trace against triggers only. Otherwise, trace for collisions (default).
+- `Sandbox.PhysicsTraceBuilder WithCollisionRules(System.Collections.Generic.IEnumerable<System.String> tags, System.Boolean asTrigger)`
