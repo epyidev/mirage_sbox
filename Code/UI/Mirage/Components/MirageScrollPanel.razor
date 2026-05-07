@@ -1,0 +1,184 @@
+@*
+    @author Epyi
+
+    Scrollable container with a visible draggable scrollbar on the right.
+    Native click-and-drag-on-content scrolling is disabled
+    (`CanDragScroll = false` on the inner viewport), so the only way to
+    scroll besides the mouse wheel is by dragging the thumb.
+*@
+@using Sandbox
+@using Sandbox.UI
+@using Sandbox.Mirage.UI
+@inherits Panel
+@namespace Sandbox
+
+<root class="mirage-scroll mirage-scroll--@(Direction.ToString().ToLower())">
+
+    <MirageScrollViewport class="mirage-scroll-viewport" @ref="_viewport">
+        @Body
+    </MirageScrollViewport>
+
+    <div class="mirage-scroll-track" @ref="_track">
+        <MirageScrollThumb @ref="_thumb"
+                           class="mirage-scroll-thumb"
+                           OnDragStartCallback="@OnThumbDragStart"
+                           OnDragEndCallback="@OnThumbDragEnd" />
+    </div>
+
+</root>
+
+@code
+{
+    public enum ScrollDirection { Vertical, Horizontal, Both }
+
+    [Parameter] public ScrollDirection Direction { get; set; } = ScrollDirection.Vertical;
+    [Parameter] public RenderFragment Body { get; set; }
+
+    private MirageScrollViewport _viewport;
+    private Panel _track;
+    private MirageScrollThumb _thumb;
+
+    private bool _dragging;
+    private float _dragStartMouseY;
+    private float _dragStartScrollY;
+
+    private float _thumbTopPx;
+    private float _thumbHeightPx;
+    private float _trackHeightPx;
+    private bool _hasOverflow;
+
+    public override void Tick()
+    {
+        base.Tick();
+        if ( _viewport is null || !_viewport.IsValid() ) return;
+
+        // Disable engine drag-on-content scrolling. We keep ScrollVelocity
+        // alive when not dragging so the engine's natural inertia smooths
+        // mouse-wheel scrolling; we only kill it during a thumb drag, where
+        // it would fight the explicit position we're forcing.
+        _viewport.CanDragScroll = false;
+
+        // Compute layout-derived metrics only when not dragging; during a
+        // drag we lock to the cached values to avoid a feedback loop where
+        // scrolling shifts the children, shifts the metrics, shifts the
+        // clamp, and the mouse-below-viewport bounces forever.
+        if ( !_dragging )
+        {
+            UpdateThumbMetrics();
+        }
+        else
+        {
+            _viewport.ScrollVelocity = Vector2.Zero;
+            RefreshThumbPositionFromScroll();
+            UpdateScrollFromDrag();
+            RefreshThumbPositionFromScroll();
+        }
+
+        ApplyThumbStyle();
+    }
+
+    private void RefreshThumbPositionFromScroll()
+    {
+        if ( !_hasOverflow ) return;
+        var maxThumbTop = MathF.Max( 0f, _trackHeightPx - _thumbHeightPx );
+        var scrollFraction = _maxScrollOffsetY > 0f ? _viewport.ScrollOffset.y / _maxScrollOffsetY : 0f;
+        _thumbTopPx = MathX.Clamp( scrollFraction, 0f, 1f ) * maxThumbTop;
+    }
+
+    private float _maxScrollOffsetY;
+
+    private void UpdateThumbMetrics()
+    {
+        if ( _track is null || !_track.IsValid() ) return;
+
+        // Work entirely in UI pixels, the unit Style.Top / Style.Height accept
+        // and the unit ScrollOffset reports. Box.Rect is in screen pixels, so
+        // we multiply it by ScaleFromScreen to bring it into the same space.
+        var scale = _viewport.ScaleFromScreen;
+        _trackHeightPx = _track.Box.Rect.Height * scale;
+        var viewportRect = _viewport.Box.Rect;
+        var viewportHeight = viewportRect.Height * scale;
+        var viewportTop = viewportRect.Top * scale;
+        var scrollOffset = _viewport.ScrollOffset.y;
+
+        // Derive content height from the children's actual layout. Each
+        // child's bottom in content space is
+        // `(child.Bottom - viewport.Top) * scale + scrollOffset`.
+        float contentBottom = 0f;
+        foreach ( var child in _viewport.Children )
+        {
+            if ( !child.IsValid() ) continue;
+            var childBottom = child.Box.Rect.Bottom * scale - viewportTop + scrollOffset;
+            if ( childBottom > contentBottom ) contentBottom = childBottom;
+        }
+
+        var contentHeight = contentBottom;
+        var maxScrollOffsetY = MathF.Max( 0f, contentHeight - viewportHeight );
+
+        _hasOverflow = maxScrollOffsetY > 0.5f && viewportHeight > 0f && contentHeight > 0f;
+
+        if ( !_hasOverflow )
+        {
+            _thumbHeightPx = 0f;
+            _thumbTopPx = 0f;
+            _maxScrollOffsetY = 0f;
+            return;
+        }
+
+        var thumbFraction = MathX.Clamp( viewportHeight / contentHeight, 0.08f, 1f );
+        _thumbHeightPx = MathF.Max( 24f, _trackHeightPx * thumbFraction );
+
+        var maxThumbTop = MathF.Max( 0f, _trackHeightPx - _thumbHeightPx );
+        var scrollFraction = maxScrollOffsetY > 0f ? scrollOffset / maxScrollOffsetY : 0f;
+        _thumbTopPx = MathX.Clamp( scrollFraction, 0f, 1f ) * maxThumbTop;
+
+        _maxScrollOffsetY = maxScrollOffsetY;
+    }
+
+    private void ApplyThumbStyle()
+    {
+        if ( _thumb is null || !_thumb.IsValid() ) return;
+
+        if ( !_hasOverflow )
+        {
+            _thumb.Style.Opacity = 0f;
+            return;
+        }
+
+        _thumb.Style.Opacity = 1f;
+        _thumb.Style.Top = Length.Pixels( _thumbTopPx );
+        _thumb.Style.Height = Length.Pixels( _thumbHeightPx );
+    }
+
+    private void OnThumbDragStart()
+    {
+        if ( _viewport is null ) return;
+        _dragging = true;
+        _dragStartMouseY = Mouse.Position.y;
+        _dragStartScrollY = _viewport.ScrollOffset.y;
+    }
+
+    private void OnThumbDragEnd()
+    {
+        _dragging = false;
+    }
+
+    private void UpdateScrollFromDrag()
+    {
+        if ( _viewport is null || !_viewport.IsValid() ) return;
+        if ( _trackHeightPx <= 0f || _thumbHeightPx <= 0f ) return;
+        if ( _maxScrollOffsetY <= 0f ) return;
+
+        var maxThumbTop = MathF.Max( 1f, _trackHeightPx - _thumbHeightPx );
+
+        // Mouse.Position is in screen pixels; convert to UI pixels so the
+        // delta matches the same space as _trackHeightPx and _maxScrollOffsetY.
+        var mouseDeltaUI = (Mouse.Position.y - _dragStartMouseY) * _track.ScaleFromScreen;
+        var newScrollY = _dragStartScrollY + (mouseDeltaUI / maxThumbTop) * _maxScrollOffsetY;
+
+        _viewport.ScrollOffset = new Vector2(
+            _viewport.ScrollOffset.x,
+            MathX.Clamp( newScrollY, 0f, _maxScrollOffsetY )
+        );
+    }
+}

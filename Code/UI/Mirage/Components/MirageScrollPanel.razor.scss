@@ -1,0 +1,69 @@
+// @author Epyi
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MirageScrollPanel
+{
+    flex-direction: row;
+    align-items: stretch;
+    position: relative;
+
+    .mirage-scroll-viewport
+    {
+        flex-direction: column;
+        flex-grow: 1;
+        min-width: 0;
+        min-height: 0;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    .mirage-scroll-track
+    {
+        width: 10px;
+        background-color: rgba( 0, 0, 0, 0.4 );
+        position: relative;
+        flex-shrink: 0;
+        margin-left: $mirage-space-1;
+
+        .mirage-scroll-thumb
+        {
+            position: absolute;
+            left: 1px;
+            right: 1px;
+            background-color: $mirage-border-strong;
+            cursor: pointer;
+            transition: background-color $mirage-transition-fast;
+
+            &:hover
+            {
+                background-color: $mirage-border-accent;
+            }
+        }
+    }
+
+    &.mirage-scroll--horizontal
+    {
+        flex-direction: column;
+
+        .mirage-scroll-viewport
+        {
+            overflow-x: scroll;
+            overflow-y: hidden;
+        }
+
+        .mirage-scroll-track
+        {
+            width: auto;
+            height: 10px;
+            margin-left: 0;
+            margin-top: $mirage-space-1;
+
+            .mirage-scroll-thumb
+            {
+                left: auto;
+                top: 1px;
+                bottom: 1px;
+            }
+        }
+    }
+}
