@@ -108,7 +108,7 @@ Tunables use `[ConVar( "sb.something", ConVarFlags... )]` on a static property; 
 The s&box code sandbox blocks raw SQL drivers and sockets, so the gamemode cannot speak SQL directly. Persistent state for RP features (money, inventory, position, jobs, properties) lives behind an HTTP API in `Api/`, written in Node.js + TypeScript with Fastify and MariaDB. The s&box host calls it via `Sandbox.Http`. The API is meant to run as a sidecar process next to the s&box dedicated server.
 
 - **Not in the gamemode build.** `Code/mirage.csproj` only scans `Code/`, so `Api/` is invisible to the s&box compiler. Publishing the gamemode does not bundle `Api/` either (the `Resources` globs in `mirage.sbproj` do not match it).
-- **Stack.** Node 20+, TypeScript strict, Fastify 5, `fastify-type-provider-zod`, `mysql2/promise`, plain SQL migrations. No ORM. Repository, service, route layers separated.
+- **Stack.** Node 20+, TypeScript strict, Fastify 5, `fastify-type-provider-zod`, `mysql2/promise`, single `import.sql` for the schema (no migration runner). No ORM. Repository, service, route layers separated.
 - **Auth.** Single shared bearer token (`API_BEARER_TOKEN` env var). The s&box host sends `Authorization: Bearer <token>` on every call. Constant-time comparison. The API is meant to bind on a private interface (`127.0.0.1`) and stay behind the firewall.
 - **Idempotency.** Mutating endpoints accept a `transactionId` UUID. The `transactions` table primary-keys on it, so replays after a network blip return the original outcome instead of double-charging.
 - **Atomicity.** Money, inventory, and audit writes happen inside a single MariaDB transaction with `SELECT ... FOR UPDATE` on the player row to serialise concurrent requests for the same player.
