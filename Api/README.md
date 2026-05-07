@@ -9,7 +9,14 @@ The s&box gamemode runs inside a managed code sandbox that blocks raw socket acc
 [ Client s&box ] <-- RPC --> [ Host s&box (sandboxed) ] <-- HTTP --> [ Mirage API (this) ] <-- SQL --> [ MariaDB ]
 ```
 
-The API is the source of truth for persistent state: identity, money, inventory, last position. The host holds an in-memory cache of an online player's profile, syncs it back via the API on transactions, and flushes on disconnect.
+The API is the source of truth for persistent state. The model splits OOC and IC concerns:
+
+- A `players` row carries OOC identity tied to a Steam account: display name, IP history.
+- A `characters` row is one RP character owned by a player, indexed by `slot` so a single Steam account can keep several saved characters.
+- `accounts` is one row per wallet per character (`character_id`, `account_id`, `amount`). Defaults `cash` and `bank` are seeded on character creation; new wallet ids can be added on the fly through the API.
+- `character_inventory` is one row per occupied slot per character (`character_id`, `slot`, `item_id`, `quantity`, optional `metadata` JSON).
+
+The host holds an in-memory cache of an active character, syncs it back via the API as gameplay state changes, and flushes on disconnect.
 
 ## Stack
 
@@ -30,14 +37,14 @@ Api/
     db/pool.ts            mysql2 connection pool plus withTransaction helper.
     middleware/auth.ts    Bearer-token auth hook.
     repositories/         One file per table, raw SQL behind typed methods.
-    routes/               Fastify route plugins (health, profiles, transactions).
+    routes/               Fastify route plugins (health, players, characters).
     schemas/              Shared Zod schemas.
-    services/             Business logic for transactional flows.
+    services/             Cross-repo flows that need a SQL transaction.
     app.ts                Builds the Fastify instance.
     server.ts             Entry point, wires signals and listen.
 ```
 
-The repository layer wraps SQL queries. The service layer composes them inside a SQL transaction. The route layer maps HTTP to services and handles validation. No layer skips the next.
+The repository layer wraps SQL queries. The service layer composes them inside a SQL transaction when more than one table is involved. The route layer maps HTTP to repos and services, and handles validation. No layer skips the next.
 
 ## Requirements
 
@@ -104,14 +111,31 @@ The token must match `API_BEARER_TOKEN` from `.env` byte for byte (constant-time
 
 ## Endpoints
 
-| Method | Path                    | Purpose                                              |
-|--------|-------------------------|------------------------------------------------------|
-| GET    | `/health`               | Liveness probe, no auth, also pings the database.    |
-| GET    | `/profiles/:steamId`    | Load full player profile, creates the row if missing.|
-| PUT    | `/profiles/:steamId`    | Save snapshot (display name, money, last position).  |
-| POST   | `/transactions/buy`     | Atomic purchase: debit money, credit inventory.      |
+All character data sits under the owning player's path. Every character endpoint refuses to return or mutate a character whose `steam_id` does not match the URL, so a steam id cannot probe character ids that belong to someone else.
 
-All write endpoints accept a `transactionId` (UUID) for idempotency: replays return the original outcome without double effect.
+OOC (player-level):
+
+| Method | Path                                  | Purpose                                                            |
+|--------|---------------------------------------|--------------------------------------------------------------------|
+| GET    | `/health`                             | Liveness probe, no auth, also pings the database.                  |
+| GET    | `/players/:steamId`                   | Load OOC profile (display name, IP history). Creates the row if missing. |
+| PUT    | `/players/:steamId`                   | Update OOC fields: `displayName`, `recordIp` (appends or refreshes the timestamp on the entry). |
+| GET    | `/players/:steamId/characters`        | List the player's character summaries.                             |
+| POST   | `/players/:steamId/characters`        | Create a character on a free `slot`. Returns 409 if the slot is taken. |
+
+IC (character-level):
+
+| Method | Path                                                                | Purpose                                                                                  |
+|--------|---------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| GET    | `/players/:steamId/characters/:characterId`                         | Full character bundle: summary plus accounts plus inventory.                             |
+| PUT    | `/players/:steamId/characters/:characterId`                         | Patch character fields (currently `lastPosition`).                                       |
+| DELETE | `/players/:steamId/characters/:characterId`                         | Delete the character. Cascades to its accounts and inventory rows.                       |
+| PUT    | `/players/:steamId/characters/:characterId/accounts/:accountId`     | Set the balance of a single wallet (`{ amount }`). Creates the wallet row if missing.    |
+| DELETE | `/players/:steamId/characters/:characterId/accounts/:accountId`     | Remove a wallet row.                                                                     |
+| PUT    | `/players/:steamId/characters/:characterId/inventory/:slot`         | Upsert the item in a slot (`itemId`, `quantity`, optional `metadata` JSON).              |
+| DELETE | `/players/:steamId/characters/:characterId/inventory/:slot`         | Empty the slot.                                                                          |
+
+Idempotency-by-design: `POST /players/:steamId/characters` is keyed on `(steam_id, slot)` so a replay returns 409 instead of creating a duplicate. All other writes are slot or row-keyed upserts, so retries converge.
 
 ## Schema changes
 

@@ -12,7 +12,14 @@ export const steamIdSchema = z
 	.string()
 	.regex(/^\d{17}$/, 'steamId must be a 17-digit SteamID64 string');
 
-export const transactionIdSchema = z.string().uuid('transactionId must be a UUID string');
+/**
+ * Auto-incrementing character id. The pool is configured with
+ * `bigNumberStrings: true`, so the driver returns BIGINT columns as strings.
+ * We keep the value as a string end-to-end so it round-trips safely past 2^53.
+ */
+export const characterIdSchema = z
+	.string()
+	.regex(/^\d+$/, 'characterId must be a positive integer string');
 
 export const positionSchema = z.object({
 	x: z.number().finite(),

@@ -11,9 +11,9 @@ import {
 } from 'fastify-type-provider-zod';
 
 import { env } from './config/env.js';
+import { characterRoutes } from './routes/characters.js';
 import { healthRoutes } from './routes/health.js';
-import { profileRoutes } from './routes/profiles.js';
-import { transactionRoutes } from './routes/transactions.js';
+import { playerRoutes } from './routes/players.js';
 
 export async function buildApp(): Promise<FastifyInstance> {
 	const app = Fastify({
@@ -31,8 +31,8 @@ export async function buildApp(): Promise<FastifyInstance> {
 	await app.register(sensible);
 
 	await app.register(healthRoutes);
-	await app.register(profileRoutes);
-	await app.register(transactionRoutes);
+	await app.register(playerRoutes);
+	await app.register(characterRoutes);
 
 	return app;
 }
