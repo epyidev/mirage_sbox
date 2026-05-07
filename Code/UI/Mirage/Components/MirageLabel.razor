@@ -1,0 +1,36 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@inherits Panel
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-label mirage-label--@(Variant.ToString().ToLower()) mirage-label--@(Color.ToString().ToLower()) mirage-label--align-@(Align.ToString().ToLower())">
+    @if ( !string.IsNullOrEmpty( Text ) )
+    {
+        <Label Text="@Text" />
+    }
+</root>
+
+@code
+{
+    public enum LabelVariant
+    {
+        Display,
+        Title,
+        Heading,
+        Subtitle,
+        Body,
+        Caption,
+        Eyebrow
+    }
+
+    public enum LabelColor { Primary, Secondary, Muted, Accent, Danger, Success, Warning, Info }
+    public enum LabelAlign { Start, Center, End }
+
+    [Parameter] public string Text { get; set; }
+    [Parameter] public LabelVariant Variant { get; set; } = LabelVariant.Body;
+    [Parameter] public LabelColor Color { get; set; } = LabelColor.Primary;
+    [Parameter] public LabelAlign Align { get; set; } = LabelAlign.Start;
+}

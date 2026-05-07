@@ -1,0 +1,22 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@inherits Panel
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-badge mirage-badge--@(Variant.ToString().ToLower())">
+    @if ( !string.IsNullOrEmpty( Text ) )
+    {
+        <Label Text="@Text" />
+    }
+</root>
+
+@code
+{
+    public enum BadgeVariant { Default, Info, Success, Warning, Danger, Outline }
+
+    [Parameter] public string Text { get; set; }
+    [Parameter] public BadgeVariant Variant { get; set; } = BadgeVariant.Default;
+}

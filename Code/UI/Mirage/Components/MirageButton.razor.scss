@@ -1,0 +1,83 @@
+// @author Epyi
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MirageButton
+{
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: $mirage-space-2;
+    border-radius: $mirage-radius;
+    border: $mirage-border-width solid transparent;
+    @include mirage-clickable;
+
+    .text { font-weight: 600; letter-spacing: $mirage-letter-wide; text-transform: uppercase; }
+    .icon { font-size: $mirage-font-md; line-height: 1em; }
+
+    // ----- Sizes -----
+    &.mirage-button--small
+    {
+        padding: $mirage-space-1 $mirage-space-3;
+        .text { font-size: $mirage-font-xs; }
+        .icon { font-size: $mirage-font-sm; }
+    }
+    &.mirage-button--medium
+    {
+        padding: $mirage-space-2 $mirage-space-4;
+        .text { font-size: $mirage-font-sm; }
+    }
+    &.mirage-button--large
+    {
+        padding: $mirage-space-3 $mirage-space-6;
+        .text { font-size: $mirage-font-md; letter-spacing: $mirage-letter-xwide; }
+        .icon { font-size: $mirage-font-lg; }
+    }
+
+    &.mirage-button--full { width: 100%; }
+
+    // ----- Variants -----
+    &.mirage-button--primary
+    {
+        background-color: $mirage-text-primary;
+        border-color: $mirage-text-primary;
+        .text, .icon { color: $mirage-text-on-accent; }
+
+        &:hover { background-color: rgba( 255, 255, 255, 0.85 ); }
+        &:active { background-color: rgba( 255, 255, 255, 0.75 ); }
+    }
+
+    &.mirage-button--secondary
+    {
+        background-color: $mirage-bg-input;
+        border-color: $mirage-border;
+        .text, .icon { color: $mirage-text-primary; }
+
+        &:hover { background-color: $mirage-bg-hover; border-color: $mirage-border-strong; }
+        &:active { background-color: $mirage-bg-active; }
+    }
+
+    &.mirage-button--ghost
+    {
+        background-color: transparent;
+        border-color: transparent;
+        .text, .icon { color: $mirage-text-secondary; }
+
+        &:hover { background-color: $mirage-bg-hover; .text, .icon { color: $mirage-text-primary; } }
+        &:active { background-color: $mirage-bg-active; }
+    }
+
+    &.mirage-button--danger
+    {
+        background-color: rgba( 220, 80, 80, 0.18 );
+        border-color: $mirage-border-danger;
+        .text, .icon { color: $mirage-danger; }
+
+        &:hover { background-color: rgba( 220, 80, 80, 0.30 ); .text, .icon { color: rgba( 255, 200, 200, 1.0 ); } }
+        &:active { background-color: rgba( 220, 80, 80, 0.45 ); }
+    }
+
+    &.mirage-button--disabled
+    {
+        @include mirage-disabled;
+    }
+}

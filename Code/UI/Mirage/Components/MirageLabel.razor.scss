@@ -1,0 +1,54 @@
+// @author Epyi
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MirageLabel
+{
+    flex-shrink: 0;
+
+    Label
+    {
+        white-space: pre-wrap;
+    }
+
+    &.mirage-label--display
+    {
+        Label { font-size: $mirage-font-display; font-weight: 800; line-height: 1em; letter-spacing: $mirage-letter-tight; }
+    }
+    &.mirage-label--title
+    {
+        Label { font-size: $mirage-font-xxl; font-weight: 700; line-height: 1.05em; }
+    }
+    &.mirage-label--heading
+    {
+        Label { font-size: $mirage-font-xl; font-weight: 700; line-height: 1.1em; }
+    }
+    &.mirage-label--subtitle
+    {
+        Label { font-size: $mirage-font-lg; font-weight: 600; line-height: 1.2em; }
+    }
+    &.mirage-label--body
+    {
+        Label { font-size: $mirage-font-md; font-weight: 400; line-height: 1.35em; }
+    }
+    &.mirage-label--caption
+    {
+        Label { font-size: $mirage-font-sm; font-weight: 400; color: $mirage-text-secondary; line-height: 1.3em; }
+    }
+    &.mirage-label--eyebrow
+    {
+        Label { font-size: $mirage-font-xs; font-weight: 700; text-transform: uppercase; letter-spacing: $mirage-letter-xwide; color: $mirage-text-secondary; }
+    }
+
+    &.mirage-label--primary    { Label { color: $mirage-text-primary; } }
+    &.mirage-label--secondary  { Label { color: $mirage-text-secondary; } }
+    &.mirage-label--muted      { Label { color: $mirage-text-muted; } }
+    &.mirage-label--accent     { Label { color: $mirage-border-accent; } }
+    &.mirage-label--danger     { Label { color: $mirage-danger; } }
+    &.mirage-label--success    { Label { color: $mirage-success; } }
+    &.mirage-label--warning    { Label { color: $mirage-warning; } }
+    &.mirage-label--info       { Label { color: $mirage-info; } }
+
+    &.mirage-label--align-start  { Label { text-align: left; } }
+    &.mirage-label--align-center { Label { text-align: center; } }
+    &.mirage-label--align-end    { Label { text-align: right; } }
+}

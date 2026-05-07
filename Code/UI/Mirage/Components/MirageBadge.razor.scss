@@ -1,0 +1,62 @@
+// @author Epyi
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MirageBadge
+{
+    flex-direction: row;
+    align-items: center;
+    padding: 2px $mirage-space-2;
+    border-radius: $mirage-radius;
+    border: 1px solid transparent;
+
+    Label
+    {
+        font-size: $mirage-font-xs;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: $mirage-letter-wide;
+        line-height: 1.2em;
+    }
+
+    &.mirage-badge--default
+    {
+        background-color: $mirage-bg-active;
+        border-color: $mirage-border;
+        Label { color: $mirage-text-primary; }
+    }
+
+    &.mirage-badge--info
+    {
+        background-color: rgba( 110, 200, 255, 0.18 );
+        border-color: rgba( 110, 200, 255, 0.45 );
+        Label { color: $mirage-info; }
+    }
+
+    &.mirage-badge--success
+    {
+        background-color: rgba( 100, 200, 130, 0.18 );
+        border-color: rgba( 100, 200, 130, 0.45 );
+        Label { color: $mirage-success; }
+    }
+
+    &.mirage-badge--warning
+    {
+        background-color: rgba( 240, 190, 80, 0.18 );
+        border-color: rgba( 240, 190, 80, 0.45 );
+        Label { color: $mirage-warning; }
+    }
+
+    &.mirage-badge--danger
+    {
+        background-color: rgba( 220, 80, 80, 0.18 );
+        border-color: $mirage-border-danger;
+        Label { color: $mirage-danger; }
+    }
+
+    &.mirage-badge--outline
+    {
+        background-color: transparent;
+        border-color: $mirage-border-strong;
+        Label { color: $mirage-text-primary; }
+    }
+}
