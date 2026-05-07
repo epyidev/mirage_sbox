@@ -12,82 +12,77 @@
 
     <div class="backdrop"></div>
 
-    <div class="frame">
+    <div class="strip">
 
-        <MirageHeader Title="Sélection du personnage" Closable="@(false)" />
+        <div class="strip-title">
+            <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)"
+                         Color="@(MirageLabel.LabelColor.Secondary)"
+                         Text="Sélection du personnage" />
+        </div>
 
-        <MirageScrollPanel>
-            <Body>
+        @if ( !MirageClientCache.HasSnapshot )
+        {
+            <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)"
+                         Color="@(MirageLabel.LabelColor.Secondary)"
+                         Align="@(MirageLabel.LabelAlign.Center)"
+                         Text="Chargement des personnages..." />
+        }
+        else if ( MirageClientCache.Characters.Count == 0 )
+        {
+            <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)"
+                         Color="@(MirageLabel.LabelColor.Warning)"
+                         Align="@(MirageLabel.LabelAlign.Center)"
+                         Text="Aucun personnage. Clique sur la carte « + » pour en créer un." />
+        }
 
-                @if ( !MirageClientCache.HasSnapshot )
+        @if ( MirageClientCache.HasSnapshot )
+        {
+            <div class="cards">
+
+                @foreach ( var character in MirageClientCache.Characters )
                 {
-                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)"
-                                 Color="@(MirageLabel.LabelColor.Secondary)"
-                                 Align="@(MirageLabel.LabelAlign.Center)"
-                                 Text="Chargement des personnages..." />
-                }
-                else
-                {
-                    <div class="cards">
-                        @foreach ( var character in MirageClientCache.Characters )
-                        {
-                            var c = character;
-                            <div class="card character" @onclick="@(() => OnSelect( c ))">
-                                <MirageBadge Text="@($"Slot {c.Slot}")" Variant="@(MirageBadge.BadgeVariant.Outline)" />
-                                <MirageLabel Variant="@(MirageLabel.LabelVariant.Heading)" Text="@($"{c.FirstName} {c.LastName}")" />
-                                <div class="meta">
-                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)"
-                                                 Color="@(MirageLabel.LabelColor.Secondary)"
-                                                 Text="@(c.Gender == "f" ? "Femme" : "Homme")" />
-                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)"
-                                                 Color="@(MirageLabel.LabelColor.Secondary)"
-                                                 Text="@($"{c.HeightCm} cm")" />
-                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)"
-                                                 Color="@(MirageLabel.LabelColor.Muted)"
-                                                 Text="@($"Né(e) le {c.BirthDate}")" />
-                                </div>
-                                <div class="card-cta">
-                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)"
-                                                 Color="@(MirageLabel.LabelColor.Accent)"
-                                                 Text="Jouer →" />
-                                </div>
-                            </div>
-                        }
-
-                        @if ( CanCreateMore() )
-                        {
-                            <div class="card add-new" @onclick="@OpenCreateForm">
-                                <Label class="plus" Text="+" />
-                                <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)"
-                                             Color="@(MirageLabel.LabelColor.Secondary)"
-                                             Text="Nouveau personnage" />
-                            </div>
-                        }
+                    var c = character;
+                    <div class="card character" @onclick="@(() => OnSelect( c ))">
+                        <MirageLabel Variant="@(MirageLabel.LabelVariant.Heading)" Text="@($"{c.FirstName} {c.LastName}")" />
+                        <div class="meta">
+                            <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)"
+                                         Color="@(MirageLabel.LabelColor.Secondary)"
+                                         Text="@(c.Gender == "f" ? "Femme" : "Homme")" />
+                            <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)"
+                                         Color="@(MirageLabel.LabelColor.Secondary)"
+                                         Text="@($"{c.HeightCm} cm")" />
+                            <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)"
+                                         Color="@(MirageLabel.LabelColor.Muted)"
+                                         Text="@($"Né(e) le {c.BirthDate}")" />
+                        </div>
+                        <div class="card-cta">
+                            <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)"
+                                         Color="@(MirageLabel.LabelColor.Accent)"
+                                         Text="Jouer →" />
+                        </div>
                     </div>
-
-                    @if ( MirageClientCache.Characters.Count == 0 )
-                    {
-                        <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)"
-                                     Color="@(MirageLabel.LabelColor.Warning)"
-                                     Align="@(MirageLabel.LabelAlign.Center)"
-                                     Text="Aucun personnage. Clique sur la carte « + » pour en créer un." />
-                    }
                 }
 
-                @if ( !string.IsNullOrEmpty( MirageClientCache.LastError ) )
+                @if ( CanCreateMore() )
                 {
-                    <MiragePanel Variant="@(MiragePanel.PanelVariant.Default)" Padded="@(true)">
-                        <Body>
-                            <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)"
-                                         Color="@(MirageLabel.LabelColor.Danger)"
-                                         Align="@(MirageLabel.LabelAlign.Center)"
-                                         Text="@MirageClientCache.LastError" />
-                        </Body>
-                    </MiragePanel>
+                    <div class="card add-new" @onclick="@OpenCreateForm">
+                        <Label class="plus" Text="+" />
+                        <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)"
+                                     Color="@(MirageLabel.LabelColor.Secondary)"
+                                     Text="Nouveau personnage" />
+                    </div>
                 }
 
-            </Body>
-        </MirageScrollPanel>
+            </div>
+        }
+
+        @if ( !string.IsNullOrEmpty( MirageClientCache.LastError ) )
+        {
+            <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)"
+                         Color="@(MirageLabel.LabelColor.Danger)"
+                         Align="@(MirageLabel.LabelAlign.Center)"
+                         Text="@MirageClientCache.LastError" />
+        }
 
     </div>
 
