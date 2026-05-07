@@ -234,6 +234,15 @@
     [ConCmd( "mirage_ui_demo" )]
     private static void ToggleCommand() => Toggle();
 
+    protected override void OnStart()
+    {
+        base.OnStart();
+        // Always start closed when the panel comes alive (player connects,
+        // hot reload, scene reload). The static _isOpen field can otherwise
+        // carry a stale "open" value across sessions.
+        _isOpen = false;
+    }
+
     private string _firstName = "";
     private bool _hudEnabled = true;
     private bool _notif = false;
