@@ -4,7 +4,14 @@
 
 import { z } from 'zod';
 
-export const ipAddressSchema = z.string().ip();
+/**
+ * Address string used for IP history. Stored opaquely: the gamemode reports
+ * whatever <c>Connection.Address</c> hands it (raw IPv4, IPv6, or in some
+ * s&box configurations a Steam Datagram Relay endpoint), and we keep the
+ * value as-is for ban-evasion spotting. We bound the length to keep the JSON
+ * column well-behaved but do not enforce a strict IP shape.
+ */
+export const ipAddressSchema = z.string().min(1).max(128);
 
 /**
  * One entry in the `players.known_ips` JSON array. We keep it as an object so
