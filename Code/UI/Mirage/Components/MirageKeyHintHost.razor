@@ -1,0 +1,39 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@inherits PanelComponent
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-key-hint-host">
+
+    @foreach ( var hint in MirageKeyHint.Active )
+    {
+        <div class="hint">
+            <div class="key">
+                <Label Text="@hint.Key" />
+            </div>
+            <Label class="label" Text="@hint.Label" />
+        </div>
+    }
+
+</root>
+
+@code
+{
+    private int _renderedVersion = -1;
+
+    protected override void OnUpdate()
+    {
+        if ( _renderedVersion != MirageKeyHint.Version )
+        {
+            _renderedVersion = MirageKeyHint.Version;
+            StateHasChanged();
+        }
+
+        SetClass( "open", MirageKeyHint.Active.Count > 0 );
+    }
+
+    protected override int BuildHash() => MirageKeyHint.Version;
+}

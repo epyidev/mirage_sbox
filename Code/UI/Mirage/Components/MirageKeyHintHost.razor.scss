@@ -1,0 +1,52 @@
+// @author Epyi
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MirageKeyHintHost
+{
+    position: absolute;
+    top: $mirage-space-5;
+    left: $mirage-space-5;
+    flex-direction: column;
+    gap: $mirage-space-2;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity $mirage-transition;
+
+    &.open { opacity: 1; }
+
+    .hint
+    {
+        flex-direction: row;
+        align-items: center;
+        gap: $mirage-space-3;
+        @include mirage-surface-elevated;
+        padding: $mirage-space-2 $mirage-space-3;
+
+        .key
+        {
+            min-width: 28px;
+            height: 28px;
+            padding: 0 $mirage-space-2;
+            background-color: $mirage-text-primary;
+            border: 0;
+            align-items: center;
+            justify-content: center;
+
+            Label
+            {
+                font-size: $mirage-font-sm;
+                font-weight: 800;
+                color: $mirage-text-on-accent;
+                letter-spacing: $mirage-letter-wide;
+                text-transform: uppercase;
+            }
+        }
+
+        .label
+        {
+            font-size: $mirage-font-md;
+            color: $mirage-text-primary;
+            font-weight: 500;
+        }
+    }
+}

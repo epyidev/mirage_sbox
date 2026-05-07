@@ -1,0 +1,56 @@
+// @author Epyi
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MiragePopupHost
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity $mirage-transition;
+    z-index: 500;
+
+    &.open
+    {
+        pointer-events: all;
+        opacity: 1;
+    }
+
+    .backdrop
+    {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-color: rgba( 0, 0, 0, 0.6 );
+        backdrop-filter: blur( 4px );
+    }
+
+    .popup
+    {
+        @include mirage-surface-elevated;
+        flex-direction: column;
+        gap: $mirage-space-4;
+        padding: $mirage-space-6 $mirage-space-7;
+        min-width: 420px;
+        max-width: 640px;
+        z-index: 1;
+
+        .actions
+        {
+            flex-direction: row;
+            justify-content: flex-end;
+            gap: $mirage-space-2;
+            margin-top: $mirage-space-3;
+        }
+
+        &.mirage-popup--danger
+        {
+            border-color: $mirage-border-danger;
+        }
+    }
+}

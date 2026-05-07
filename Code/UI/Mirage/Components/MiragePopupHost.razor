@@ -1,0 +1,73 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@inherits PanelComponent
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-popup-host">
+
+    @if ( MiragePopup.Current is { } spec )
+    {
+        <div class="backdrop" @onclick="@OnBackdropClick"></div>
+
+        <div class="popup mirage-popup--@(spec.Variant.ToString().ToLower())">
+
+            @if ( !string.IsNullOrEmpty( spec.Title ) )
+            {
+                <MirageLabel Variant="@(MirageLabel.LabelVariant.Heading)" Text="@spec.Title" />
+            }
+
+            @if ( !string.IsNullOrEmpty( spec.Message ) )
+            {
+                <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)" Color="@(MirageLabel.LabelColor.Secondary)" Text="@spec.Message" />
+            }
+
+            <div class="actions">
+                @if ( !string.IsNullOrEmpty( spec.CancelText ) )
+                {
+                    <MirageButton Text="@spec.CancelText"
+                                  Variant="@(MirageButton.ButtonVariant.Ghost)"
+                                  Size="@(MirageButton.ButtonSize.Medium)"
+                                  ClickAction="@OnCancel" />
+                }
+                <MirageButton Text="@spec.ConfirmText"
+                              Variant="@(spec.Variant == MiragePopup.PopupVariant.Danger ? MirageButton.ButtonVariant.Danger : MirageButton.ButtonVariant.Primary)"
+                              Size="@(MirageButton.ButtonSize.Medium)"
+                              ClickAction="@OnConfirm" />
+            </div>
+
+        </div>
+    }
+
+</root>
+
+@code
+{
+    private int _renderedVersion = -1;
+
+    protected override void OnUpdate()
+    {
+        if ( _renderedVersion != MiragePopup.Version )
+        {
+            _renderedVersion = MiragePopup.Version;
+            StateHasChanged();
+        }
+
+        SetClass( "open", MiragePopup.Current is not null );
+    }
+
+    private void OnConfirm() => MiragePopup.HandleConfirm();
+    private void OnCancel() => MiragePopup.HandleCancel();
+    private void OnBackdropClick()
+    {
+        // Backdrop click acts as cancel only when a cancel action is meaningful.
+        if ( MiragePopup.Current is { CancelText: { Length: > 0 } } )
+        {
+            MiragePopup.HandleCancel();
+        }
+    }
+
+    protected override int BuildHash() => MiragePopup.Version;
+}

@@ -1,0 +1,66 @@
+// @author Epyi
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MirageTooltip
+{
+    position: relative;
+
+    .bubble
+    {
+        position: absolute;
+        @include mirage-surface-elevated;
+        padding: $mirage-space-1 $mirage-space-3;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.12s ease, transform 0.12s ease;
+        z-index: 200;
+        white-space: nowrap;
+
+        Label
+        {
+            font-size: $mirage-font-sm;
+            color: $mirage-text-primary;
+            line-height: 1.3em;
+        }
+
+        &.bubble--top
+        {
+            bottom: 100%;
+            left: 50%;
+            margin-bottom: 6px;
+            transform: translateX( -50% ) translateY( 4px );
+        }
+        &.bubble--bottom
+        {
+            top: 100%;
+            left: 50%;
+            margin-top: 6px;
+            transform: translateX( -50% ) translateY( -4px );
+        }
+        &.bubble--left
+        {
+            right: 100%;
+            top: 50%;
+            margin-right: 6px;
+            transform: translateY( -50% ) translateX( 4px );
+        }
+        &.bubble--right
+        {
+            left: 100%;
+            top: 50%;
+            margin-left: 6px;
+            transform: translateY( -50% ) translateX( -4px );
+        }
+    }
+
+    &:hover .bubble
+    {
+        opacity: 1;
+        transform: translateX( -50% ) translateY( 0 );
+    }
+    &:hover .bubble.bubble--left,
+    &:hover .bubble.bubble--right
+    {
+        transform: translateY( -50% ) translateX( 0 );
+    }
+}

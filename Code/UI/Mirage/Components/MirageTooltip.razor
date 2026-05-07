@@ -1,0 +1,29 @@
+@*
+    @author Epyi
+*@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits Panel
+@namespace Sandbox
+
+<root class="mirage-tooltip-wrapper">
+
+    @Body
+
+    @if ( !string.IsNullOrEmpty( Text ) )
+    {
+        <div class="bubble bubble--@(Position.ToString().ToLower())">
+            <Label Text="@Text" />
+        </div>
+    }
+
+</root>
+
+@code
+{
+    public enum TooltipPosition { Top, Bottom, Left, Right }
+
+    [Parameter] public string Text { get; set; }
+    [Parameter] public TooltipPosition Position { get; set; } = TooltipPosition.Top;
+    [Parameter] public RenderFragment Body { get; set; }
+}
