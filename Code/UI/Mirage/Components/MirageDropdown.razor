@@ -1,0 +1,112 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@inherits Panel
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-dropdown @(_popup is not null ? "mirage-dropdown--open" : "") @(Disabled ? "mirage-dropdown--disabled" : "")">
+
+    @if ( !string.IsNullOrEmpty( LabelText ) )
+    {
+        <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Text="@LabelText" />
+    }
+
+    <div class="trigger" @ref="_trigger" @onclick="@OnTriggerClick">
+        <Label class="text" Text="@SelectedLabel" />
+        <i class="caret">@(_popup is not null ? "▲" : "▼")</i>
+    </div>
+
+</root>
+
+@code
+{
+    public sealed class DropdownItem
+    {
+        public string Value { get; init; }
+        public string Label { get; init; }
+    }
+
+    [Parameter] public string LabelText { get; set; }
+    [Parameter] public string Placeholder { get; set; } = "Sélectionner...";
+    [Parameter] public List<DropdownItem> Items { get; set; } = new();
+    [Parameter] public string Value { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public Action<string> OnChange { get; set; }
+
+    private Panel _trigger;
+    private MirageDropdownPopup _popup;
+
+    private string SelectedLabel
+    {
+        get
+        {
+            if ( Items is null ) return Placeholder;
+            var match = Items.FirstOrDefault( x => x.Value == Value );
+            return match?.Label ?? Placeholder;
+        }
+    }
+
+    private void OnTriggerClick()
+    {
+        if ( Disabled ) return;
+        if ( _popup is not null )
+        {
+            ClosePopup();
+        }
+        else
+        {
+            OpenPopup();
+        }
+    }
+
+    private void OpenPopup()
+    {
+        var root = FindRootPanel();
+        if ( root is null || _trigger is null || !_trigger.IsValid() ) return;
+
+        var triggerRect = _trigger.Box.Rect;
+
+        // Decide direction based on available space below the trigger.
+        var visibleItems = Items is null ? 0 : Math.Min( Items.Count, 5 );
+        // ~36px per item plus a bit of chrome; computed in screen px.
+        var desiredScreenHeight = visibleItems * 36f + 8f;
+        var spaceBelow = Screen.Height - triggerRect.Bottom;
+        var spaceAbove = triggerRect.Top;
+        var openUp = spaceBelow < desiredScreenHeight && spaceAbove > spaceBelow;
+
+        _popup = root.AddChild<MirageDropdownPopup>();
+        _popup.Items = Items;
+        _popup.SelectedValue = Value;
+        _popup.TriggerRect = triggerRect;
+        _popup.OpenUp = openUp;
+        _popup.OnSelectItem = OnPickFromPopup;
+        _popup.OnDismiss = ClosePopup;
+        _popup.StateHasChanged();
+        StateHasChanged();
+    }
+
+    private void ClosePopup()
+    {
+        if ( _popup is not null )
+        {
+            _popup.Delete();
+            _popup = null;
+            StateHasChanged();
+        }
+    }
+
+    private void OnPickFromPopup( string value )
+    {
+        Value = value;
+        OnChange?.Invoke( value );
+        StateHasChanged();
+    }
+
+    public override void OnDeleted()
+    {
+        base.OnDeleted();
+        ClosePopup();
+    }
+}

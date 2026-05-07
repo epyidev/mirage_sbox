@@ -1,0 +1,98 @@
+@*
+    @author Epyi
+
+    Floating popup spawned by MirageDropdown when the user opens the menu.
+    Lives as a direct child of the root UI panel so nothing in the dropdown's
+    own DOM hierarchy can clip it; positioning is computed from the trigger's
+    screen rect and the available space above / below it.
+*@
+@using Sandbox
+@using Sandbox.UI
+@inherits Panel
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-dropdown-popup @(OpenUp ? "mirage-dropdown-popup--up" : "mirage-dropdown-popup--down")">
+
+    <div class="mirage-dropdown-list" @ref="_list">
+        @if ( Items is not null )
+        {
+            @foreach ( var item in Items )
+            {
+                var captured = item;
+                <div class="opt @(captured.Value == SelectedValue ? "opt--selected" : "")"
+                     @onclick="@(() => OnPick( captured ))">
+                    <Label Text="@captured.Label" />
+                </div>
+            }
+        }
+    </div>
+
+</root>
+
+@code
+{
+    public List<MirageDropdown.DropdownItem> Items { get; set; }
+    public string SelectedValue { get; set; }
+    public Action<string> OnSelectItem { get; set; }
+    public Action OnDismiss { get; set; }
+    public Rect TriggerRect { get; set; }
+    public bool OpenUp { get; set; }
+
+    private Panel _list;
+    private bool _placed;
+    private bool _ignoreFirstClick = true;
+
+    public override void Tick()
+    {
+        base.Tick();
+        ApplyPlacement();
+        DismissOnOutsideClick();
+    }
+
+    private void ApplyPlacement()
+    {
+        // Width tracks the trigger; vertical position depends on direction.
+        var scale = ScaleFromScreen;
+        Style.Width = Length.Pixels( TriggerRect.Width * scale );
+        Style.Left = Length.Pixels( TriggerRect.Left * scale );
+
+        if ( OpenUp )
+        {
+            // Anchor by Bottom so the popup grows upward as items get added.
+            Style.Bottom = Length.Pixels( (Screen.Height - TriggerRect.Top + 4f) * scale );
+            Style.Top = null;
+        }
+        else
+        {
+            Style.Top = Length.Pixels( (TriggerRect.Bottom + 4f) * scale );
+            Style.Bottom = null;
+        }
+
+        _placed = true;
+    }
+
+    private void DismissOnOutsideClick()
+    {
+        // The first frame after spawn often coincides with the trigger's
+        // own click finishing, swallow it.
+        if ( _ignoreFirstClick )
+        {
+            _ignoreFirstClick = false;
+            return;
+        }
+
+        if ( !Input.Pressed( "attack1" ) ) return;
+
+        var mouse = Mouse.Position;
+        if ( Box.Rect.IsInside( mouse ) ) return;
+        if ( TriggerRect.IsInside( mouse ) ) return;
+
+        OnDismiss?.Invoke();
+    }
+
+    private void OnPick( MirageDropdown.DropdownItem item )
+    {
+        OnSelectItem?.Invoke( item.Value );
+        OnDismiss?.Invoke();
+    }
+}
