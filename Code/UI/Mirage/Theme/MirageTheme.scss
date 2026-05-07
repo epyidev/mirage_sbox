@@ -52,6 +52,8 @@ $mirage-space-7:         48px;
 $mirage-space-8:         64px;
 
 // ----- Typography -----
+$mirage-font-family:     "Urbanist";
+
 $mirage-font-xs:         11px;
 $mirage-font-sm:         13px;
 $mirage-font-md:         15px;
@@ -116,4 +118,16 @@ $mirage-transition:      0.18s ease;
 {
     opacity: 0.4;
     pointer-events: none;
+}
+
+// ----- Global font -----
+// Apply the brand font to every Mirage component. The selector list is
+// duplicated into each compiled stylesheet but the rule is idempotent.
+MirageBadge, MirageButton, MirageCheckbox, MirageColorPicker, MirageColorPickerPopup,
+MirageDivider, MirageDropdown, MirageDropdownPopup, MirageHeader, MirageKeyHintHost,
+MirageLabel, MiragePanel, MiragePopupHost, MirageScrollPanel, MirageScrollViewport,
+MirageSegmented, MirageSlider, MirageStack, MirageTextArea, MirageTextInput,
+MirageToggleButton, MirageTooltip, MirageUiDemo
+{
+    font-family: $mirage-font-family;
 }
