@@ -38,3 +38,8 @@ Api/.env.*
 Api/*.log
 Api/coverage/
 Api/*.tsbuildinfo
+
+# Raw s&box documentation drop. Curated, text-only output lives in Docs/Sbox/
+# and is regenerated from this folder by tools/sbox-docs/generate.mjs. The raw
+# drop contains ~895 MB of images and videos, do not commit it.
+Downloaded/
