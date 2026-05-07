@@ -1,0 +1,119 @@
+// @author Epyi
+//
+// Design tokens and shared mixins for the Mirage UI library. Every Mirage
+// component imports this file so the visual language stays consistent and
+// can be retuned in one place. Black, square corners, 2px borders, blurred
+// backdrops; emphasis driven by white tints, not colour.
+
+// ----- Surfaces -----
+// Panels and inputs sit on a dark transparent background with a backdrop
+// blur. Elevated surfaces (popups, dropdown menus) bump opacity so they read
+// over busy game scenes.
+$mirage-bg-panel:        rgba( 0, 0, 0, 0.55 );
+$mirage-bg-input:        rgba( 0, 0, 0, 0.55 );
+$mirage-bg-elevated:     rgba( 12, 12, 14, 0.92 );
+$mirage-bg-hover:        rgba( 255, 255, 255, 0.06 );
+$mirage-bg-active:       rgba( 255, 255, 255, 0.12 );
+
+// ----- Borders -----
+// Square corners across the whole library. Borders are solid dark grays so
+// they read as "edge" rather than "tint", regardless of what the panel sits
+// over.
+$mirage-border-width:    2px;
+$mirage-radius:          0px;
+$mirage-border-soft:     rgba( 38, 40, 46, 1.0 );
+$mirage-border:          rgba( 58, 60, 66, 1.0 );
+$mirage-border-strong:   rgba( 92, 94, 102, 1.0 );
+$mirage-border-accent:   rgba( 200, 202, 210, 1.0 );
+$mirage-border-danger:   rgba( 180, 60, 60, 1.0 );
+
+// ----- Text -----
+$mirage-text-primary:    rgba( 255, 255, 255, 0.95 );
+$mirage-text-secondary:  rgba( 255, 255, 255, 0.65 );
+$mirage-text-muted:      rgba( 255, 255, 255, 0.45 );
+$mirage-text-disabled:   rgba( 255, 255, 255, 0.25 );
+$mirage-text-on-accent:  rgba( 0, 0, 0, 0.95 );
+
+// ----- Status -----
+// Rare colour usage. Reserved for state, never decoration.
+$mirage-danger:          rgba( 220, 80, 80, 1.0 );
+$mirage-success:         rgba( 100, 200, 130, 1.0 );
+$mirage-warning:         rgba( 240, 190, 80, 1.0 );
+$mirage-info:            rgba( 110, 200, 255, 1.0 );
+
+// ----- Spacing scale -----
+$mirage-space-1:         4px;
+$mirage-space-2:         8px;
+$mirage-space-3:         12px;
+$mirage-space-4:         16px;
+$mirage-space-5:         24px;
+$mirage-space-6:         32px;
+$mirage-space-7:         48px;
+$mirage-space-8:         64px;
+
+// ----- Typography -----
+$mirage-font-xs:         11px;
+$mirage-font-sm:         13px;
+$mirage-font-md:         15px;
+$mirage-font-lg:         19px;
+$mirage-font-xl:         26px;
+$mirage-font-xxl:        36px;
+$mirage-font-display:    52px;
+
+$mirage-letter-tight:    0px;
+$mirage-letter-wide:     1px;
+$mirage-letter-xwide:    2px;
+
+// ----- Motion -----
+$mirage-transition-fast: 0.12s ease;
+$mirage-transition:      0.18s ease;
+
+// ----- Mixins -----
+@mixin mirage-surface
+{
+    background-color: $mirage-bg-panel;
+    backdrop-filter: blur( 8px );
+    border: $mirage-border-width solid $mirage-border;
+    border-radius: $mirage-radius;
+}
+
+@mixin mirage-surface-elevated
+{
+    background-color: $mirage-bg-elevated;
+    backdrop-filter: blur( 12px );
+    border: $mirage-border-width solid $mirage-border-strong;
+    border-radius: $mirage-radius;
+}
+
+@mixin mirage-input-base
+{
+    background-color: $mirage-bg-input;
+    border: $mirage-border-width solid $mirage-border;
+    border-radius: $mirage-radius;
+    color: $mirage-text-primary;
+    padding: $mirage-space-2 $mirage-space-3;
+    font-size: $mirage-font-md;
+    transition: border-color $mirage-transition-fast;
+
+    &:hover
+    {
+        border-color: $mirage-border-strong;
+    }
+
+    &:focus, &.focused
+    {
+        border-color: $mirage-border-accent;
+    }
+}
+
+@mixin mirage-clickable
+{
+    cursor: pointer;
+    transition: background-color $mirage-transition-fast, border-color $mirage-transition-fast, color $mirage-transition-fast;
+}
+
+@mixin mirage-disabled
+{
+    opacity: 0.4;
+    pointer-events: none;
+}
