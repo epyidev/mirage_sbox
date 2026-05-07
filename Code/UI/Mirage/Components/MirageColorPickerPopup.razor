@@ -1,0 +1,220 @@
+@*
+    @author Epyi
+
+    Floating colour wheel popup spawned by MirageColorPicker. Carries the
+    saturation/value square plus the hue strip, and a preview swatch with hex
+    code at the bottom. Lives as a direct child of the root UI panel so it
+    paints above everything else.
+*@
+@using Sandbox
+@using Sandbox.UI
+@inherits Panel
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-color-picker-popup @(OpenUp ? "mirage-color-picker-popup--up" : "mirage-color-picker-popup--down")">
+
+    <div class="picker-row">
+
+        <div class="sv" @ref="_svPanel">
+            <div class="sv-saturation"></div>
+            <div class="sv-value"></div>
+            <div class="sv-cursor" style="left: @(_sat * 100f)%; top: @((1f - _val) * 100f)%"></div>
+        </div>
+
+        <div class="hue" @ref="_huePanel">
+            <div class="hue-cursor" style="top: @((_hue / 360f) * 100f)%"></div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <div class="preview" @ref="_preview"></div>
+        <div class="hex">
+            <Label class="hex-label" Text="HEX" />
+            <Label class="hex-value" Text="@HexValue" />
+        </div>
+    </div>
+
+</root>
+
+@code
+{
+    public Color InitialColor { get; set; } = Color.White;
+    public Rect TriggerRect { get; set; }
+    public bool OpenUp { get; set; }
+    public Action<Color> OnColorChange { get; set; }
+    public Action OnDismiss { get; set; }
+
+    public override bool WantsDrag => true;
+
+    private Panel _svPanel;
+    private Panel _huePanel;
+    private Panel _preview;
+
+    private float _hue;
+    private float _sat;
+    private float _val = 1f;
+    private bool _initialized;
+    private bool _ignoreFirstClick = true;
+
+    private enum DragMode { None, Sv, Hue }
+    private DragMode _dragMode = DragMode.None;
+    private bool _activeDrag;
+
+    private string HexValue
+    {
+        get
+        {
+            var c = ComputeColor();
+            var r = (int)(MathX.Clamp( c.r, 0f, 1f ) * 255f);
+            var g = (int)(MathX.Clamp( c.g, 0f, 1f ) * 255f);
+            var b = (int)(MathX.Clamp( c.b, 0f, 1f ) * 255f);
+            return $"#{r:X2}{g:X2}{b:X2}";
+        }
+    }
+
+    private Color ComputeColor() => new ColorHsv( _hue, _sat, _val, 1f ).ToColor();
+
+    public override void Tick()
+    {
+        base.Tick();
+
+        if ( !_initialized )
+        {
+            _initialized = true;
+            var hsv = InitialColor.ToHsv();
+            _hue = hsv.Hue;
+            _sat = hsv.Saturation;
+            _val = hsv.Value;
+        }
+
+        ApplyPlacement();
+        ApplyVisuals();
+
+        if ( _activeDrag && _dragMode == DragMode.Sv ) UpdateSvFromMouse();
+        else if ( _activeDrag && _dragMode == DragMode.Hue ) UpdateHueFromMouse();
+
+        DismissOnOutsideClick();
+    }
+
+    private void ApplyPlacement()
+    {
+        var scale = ScaleFromScreen;
+        Style.Left = Length.Pixels( TriggerRect.Left * scale );
+        Style.Width = Length.Pixels( TriggerRect.Width * scale );
+
+        if ( OpenUp )
+        {
+            Style.Bottom = Length.Pixels( (Screen.Height - TriggerRect.Top + 4f) * scale );
+            Style.Top = null;
+        }
+        else
+        {
+            Style.Top = Length.Pixels( (TriggerRect.Bottom + 4f) * scale );
+            Style.Bottom = null;
+        }
+    }
+
+    private void ApplyVisuals()
+    {
+        if ( _preview is not null && _preview.IsValid() )
+        {
+            _preview.Style.BackgroundColor = ComputeColor();
+        }
+
+        if ( _svPanel is not null && _svPanel.IsValid() )
+        {
+            _svPanel.Style.BackgroundColor = new ColorHsv( _hue, 1f, 1f, 1f ).ToColor();
+        }
+    }
+
+    protected override void OnMouseDown( MousePanelEvent e )
+    {
+        base.OnMouseDown( e );
+
+        var mouse = Mouse.Position;
+        if ( _svPanel is not null && _svPanel.IsValid() && _svPanel.Box.Rect.IsInside( mouse ) )
+        {
+            _dragMode = DragMode.Sv;
+            UpdateSvFromMouse();
+        }
+        else if ( _huePanel is not null && _huePanel.IsValid() && _huePanel.Box.Rect.IsInside( mouse ) )
+        {
+            _dragMode = DragMode.Hue;
+            UpdateHueFromMouse();
+        }
+    }
+
+    protected override void OnDragStart( DragEvent e )
+    {
+        base.OnDragStart( e );
+        _activeDrag = true;
+        var mouse = Mouse.Position;
+        if ( _svPanel is not null && _svPanel.IsValid() && _svPanel.Box.Rect.IsInside( mouse ) )
+        {
+            _dragMode = DragMode.Sv;
+        }
+        else if ( _huePanel is not null && _huePanel.IsValid() && _huePanel.Box.Rect.IsInside( mouse ) )
+        {
+            _dragMode = DragMode.Hue;
+        }
+    }
+
+    protected override void OnDragEnd( DragEvent e )
+    {
+        base.OnDragEnd( e );
+        _activeDrag = false;
+        _dragMode = DragMode.None;
+    }
+
+    private void UpdateSvFromMouse()
+    {
+        if ( _svPanel is null || !_svPanel.IsValid() ) return;
+        var rect = _svPanel.Box.Rect;
+        if ( rect.Width <= 0 || rect.Height <= 0 ) return;
+        var localX = Mouse.Position.x - rect.Left;
+        var localY = Mouse.Position.y - rect.Top;
+        var newSat = MathX.Clamp( localX / rect.Width, 0f, 1f );
+        var newVal = 1f - MathX.Clamp( localY / rect.Height, 0f, 1f );
+        if ( MathF.Abs( newSat - _sat ) < 0.001f && MathF.Abs( newVal - _val ) < 0.001f ) return;
+        _sat = newSat;
+        _val = newVal;
+        EmitColor();
+    }
+
+    private void UpdateHueFromMouse()
+    {
+        if ( _huePanel is null || !_huePanel.IsValid() ) return;
+        var rect = _huePanel.Box.Rect;
+        if ( rect.Height <= 0 ) return;
+        var localY = Mouse.Position.y - rect.Top;
+        var t = MathX.Clamp( localY / rect.Height, 0f, 1f );
+        var newHue = t * 360f;
+        if ( MathF.Abs( newHue - _hue ) < 0.1f ) return;
+        _hue = newHue;
+        EmitColor();
+    }
+
+    private void EmitColor()
+    {
+        OnColorChange?.Invoke( ComputeColor() );
+        StateHasChanged();
+    }
+
+    private void DismissOnOutsideClick()
+    {
+        if ( _ignoreFirstClick )
+        {
+            _ignoreFirstClick = false;
+            return;
+        }
+        if ( _activeDrag ) return;
+        if ( !Input.Pressed( "attack1" ) ) return;
+
+        var mouse = Mouse.Position;
+        if ( Box.Rect.IsInside( mouse ) ) return;
+        if ( TriggerRect.IsInside( mouse ) ) return;
+
+        OnDismiss?.Invoke();
+    }
+}

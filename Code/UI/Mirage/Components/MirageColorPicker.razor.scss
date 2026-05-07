@@ -1,0 +1,58 @@
+// @author Epyi
+@import "/UI/Theme.scss";
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MirageColorPicker
+{
+    flex-direction: column;
+    gap: $mirage-space-1;
+    width: 100%;
+    align-self: stretch;
+    flex-shrink: 0;
+
+    .trigger
+    {
+        flex-direction: row;
+        align-items: center;
+        gap: $mirage-space-3;
+        @include mirage-input-base;
+        @include mirage-clickable;
+        padding: $mirage-space-2 $mirage-space-3;
+        width: 100%;
+
+        .swatch
+        {
+            width: 18px;
+            height: 18px;
+            border: 1px solid $mirage-border;
+            background-color: rgba( 255, 255, 255, 1.0 );
+            flex-shrink: 0;
+        }
+
+        .hex
+        {
+            font-size: $mirage-font-md;
+            font-weight: 600;
+            color: $mirage-text-primary;
+            letter-spacing: 1px;
+            flex-grow: 1;
+        }
+
+        .caret
+        {
+            color: $mirage-text-secondary;
+            font-size: $mirage-font-xs;
+            margin-left: $mirage-space-2;
+        }
+    }
+
+    &.mirage-color-picker--open .trigger
+    {
+        border-color: $mirage-border-accent;
+    }
+
+    &.mirage-color-picker--disabled
+    {
+        @include mirage-disabled;
+    }
+}
