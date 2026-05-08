@@ -45,7 +45,10 @@ public static class MirageInventoryService
 		var slot = inv.Slot( slotIndex );
 		if ( slot is null || slot.IsEmpty ) return;
 
+		// Capture every field BEFORE the slot gets cleared by RemoveAt,
+		// otherwise the spawn path below would see null id / metadata.
 		var item = slot.Item;
+		var itemId = slot.ItemId;
 		var dropCount = count <= 0 ? slot.Count : Math.Min( count, slot.Count );
 		var metadataCopy = slot.Metadata is null ? new Dictionary<string, string>() : new Dictionary<string, string>( slot.Metadata );
 
@@ -55,7 +58,7 @@ public static class MirageInventoryService
 
 		MirageInventoryEquip.ApplyEquip( player, inv );
 
-		MirageDroppedItem.SpawnFromPlayer( player, item, slot.ItemId, dropCount, metadataCopy );
+		MirageDroppedItem.SpawnFromPlayer( player, item, itemId, dropCount, metadataCopy );
 	}
 
 	[Rpc.Host]
