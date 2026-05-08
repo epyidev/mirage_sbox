@@ -34,23 +34,49 @@ public static class MirageVehicleSpawner
 	public static GameObject Spawn( Player player, MirageVehicle model )
 	{
 		Assert.True( Networking.IsHost, "MirageVehicleSpawner.Spawn must run on the host" );
-		if ( !player.IsValid() || model is null ) return null;
-		if ( string.IsNullOrEmpty( model.PrefabPath ) ) return null;
+		if ( !player.IsValid() || model is null )
+		{
+			Log.Warning( "[Mirage] Vehicle spawn aborted: invalid player or model." );
+			return null;
+		}
+		if ( string.IsNullOrEmpty( model.PrefabPath ) )
+		{
+			Log.Warning( $"[Mirage] Vehicle '{model.Id}' has empty PrefabPath." );
+			return null;
+		}
+
+		Log.Info( $"[Mirage] Spawning vehicle '{model.Id}' from prefab '{model.PrefabPath}'..." );
 
 		var prefab = GameObject.GetPrefab( model.PrefabPath );
 		if ( !prefab.IsValid() )
 		{
-			Log.Warning( $"[Mirage] Vehicle prefab '{model.PrefabPath}' could not be loaded." );
+			Log.Warning( $"[Mirage] Vehicle prefab '{model.PrefabPath}' could not be loaded (GameObject.GetPrefab returned null/invalid)." );
 			return null;
 		}
 
 		var spawn = ResolveSpawnTransform( player );
+		Log.Info( $"[Mirage] Vehicle spawn position: {spawn.Position} yaw={spawn.Rotation.Yaw()}" );
 
-		var go = prefab.Clone( new CloneConfig
+		GameObject go;
+		try
 		{
-			Transform = spawn,
-			StartEnabled = true
-		} );
+			go = prefab.Clone( new CloneConfig
+			{
+				Transform = spawn,
+				StartEnabled = true
+			} );
+		}
+		catch ( Exception ex )
+		{
+			Log.Warning( $"[Mirage] prefab.Clone failed: {ex.Message}" );
+			return null;
+		}
+
+		if ( !go.IsValid() )
+		{
+			Log.Warning( "[Mirage] prefab.Clone returned an invalid GameObject." );
+			return null;
+		}
 
 		// Tag stamping so /dv and trace filters can find the vehicle
 		// without walking every component on the GameObject.
@@ -60,6 +86,8 @@ public static class MirageVehicleSpawner
 
 		Ownable.Set( go, player.Network.Owner );
 		go.NetworkSpawn( false, player.Network.Owner );
+
+		Log.Info( $"[Mirage] Vehicle '{model.Id}' spawned successfully (guid={go.Id})." );
 		return go;
 	}
 
