@@ -1,0 +1,280 @@
+// @author Epyi
+
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MiragePermissionsEditor
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity $mirage-transition;
+    z-index: 200;
+    font-family: $mirage-font-family;
+
+    &.open
+    {
+        pointer-events: all;
+        opacity: 1;
+    }
+
+    .backdrop
+    {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba( 0, 0, 0, 0.55 );
+        backdrop-filter: blur( 6px );
+    }
+
+    .frame
+    {
+        position: absolute;
+        top: 5%;
+        left: 5%;
+        width: 90%;
+        height: 90%;
+        flex-direction: column;
+        align-items: stretch;
+        background-color: $mirage-bg-elevated;
+        border: $mirage-border-width solid $mirage-border-strong;
+    }
+
+    .empty-state
+    {
+        flex: 1 1 0;
+        justify-content: center;
+        align-items: center;
+        padding: $mirage-space-6;
+    }
+
+    .body
+    {
+        flex: 1 1 0;
+        flex-direction: row;
+        align-items: stretch;
+        overflow: hidden;
+    }
+
+    .rail
+    {
+        width: 320px;
+        flex-direction: column;
+        align-items: stretch;
+        padding: $mirage-space-3;
+        gap: $mirage-space-3;
+        border-right: $mirage-border-width solid $mirage-border-soft;
+
+        .rail-section
+        {
+            flex-direction: column;
+            align-items: stretch;
+            gap: $mirage-space-1;
+
+            .rail-section-header
+            {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 $mirage-space-2 $mirage-space-1 $mirage-space-2;
+
+                .rail-add
+                {
+                    width: 22px;
+                    height: 22px;
+                    justify-content: center;
+                    align-items: center;
+                    background-color: rgba( 255, 255, 255, 0.04 );
+                    border: 1px solid $mirage-border-soft;
+                    color: $mirage-text-primary;
+                    cursor: pointer;
+                    transition: background-color $mirage-transition-fast;
+
+                    &:hover { background-color: $mirage-bg-active; }
+                }
+            }
+
+            .rail-form
+            {
+                flex-direction: column;
+                align-items: stretch;
+                gap: $mirage-space-2;
+                padding: $mirage-space-3;
+                background-color: rgba( 255, 255, 255, 0.03 );
+                border: 1px solid $mirage-border-soft;
+                margin-bottom: $mirage-space-2;
+
+                .rail-form-actions
+                {
+                    flex-direction: row;
+                    justify-content: flex-end;
+                }
+            }
+
+            .rail-row
+            {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                padding: $mirage-space-2 $mirage-space-3;
+                background-color: transparent;
+                border: 1px solid transparent;
+                cursor: pointer;
+                transition: background-color $mirage-transition-fast, border-color $mirage-transition-fast;
+
+                .rail-title
+                {
+                    color: $mirage-text-primary;
+                    font-weight: 600;
+                    font-size: $mirage-font-md;
+                }
+
+                .rail-meta
+                {
+                    color: $mirage-text-muted;
+                    font-size: $mirage-font-xs;
+                }
+
+                &:hover
+                {
+                    background-color: $mirage-bg-hover;
+                }
+
+                &.rail-row--selected
+                {
+                    background-color: $mirage-bg-active;
+                    border-color: $mirage-border-accent;
+
+                    .rail-title { color: $mirage-text-primary; }
+                }
+            }
+
+            .rail-empty
+            {
+                padding: $mirage-space-2 $mirage-space-3;
+            }
+        }
+    }
+
+    .pane
+    {
+        flex: 1 1 0;
+        flex-direction: column;
+        align-items: stretch;
+        padding: $mirage-space-5;
+        gap: $mirage-space-4;
+        overflow: scroll;
+
+        .pane-header
+        {
+            flex-direction: column;
+            align-items: stretch;
+            gap: $mirage-space-1;
+        }
+
+        .pane-section
+        {
+            flex-direction: column;
+            align-items: stretch;
+            gap: $mirage-space-3;
+        }
+
+        .pane-form
+        {
+            max-width: 480px;
+            gap: $mirage-space-3;
+        }
+
+        .pane-form-actions
+        {
+            flex-direction: row;
+            justify-content: flex-end;
+            margin-top: $mirage-space-2;
+        }
+
+        .pane-danger
+        {
+            align-items: flex-start;
+        }
+
+        .perm-add
+        {
+            flex-direction: row;
+            align-items: center;
+            gap: $mirage-space-2;
+
+            MirageTextInput
+            {
+                flex: 1 1 0;
+            }
+
+            MirageButton
+            {
+                flex-shrink: 0;
+            }
+        }
+
+        .perm-list
+        {
+            flex-direction: column;
+            align-items: stretch;
+            gap: $mirage-space-1;
+
+            .perm-row
+            {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                padding: $mirage-space-2 $mirage-space-3;
+                background-color: rgba( 255, 255, 255, 0.03 );
+                border: 1px solid $mirage-border-soft;
+
+                .perm-text
+                {
+                    color: $mirage-text-primary;
+                    font-size: $mirage-font-md;
+                    font-weight: 500;
+                }
+
+                .perm-remove
+                {
+                    width: 22px;
+                    height: 22px;
+                    justify-content: center;
+                    align-items: center;
+                    color: $mirage-text-secondary;
+                    cursor: pointer;
+                    transition: color $mirage-transition-fast, background-color $mirage-transition-fast;
+
+                    &:hover
+                    {
+                        color: $mirage-danger;
+                        background-color: rgba( 220, 80, 80, 0.12 );
+                    }
+                }
+
+                &.perm-row--inherit
+                {
+                    border-color: $mirage-border-accent;
+
+                    .perm-text
+                    {
+                        color: $mirage-info;
+                    }
+                }
+            }
+        }
+    }
+
+    .error-banner
+    {
+        padding: $mirage-space-2 $mirage-space-4;
+        background-color: rgba( 220, 80, 80, 0.18 );
+        border-top: 1px solid $mirage-border-danger;
+    }
+}

@@ -1,0 +1,543 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@using Sandbox.Mirage
+@using Sandbox.Mirage.UI
+@inherits PanelComponent
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-permissions-editor @(MiragePermissionsEditorState.IsOpen ? "open" : "")">
+
+    <div class="backdrop" @onclick="@Close"></div>
+
+    <div class="frame">
+
+        <MirageHeader Title="Éditeur de permissions" Closable="@(true)" OnClose="@Close" />
+
+        @if ( !MiragePermissionsEditorState.HasSnapshot )
+        {
+            <div class="empty-state">
+                <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)"
+                             Color="@(MirageLabel.LabelColor.Secondary)"
+                             Align="@(MirageLabel.LabelAlign.Center)"
+                             Text="Chargement des permissions..." />
+            </div>
+        }
+        else
+        {
+            <div class="body">
+
+                @* ----- Left rail ----- *@
+                <div class="rail">
+                    <MirageScrollPanel>
+                        <Body>
+
+                            <div class="rail-section">
+                                <div class="rail-section-header">
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="GROUPES" />
+                                    <div class="rail-add" @onclick="@ToggleNewGroupForm">
+                                        <Label Text="@(_newGroupOpen ? "x" : "+")" />
+                                    </div>
+                                </div>
+
+                                @if ( _newGroupOpen )
+                                {
+                                    <div class="rail-form">
+                                        <MirageTextInput @ref="_newGroupId" LabelText="Identifiant" Placeholder="moderator" MaxLength="@(32)" />
+                                        <MirageTextInput @ref="_newGroupName" LabelText="Nom affiché" Placeholder="Modérateur" MaxLength="@(64)" />
+                                        <MirageTextInput @ref="_newGroupPriority" LabelText="Priorité" Placeholder="0" Numeric="@(true)" MaxLength="@(4)" />
+                                        <div class="rail-form-actions">
+                                            <MirageButton Text="Créer" Variant="@(MirageButton.ButtonVariant.Primary)" Size="@(MirageButton.ButtonSize.Small)" ClickAction="@SubmitNewGroup" />
+                                        </div>
+                                    </div>
+                                }
+
+                                @foreach ( var g in MiragePermissionsEditorState.Snapshot.Groups )
+                                {
+                                    var captured = g;
+                                    var key = GroupKey( captured.Id );
+                                    var selected = _selectionKey == key;
+                                    <div class="rail-row @(selected ? "rail-row--selected" : "")" @onclick="@(() => Select( key ))">
+                                        <Label class="rail-title" Text="@captured.DisplayName" />
+                                        <Label class="rail-meta" Text="@($"prio {captured.Priority}")" />
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="rail-section">
+                                <div class="rail-section-header">
+                                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="JOUEURS AVEC OVERRIDES" />
+                                    <div class="rail-add" @onclick="@ToggleNewPlayerForm">
+                                        <Label Text="@(_newPlayerOpen ? "x" : "+")" />
+                                    </div>
+                                </div>
+
+                                @if ( _newPlayerOpen )
+                                {
+                                    <div class="rail-form">
+                                        <MirageTextInput @ref="_newPlayerSteam" LabelText="SteamID64" Placeholder="76561198..." MaxLength="@(20)" Numeric="@(true)" />
+                                        <MirageTextInput @ref="_newPlayerPermission" LabelText="Permission" Placeholder="command.goto" MaxLength="@(128)" />
+                                        <div class="rail-form-actions">
+                                            <MirageButton Text="Ajouter" Variant="@(MirageButton.ButtonVariant.Primary)" Size="@(MirageButton.ButtonSize.Small)" ClickAction="@SubmitNewPlayer" />
+                                        </div>
+                                    </div>
+                                }
+
+                                @if ( MiragePermissionsEditorState.Snapshot.Players.Count == 0 )
+                                {
+                                    <div class="rail-empty">
+                                        <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Muted)" Text="Aucun joueur n'a de permission directe." />
+                                    </div>
+                                }
+
+                                @foreach ( var p in MiragePermissionsEditorState.Snapshot.Players )
+                                {
+                                    var captured = p;
+                                    var key = PlayerKey( captured.SteamId );
+                                    var selected = _selectionKey == key;
+                                    var label = string.IsNullOrEmpty( captured.DisplayName ) ? captured.SteamId : captured.DisplayName;
+                                    <div class="rail-row @(selected ? "rail-row--selected" : "")" @onclick="@(() => Select( key ))">
+                                        <Label class="rail-title" Text="@label" />
+                                        <Label class="rail-meta" Text="@($"{captured.Permissions.Count} perm.")" />
+                                    </div>
+                                }
+                            </div>
+
+                        </Body>
+                    </MirageScrollPanel>
+                </div>
+
+                @* ----- Right pane ----- *@
+                <div class="pane">
+
+                    @{ var sg = SelectedGroup; var sp = SelectedPlayer; }
+
+                    @if ( sg is not null )
+                    {
+                        <div class="pane-header">
+                            <MirageLabel Variant="@(MirageLabel.LabelVariant.Heading)" Text="@sg.DisplayName" />
+                            <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Muted)" Text="@($"id : {sg.Id}")" />
+                        </div>
+
+                        <div class="pane-section pane-form">
+                            <MirageTextInput @ref="_groupName" LabelText="Nom affiché" MaxLength="@(64)" />
+                            <MirageTextInput @ref="_groupPriority" LabelText="Priorité" Numeric="@(true)" MaxLength="@(4)" />
+                            <div class="pane-form-actions">
+                                <MirageButton Text="Enregistrer les modifications" Variant="@(MirageButton.ButtonVariant.Primary)" Size="@(MirageButton.ButtonSize.Medium)" ClickAction="@SaveGroup" />
+                            </div>
+                        </div>
+
+                        <MirageDivider />
+
+                        <div class="pane-section">
+                            <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="PERMISSIONS DU GROUPE" />
+                            <div class="perm-add">
+                                <MirageTextInput @ref="_groupNewPerm" Placeholder="command.goto ou _group.default" MaxLength="@(128)" />
+                                <MirageButton Text="Ajouter" Variant="@(MirageButton.ButtonVariant.Secondary)" Size="@(MirageButton.ButtonSize.Medium)" ClickAction="@AddGroupPermission" />
+                            </div>
+
+                            @if ( sg.Permissions.Count == 0 )
+                            {
+                                <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Muted)" Text="Aucune permission. Ajoute la première." />
+                            }
+                            else
+                            {
+                                <div class="perm-list">
+                                    @foreach ( var perm in sg.Permissions )
+                                    {
+                                        var captured = perm;
+                                        var isInherit = captured.StartsWith( "_group.", StringComparison.OrdinalIgnoreCase );
+                                        <div class="perm-row @(isInherit ? "perm-row--inherit" : "")">
+                                            <Label class="perm-text" Text="@captured" />
+                                            <div class="perm-remove" @onclick="@(() => RemoveGroupPermission( captured ))"><Label Text="x" /></div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+
+                        @if ( !IsReservedGroup( sg.Id ) )
+                        {
+                            <MirageDivider />
+                            <div class="pane-section pane-danger">
+                                <MirageButton Text="Supprimer le groupe" Variant="@(MirageButton.ButtonVariant.Danger)" Size="@(MirageButton.ButtonSize.Small)" ClickAction="@ConfirmDeleteGroup" />
+                            </div>
+                        }
+                    }
+                    else if ( sp is not null )
+                    {
+                        var label = string.IsNullOrEmpty( sp.DisplayName ) ? sp.SteamId : sp.DisplayName;
+                        <div class="pane-header">
+                            <MirageLabel Variant="@(MirageLabel.LabelVariant.Heading)" Text="@label" />
+                            <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Muted)" Text="@($"steamID : {sp.SteamId}")" />
+                        </div>
+
+                        <MirageDivider />
+
+                        <div class="pane-section">
+                            <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="PERMISSIONS DU JOUEUR" />
+                            <div class="perm-add">
+                                <MirageTextInput @ref="_playerNewPerm" Placeholder="_group.moderator ou command.goto" MaxLength="@(128)" />
+                                <MirageButton Text="Ajouter" Variant="@(MirageButton.ButtonVariant.Secondary)" Size="@(MirageButton.ButtonSize.Medium)" ClickAction="@AddPlayerPermission" />
+                            </div>
+
+                            @if ( sp.Permissions.Count == 0 )
+                            {
+                                <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Muted)" Text="Aucune permission directe." />
+                            }
+                            else
+                            {
+                                <div class="perm-list">
+                                    @foreach ( var perm in sp.Permissions )
+                                    {
+                                        var captured = perm;
+                                        var isInherit = captured.StartsWith( "_group.", StringComparison.OrdinalIgnoreCase );
+                                        <div class="perm-row @(isInherit ? "perm-row--inherit" : "")">
+                                            <Label class="perm-text" Text="@captured" />
+                                            <div class="perm-remove" @onclick="@(() => RemovePlayerPermission( captured ))"><Label Text="x" /></div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)"
+                                         Color="@(MirageLabel.LabelColor.Secondary)"
+                                         Align="@(MirageLabel.LabelAlign.Center)"
+                                         Text="Sélectionne un groupe ou un joueur dans le rail de gauche." />
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+        }
+
+        @if ( !string.IsNullOrEmpty( MiragePermissionsEditorState.LastError ) )
+        {
+            <div class="error-banner">
+                <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)"
+                             Color="@(MirageLabel.LabelColor.Danger)"
+                             Text="@MiragePermissionsEditorState.LastError" />
+            </div>
+        }
+
+    </div>
+
+</root>
+
+@code
+{
+    private string _selectionKey;
+    private string _renderedSelectionKey;
+    private bool _formNeedsSync;
+    private int _renderedVersion = -1;
+    private bool _hasRequestedState;
+
+    private bool _newGroupOpen;
+    private bool _newPlayerOpen;
+
+    private MirageTextInput _groupName;
+    private MirageTextInput _groupPriority;
+    private MirageTextInput _groupNewPerm;
+    private MirageTextInput _playerNewPerm;
+    private MirageTextInput _newGroupId;
+    private MirageTextInput _newGroupName;
+    private MirageTextInput _newGroupPriority;
+    private MirageTextInput _newPlayerSteam;
+    private MirageTextInput _newPlayerPermission;
+
+    protected override void OnStart()
+    {
+        base.OnStart();
+        // Always start closed. The static state otherwise carries a stale
+        // "open" value across hot reloads and reconnects.
+        MiragePermissionsEditorState.Reset();
+    }
+
+    protected override void OnUpdate()
+    {
+        var open = MiragePermissionsEditorState.IsOpen;
+        SetClass( "open", open );
+        MirageModalLock.SetActive( open );
+
+        if ( !open )
+        {
+            if ( _hasRequestedState )
+            {
+                _hasRequestedState = false;
+                _renderedVersion = -1;
+                _selectionKey = null;
+                _newGroupOpen = false;
+                _newPlayerOpen = false;
+            }
+            return;
+        }
+
+        if ( !_hasRequestedState )
+        {
+            _hasRequestedState = true;
+            MiragePermissionsEditorService.RpcRequestState();
+        }
+
+        if ( _renderedVersion != MiragePermissionsEditorState.Version )
+        {
+            _renderedVersion = MiragePermissionsEditorState.Version;
+            // Snapshot changed underneath us, refresh whichever form is open
+            // so freshly-edited fields show the persisted values.
+            _formNeedsSync = true;
+            StateHasChanged();
+        }
+
+        if ( _renderedSelectionKey != _selectionKey )
+        {
+            _renderedSelectionKey = _selectionKey;
+            _formNeedsSync = true;
+        }
+
+        if ( _formNeedsSync )
+        {
+            SyncFormToSelection();
+        }
+    }
+
+    private void Close()
+    {
+        MiragePermissionsEditorState.SetOpen( false );
+        StateHasChanged();
+    }
+
+    private static string GroupKey( string id ) => $"group:{id}";
+    private static string PlayerKey( string steamId ) => $"player:{steamId}";
+
+    private static bool IsReservedGroup( string id )
+    {
+        return string.Equals( id, PermissionsSystem.OwnerGroupId, StringComparison.OrdinalIgnoreCase )
+            || string.Equals( id, PermissionsSystem.DefaultGroupId, StringComparison.OrdinalIgnoreCase );
+    }
+
+    private MiragePermissionsEditorGroupEntry SelectedGroup
+    {
+        get
+        {
+            if ( _selectionKey is null || !_selectionKey.StartsWith( "group:" ) ) return null;
+            var id = _selectionKey.Substring( "group:".Length );
+            return MiragePermissionsEditorState.Snapshot.Groups.FirstOrDefault( g => g.Id == id );
+        }
+    }
+
+    private MiragePermissionsEditorPlayerEntry SelectedPlayer
+    {
+        get
+        {
+            if ( _selectionKey is null || !_selectionKey.StartsWith( "player:" ) ) return null;
+            var sid = _selectionKey.Substring( "player:".Length );
+            return MiragePermissionsEditorState.Snapshot.Players.FirstOrDefault( p => p.SteamId == sid );
+        }
+    }
+
+    private void Select( string key )
+    {
+        _selectionKey = key;
+        _newGroupOpen = false;
+        _newPlayerOpen = false;
+        StateHasChanged();
+    }
+
+    private void SyncFormToSelection()
+    {
+        var g = SelectedGroup;
+        if ( g is not null )
+        {
+            // Razor may not have wired the @ref yet on the very first frame
+            // after a selection change. Retry next frame until both inputs
+            // exist; SetText itself queues the value if the underlying
+            // TextEntry is built but has not ticked yet.
+            if ( _groupName is null || _groupPriority is null )
+            {
+                _formNeedsSync = true;
+                return;
+            }
+            _groupName.SetText( g.DisplayName );
+            _groupPriority.SetText( g.Priority.ToString() );
+            _groupNewPerm?.Clear();
+            _formNeedsSync = false;
+            return;
+        }
+
+        var p = SelectedPlayer;
+        if ( p is not null )
+        {
+            if ( _playerNewPerm is null )
+            {
+                _formNeedsSync = true;
+                return;
+            }
+            _playerNewPerm.Clear();
+            _formNeedsSync = false;
+            return;
+        }
+
+        _formNeedsSync = false;
+    }
+
+    private void ToggleNewGroupForm()
+    {
+        _newGroupOpen = !_newGroupOpen;
+        StateHasChanged();
+    }
+
+    private void ToggleNewPlayerForm()
+    {
+        _newPlayerOpen = !_newPlayerOpen;
+        StateHasChanged();
+    }
+
+    private void SubmitNewGroup()
+    {
+        var id = (_newGroupId?.Text ?? "").Trim();
+        var name = (_newGroupName?.Text ?? "").Trim();
+        var priorityText = (_newGroupPriority?.Text ?? "0").Trim();
+
+        if ( !System.Text.RegularExpressions.Regex.IsMatch( id, @"^[a-z0-9_]+$" ) )
+        {
+            MiragePermissionsEditorState.SetError( "L'identifiant doit contenir uniquement des minuscules, chiffres et underscores." );
+            return;
+        }
+        if ( string.IsNullOrEmpty( name ) || name.Length > 64 )
+        {
+            MiragePermissionsEditorState.SetError( "Le nom affiché doit faire entre 1 et 64 caractères." );
+            return;
+        }
+        if ( !int.TryParse( priorityText, out var priority ) )
+        {
+            priority = 0;
+        }
+
+        MiragePermissionsEditorService.RpcCreateGroup( id, name, priority );
+
+        _newGroupOpen = false;
+        _newGroupId?.Clear();
+        _newGroupName?.Clear();
+        _newGroupPriority?.Clear();
+        StateHasChanged();
+    }
+
+    private void SubmitNewPlayer()
+    {
+        var sid = (_newPlayerSteam?.Text ?? "").Trim();
+        var perm = (_newPlayerPermission?.Text ?? "").Trim();
+
+        if ( !System.Text.RegularExpressions.Regex.IsMatch( sid, @"^\d{17}$" ) )
+        {
+            MiragePermissionsEditorState.SetError( "SteamID64 doit faire 17 chiffres." );
+            return;
+        }
+        if ( string.IsNullOrEmpty( perm ) || perm.Length > 128 )
+        {
+            MiragePermissionsEditorState.SetError( "Permission invalide." );
+            return;
+        }
+
+        MiragePermissionsEditorService.RpcAddPlayerPermission( sid, perm );
+
+        _newPlayerOpen = false;
+        _newPlayerSteam?.Clear();
+        _newPlayerPermission?.Clear();
+        _selectionKey = PlayerKey( sid );
+        StateHasChanged();
+    }
+
+    private void SaveGroup()
+    {
+        var g = SelectedGroup;
+        if ( g is null ) return;
+
+        var name = (_groupName?.Text ?? "").Trim();
+        var priorityText = (_groupPriority?.Text ?? "0").Trim();
+
+        if ( string.IsNullOrEmpty( name ) || name.Length > 64 )
+        {
+            MiragePermissionsEditorState.SetError( "Le nom affiché doit faire entre 1 et 64 caractères." );
+            return;
+        }
+        if ( !int.TryParse( priorityText, out var priority ) )
+        {
+            MiragePermissionsEditorState.SetError( "La priorité doit être un nombre entier." );
+            return;
+        }
+
+        MiragePermissionsEditorService.RpcPatchGroup( g.Id, name, priority );
+    }
+
+    private void AddGroupPermission()
+    {
+        var g = SelectedGroup;
+        if ( g is null ) return;
+        var perm = (_groupNewPerm?.Text ?? "").Trim();
+        if ( string.IsNullOrEmpty( perm ) ) return;
+        MiragePermissionsEditorService.RpcAddGroupPermission( g.Id, perm );
+        _groupNewPerm?.Clear();
+    }
+
+    private void RemoveGroupPermission( string permission )
+    {
+        var g = SelectedGroup;
+        if ( g is null ) return;
+        MiragePermissionsEditorService.RpcRemoveGroupPermission( g.Id, permission );
+    }
+
+    private void AddPlayerPermission()
+    {
+        var p = SelectedPlayer;
+        if ( p is null ) return;
+        var perm = (_playerNewPerm?.Text ?? "").Trim();
+        if ( string.IsNullOrEmpty( perm ) ) return;
+        MiragePermissionsEditorService.RpcAddPlayerPermission( p.SteamId, perm );
+        _playerNewPerm?.Clear();
+    }
+
+    private void RemovePlayerPermission( string permission )
+    {
+        var p = SelectedPlayer;
+        if ( p is null ) return;
+        MiragePermissionsEditorService.RpcRemovePlayerPermission( p.SteamId, permission );
+    }
+
+    private void ConfirmDeleteGroup()
+    {
+        var g = SelectedGroup;
+        if ( g is null ) return;
+        MiragePopup.Confirm(
+            title: $"Supprimer le groupe « {g.DisplayName} » ?",
+            message: "Tous les joueurs qui héritent de ce groupe perdront ses permissions. Cette action est définitive.",
+            onConfirm: () => DoDeleteGroup( g.Id ),
+            confirmText: "Supprimer",
+            cancelText: "Annuler",
+            variant: MiragePopup.PopupVariant.Danger
+        );
+    }
+
+    private void DoDeleteGroup( string id )
+    {
+        MiragePermissionsEditorService.RpcDeleteGroup( id );
+        if ( _selectionKey == GroupKey( id ) )
+        {
+            _selectionKey = null;
+        }
+        StateHasChanged();
+    }
+
+    protected override int BuildHash() => System.HashCode.Combine(
+        MiragePermissionsEditorState.IsOpen,
+        MiragePermissionsEditorState.Version,
+        _selectionKey,
+        _newGroupOpen,
+        _newPlayerOpen
+    );
+}
