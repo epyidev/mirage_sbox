@@ -79,3 +79,44 @@ CREATE TABLE IF NOT EXISTS character_inventory (
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS permissions_groups (
+	id              VARCHAR(32)  NOT NULL,
+	display_name    VARCHAR(64)  NOT NULL,
+	priority        INT          NOT NULL DEFAULT 0,
+	created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (id),
+	KEY idx_permissions_groups_priority (priority DESC),
+	CONSTRAINT chk_permissions_groups_id CHECK (id REGEXP '^[a-z0-9_]+$')
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS permissions_group_permissions (
+	group_id    VARCHAR(32)  NOT NULL,
+	permission  VARCHAR(128) NOT NULL,
+	PRIMARY KEY (group_id, permission),
+	CONSTRAINT fk_permissions_group_permissions_group
+		FOREIGN KEY (group_id) REFERENCES permissions_groups (id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS permissions_player_permissions (
+	steam_id    BIGINT UNSIGNED NOT NULL,
+	permission  VARCHAR(128)    NOT NULL,
+	PRIMARY KEY (steam_id, permission),
+	KEY idx_permissions_player_permissions_steam_id (steam_id)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
+INSERT IGNORE INTO permissions_groups (id, display_name, priority) VALUES
+	('owner',   'Owner',   999),
+	('default', 'Default', 0);
+
+INSERT IGNORE INTO permissions_group_permissions (group_id, permission) VALUES
+	('owner', '*');

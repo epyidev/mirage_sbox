@@ -13,6 +13,7 @@ import {
 import { env } from './config/env.js';
 import { characterRoutes } from './routes/characters.js';
 import { healthRoutes } from './routes/health.js';
+import { permissionsRoutes } from './routes/permissions.js';
 import { playerRoutes } from './routes/players.js';
 
 export async function buildApp(): Promise<FastifyInstance> {
@@ -33,6 +34,7 @@ export async function buildApp(): Promise<FastifyInstance> {
 	await app.register(healthRoutes);
 	await app.register(playerRoutes);
 	await app.register(characterRoutes);
+	await app.register(permissionsRoutes);
 
 	return app;
 }
