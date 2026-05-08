@@ -59,27 +59,52 @@
 
     private TextEntry _entry;
     private bool _initialApplied;
+    private string _pendingText;
+    private bool _hasPendingText;
 
     /// <summary>Current text. Returns an empty string if the entry is not yet built.</summary>
-    public string Text => _entry?.Text ?? "";
+    public string Text => _entry?.Text ?? _pendingText ?? "";
+
+    /// <summary>True while the underlying <see cref="TextEntry"/> holds focus.</summary>
+    public new bool HasFocus => _entry?.HasFocus ?? false;
 
     public new void Focus() => _entry?.Focus();
     public void Clear()
     {
-        if ( _entry is null ) return;
-        _entry.Text = "";
+        SetText( "" );
     }
 
+    /// <summary>
+    /// Set the entry's text. Safe to call before the underlying TextEntry has
+    /// been built: the value is queued and applied on the next <see cref="Tick"/>.
+    /// </summary>
     public void SetText( string value )
     {
-        if ( _entry is null ) return;
+        if ( _entry is null )
+        {
+            _pendingText = value ?? "";
+            _hasPendingText = true;
+            return;
+        }
         _entry.Text = value ?? "";
+        _pendingText = null;
+        _hasPendingText = false;
     }
 
     public override void Tick()
     {
         base.Tick();
-        if ( !_initialApplied && _entry is not null )
+        if ( _entry is null ) return;
+
+        // Drain any value queued via SetText before the entry was ready.
+        if ( _hasPendingText )
+        {
+            _entry.Text = _pendingText ?? "";
+            _pendingText = null;
+            _hasPendingText = false;
+            _initialApplied = true;
+        }
+        else if ( !_initialApplied )
         {
             _initialApplied = true;
             if ( !string.IsNullOrEmpty( InitialValue ) )
