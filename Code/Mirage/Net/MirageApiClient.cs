@@ -125,13 +125,39 @@ public static partial class MirageApiClient
 
 	/// <summary>
 	/// `PUT /players/:steamId/characters/:id` patching the character's last
-	/// known IC position. Used at logout / disconnect to flush the in-memory
-	/// session back to disk.
+	/// known IC position. Kept for the legacy single-field update; the
+	/// preferred path for the periodic + on-disconnect + on-relog save is
+	/// <see cref="SaveCharacterSnapshotAsync"/> which persists everything
+	/// in one transaction.
 	/// </summary>
 	public static async Task UpdateCharacterPositionAsync( long steamId, string characterId, MiragePosition position )
 	{
 		var body = new { lastPosition = position };
 		var response = await SendAsync( $"/players/{steamId}/characters/{characterId}", "PUT", body );
+		await EnsureSuccessAsync( response );
+	}
+
+	/// <summary>
+	/// `GET /players/:steamId/characters/:id` returning the full character
+	/// payload including accounts and inventory. Called once at character
+	/// spawn so the host hydrates Mirage's in-memory state from a single
+	/// HTTP round trip.
+	/// </summary>
+	public static async Task<MirageCharacterDetail> GetCharacterDetailAsync( long steamId, string characterId )
+	{
+		var response = await SendAsync( $"/players/{steamId}/characters/{characterId}", "GET", null );
+		return await ReadJsonAsync<MirageCharacterDetail>( response );
+	}
+
+	/// <summary>
+	/// `POST /players/:steamId/characters/:id/snapshot`. Atomic save of
+	/// position + vitals + every wallet + the entire inventory. The host
+	/// calls this from the periodic save loop, on disconnect, on /relog
+	/// and on /saveallcharacters.
+	/// </summary>
+	public static async Task SaveCharacterSnapshotAsync( long steamId, string characterId, MirageCharacterSnapshot snapshot )
+	{
+		var response = await SendAsync( $"/players/{steamId}/characters/{characterId}/snapshot", "POST", snapshot );
 		await EnsureSuccessAsync( response );
 	}
 }

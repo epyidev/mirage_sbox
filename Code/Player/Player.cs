@@ -14,6 +14,7 @@ public sealed partial class Player : Component, Component.IDamageable, PlayerCon
 
 	[RequireComponent] public PlayerController Controller { get; set; }
 	[RequireComponent] public Sandbox.Mirage.MirageInventory MirageInventory { get; set; }
+	[RequireComponent] public Sandbox.Mirage.MirageWallet MirageWallet { get; set; }
 	[Property] public GameObject Body { get; set; }
 	[Property, Range( 0, 100 ), Sync( SyncFlags.FromHost )] public float Health { get; set; } = 100;
 	[Property, Range( 0, 100 ), Sync( SyncFlags.FromHost )] public float MaxHealth { get; set; } = 100;

@@ -272,6 +272,43 @@ public sealed class MirageInventory : Component
 		BroadcastSnapshot();
 	}
 
+	/// <summary>
+	/// Host-only. Hydrate the inventory from the API's character detail
+	/// payload, honouring the saved slot positions. Wipes any previous
+	/// in-memory content first so a /relog or character switch starts from
+	/// a clean board.
+	/// </summary>
+	public void LoadFromApi( IReadOnlyList<MirageInventoryEntry> entries )
+	{
+		Assert.True( Networking.IsHost, "MirageInventory.LoadFromApi must run on the host" );
+		EnsureSlots();
+		for ( int i = 0; i < SlotCount; i++ ) _slots[i].Clear();
+		if ( entries is not null )
+		{
+			foreach ( var e in entries )
+			{
+				if ( e is null || string.IsNullOrEmpty( e.ItemId ) ) continue;
+				if ( e.Slot < 0 || e.Slot >= SlotCount ) continue;
+				if ( e.Quantity <= 0 ) continue;
+				if ( !MirageItems.IsKnown( e.ItemId ) ) continue;
+				var slot = _slots[e.Slot];
+				slot.ItemId = e.ItemId;
+				slot.Count = e.Quantity;
+				slot.Metadata = e.Metadata is null ? new() : new Dictionary<string, string>( e.Metadata );
+			}
+		}
+		BroadcastSnapshot();
+	}
+
+	/// <summary>Host-only. Wipe every slot. Used on character switch / relog.</summary>
+	public void ClearAll()
+	{
+		Assert.True( Networking.IsHost, "MirageInventory.ClearAll must run on the host" );
+		EnsureSlots();
+		for ( int i = 0; i < SlotCount; i++ ) _slots[i].Clear();
+		BroadcastSnapshot();
+	}
+
 	/// <summary>Host-only. Replace the whole inventory state in one go.</summary>
 	public void Replace( IEnumerable<MirageInventorySlot> snapshot )
 	{
