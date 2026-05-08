@@ -28,7 +28,7 @@ public sealed class MirageApiException : Exception
 /// a misrouted call site. Reads its base URL, token and timeout from
 /// <see cref="MirageConVars"/>.
 /// </summary>
-public static class MirageApiClient
+public static partial class MirageApiClient
 {
 	private static string BuildUrl( string path )
 	{
