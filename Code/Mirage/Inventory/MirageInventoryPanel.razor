@@ -40,6 +40,7 @@
             </div>
         </div>
 
+        <MirageInventoryWheelHook class="grid-wheel-hook" OnWheel="@OnGridWheel">
         <div class="grid" @ref="_grid">
             @for ( int row = 0; row < MirageInventory.SlotCount / MirageInventory.HotbarColumns; row++ )
             {
@@ -86,6 +87,7 @@
                 </div>
             }
         </div>
+        </MirageInventoryWheelHook>
 
     </div>
 
@@ -275,16 +277,9 @@
             ResetSlotKeyArmed();
         }
 
-        // Mouse-wheel adjusts the split point during a split drag.
-        if ( IsDragging && _splitMode )
-        {
-            var wheel = Input.MouseWheel.y;
-            if ( wheel != 0f )
-            {
-                var step = wheel > 0f ? 1 : -1;
-                SetSplitAmount( _splitAmount + step );
-            }
-        }
+        // Wheel is delivered by MirageInventoryWheelHook.OnGridWheel,
+        // not polled here: Input.MouseWheel can be absorbed by parent
+        // panels before our OnUpdate runs.
 
         if ( IsDragging )
         {
@@ -410,6 +405,19 @@
         if ( clamped == _splitAmount ) return;
         _splitAmount = clamped;
         StateHasChanged();
+    }
+
+    /// <summary>
+    /// Called by the wheel hook when the operator scrolls over the
+    /// inventory grid. Each notch shifts the split amount by one;
+    /// outside of a split drag we do nothing.
+    /// </summary>
+    private void OnGridWheel( float deltaY )
+    {
+        if ( !IsDragging || !_splitMode ) return;
+        if ( deltaY == 0f ) return;
+        var step = deltaY > 0f ? 1 : -1;
+        SetSplitAmount( _splitAmount + step );
     }
 
     /// <summary>
