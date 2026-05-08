@@ -26,6 +26,11 @@ public sealed class MiragePermissionsEditorGroupEntry
 public sealed class MiragePermissionsEditorPlayerEntry
 {
 	[JsonPropertyName( "steamId" )] public string SteamId { get; set; }
+	/// <summary>
+	/// Public-facing player handle. 0 when the player is offline and the
+	/// MirageId is not cached on a connected <see cref="PlayerData"/>.
+	/// </summary>
+	[JsonPropertyName( "mirageId" )] public int MirageId { get; set; }
 	[JsonPropertyName( "displayName" )] public string DisplayName { get; set; } = "";
 	[JsonPropertyName( "permissions" )] public List<string> Permissions { get; set; } = new();
 }

@@ -77,7 +77,7 @@
                                 @if ( _newPlayerOpen )
                                 {
                                     <div class="rail-form">
-                                        <MirageTextInput @ref="_newPlayerSteam" LabelText="SteamID64" Placeholder="76561198..." MaxLength="@(20)" Numeric="@(true)" />
+                                        <MirageTextInput @ref="_newPlayerMirageId" LabelText="ID joueur" Placeholder="42" MaxLength="@(10)" Numeric="@(true)" />
                                         <MirageTextInput @ref="_newPlayerPermission" LabelText="Permission" Placeholder="command.goto" MaxLength="@(128)" />
                                         <div class="rail-form-actions">
                                             <MirageButton Text="Ajouter" Variant="@(MirageButton.ButtonVariant.Primary)" Size="@(MirageButton.ButtonSize.Small)" ClickAction="@SubmitNewPlayer" />
@@ -97,10 +97,11 @@
                                     var captured = p;
                                     var key = PlayerKey( captured.SteamId );
                                     var selected = _selectionKey == key;
-                                    var label = string.IsNullOrEmpty( captured.DisplayName ) ? captured.SteamId : captured.DisplayName;
+                                    var name = string.IsNullOrEmpty( captured.DisplayName ) ? captured.SteamId : captured.DisplayName;
+                                    var idLabel = captured.MirageId > 0 ? $"#{captured.MirageId}" : "(hors ligne)";
                                     <div class="rail-row @(selected ? "rail-row--selected" : "")" @onclick="@(() => Select( key ))">
-                                        <Label class="rail-title" Text="@label" />
-                                        <Label class="rail-meta" Text="@($"{captured.Permissions.Count} perm.")" />
+                                        <Label class="rail-title" Text="@name" />
+                                        <Label class="rail-meta" Text="@($"{idLabel} · {captured.Permissions.Count} perm.")" />
                                     </div>
                                 }
                             </div>
@@ -169,9 +170,10 @@
                     else if ( sp is not null )
                     {
                         var label = string.IsNullOrEmpty( sp.DisplayName ) ? sp.SteamId : sp.DisplayName;
+                        var idMeta = sp.MirageId > 0 ? $"id : #{sp.MirageId}   ·   steamID : {sp.SteamId}" : $"hors ligne   ·   steamID : {sp.SteamId}";
                         <div class="pane-header">
                             <MirageLabel Variant="@(MirageLabel.LabelVariant.Heading)" Text="@label" />
-                            <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Muted)" Text="@($"steamID : {sp.SteamId}")" />
+                            <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Muted)" Text="@idMeta" />
                         </div>
 
                         <MirageDivider />
@@ -249,7 +251,7 @@
     private MirageTextInput _newGroupId;
     private MirageTextInput _newGroupName;
     private MirageTextInput _newGroupPriority;
-    private MirageTextInput _newPlayerSteam;
+    private MirageTextInput _newPlayerMirageId;
     private MirageTextInput _newPlayerPermission;
 
     protected override void OnStart()
@@ -430,12 +432,12 @@
 
     private void SubmitNewPlayer()
     {
-        var sid = (_newPlayerSteam?.Text ?? "").Trim();
+        var raw = (_newPlayerMirageId?.Text ?? "").Trim();
         var perm = (_newPlayerPermission?.Text ?? "").Trim();
 
-        if ( !System.Text.RegularExpressions.Regex.IsMatch( sid, @"^\d{17}$" ) )
+        if ( !int.TryParse( raw, out var mirageId ) || mirageId <= 0 )
         {
-            MiragePermissionsEditorState.SetError( "SteamID64 doit faire 17 chiffres." );
+            MiragePermissionsEditorState.SetError( "ID joueur invalide." );
             return;
         }
         if ( string.IsNullOrEmpty( perm ) || perm.Length > 128 )
@@ -444,12 +446,14 @@
             return;
         }
 
-        MiragePermissionsEditorService.RpcAddPlayerPermission( sid, perm );
+        // The host translates the MirageId to a steam id from the
+        // currently-connected players, then routes to the existing
+        // steam-id-keyed permission write.
+        MiragePermissionsEditorService.RpcAddPlayerPermissionByMirageId( mirageId, perm );
 
         _newPlayerOpen = false;
-        _newPlayerSteam?.Clear();
+        _newPlayerMirageId?.Clear();
         _newPlayerPermission?.Clear();
-        _selectionKey = PlayerKey( sid );
         StateHasChanged();
     }
 

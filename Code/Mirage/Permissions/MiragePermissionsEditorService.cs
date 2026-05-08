@@ -73,6 +73,22 @@ public static class MiragePermissionsEditorService
 		_ = HandleAddPlayerPermissionAsync( caller, steamId, permission );
 	}
 
+	/// <summary>
+	/// MirageId-based variant of <see cref="RpcAddPlayerPermission"/>. The
+	/// editor UI calls this when the operator types "42" in the add-player
+	/// input. The host translates the MirageId to the steam id of a
+	/// currently-connected player and forwards. Offline targets fail with
+	/// a clear error: looking up an offline MirageId would require an
+	/// extra API round trip and is out of scope for now.
+	/// </summary>
+	[Rpc.Host]
+	public static void RpcAddPlayerPermissionByMirageId( int mirageId, string permission )
+	{
+		var caller = Rpc.Caller;
+		if ( caller is null ) return;
+		_ = HandleAddPlayerPermissionByMirageIdAsync( caller, mirageId, permission );
+	}
+
 	[Rpc.Host]
 	public static void RpcRemovePlayerPermission( string steamId, string permission )
 	{
@@ -210,6 +226,28 @@ public static class MiragePermissionsEditorService
 		}
 	}
 
+	private static async Task HandleAddPlayerPermissionByMirageIdAsync( Connection caller, int mirageId, string permission )
+	{
+		if ( !RequireEditor( caller, out var err ) ) { await GameTask.MainThread(); DeliverError( caller, err ); return; }
+
+		if ( mirageId <= 0 )
+		{
+			await GameTask.MainThread();
+			DeliverError( caller, "ID joueur invalide." );
+			return;
+		}
+
+		var pd = PlayerData.All.FirstOrDefault( p => p.MirageId == mirageId );
+		if ( pd is null )
+		{
+			await GameTask.MainThread();
+			DeliverError( caller, $"Aucun joueur connecté avec l'id {mirageId}." );
+			return;
+		}
+
+		await HandleAddPlayerPermissionAsync( caller, pd.SteamId.ToString(), permission );
+	}
+
 	private static async Task HandleAddPlayerPermissionAsync( Connection caller, string steamIdString, string permission )
 	{
 		if ( !RequireEditor( caller, out var err ) ) { await GameTask.MainThread(); DeliverError( caller, err ); return; }
@@ -302,10 +340,18 @@ public static class MiragePermissionsEditorService
 			if ( !long.TryParse( ov.SteamId, out var sid ) ) continue;
 			var detail = await MirageApiClient.GetPlayerPermissionsAsync( sid );
 			var conn = Connection.All.FirstOrDefault( c => (long)c.SteamId == sid );
+
+			// Pull the MirageId from a connected PlayerData when possible so
+			// the editor can render "#42" next to the name. Players who are
+			// offline at the time of the snapshot get MirageId = 0, the UI
+			// then falls back to "(hors ligne)" instead of a stale id.
+			var pd = PlayerData.All.FirstOrDefault( p => p.SteamId == sid );
+
 			snap.Players.Add( new MiragePermissionsEditorPlayerEntry
 			{
 				SteamId = ov.SteamId,
-				DisplayName = conn?.DisplayName ?? "",
+				MirageId = pd?.MirageId ?? 0,
+				DisplayName = conn?.DisplayName ?? pd?.DisplayName ?? "",
 				Permissions = detail?.Permissions ?? new List<string>()
 			} );
 		}
