@@ -104,5 +104,31 @@ public static class MirageCommands
 			UsageHint = "Usage : /bring <id>.",
 			Handler = MirageSessionCommands.HandleBring
 		} );
+
+		CommandRegistry.Register( new CommandSpec
+		{
+			Name = "car",
+			Description = "Fait apparaître un véhicule devant toi",
+			Permission = "command.car",
+			UsageHint = "Usage : /car <modelId>.",
+			Handler = MirageVehicleCommands.HandleCar
+		} );
+
+		CommandRegistry.Register( new CommandSpec
+		{
+			Name = "cars",
+			Description = "Liste les modèles de véhicules disponibles",
+			Permission = "command.car",
+			Handler = MirageVehicleCommands.HandleCarsList
+		} );
+
+		CommandRegistry.Register( new CommandSpec
+		{
+			Name = "dv",
+			Description = "Supprime le véhicule en cours, ou tous dans un rayon",
+			Permission = "command.dv",
+			UsageHint = "Usage : /dv   |   /dv <radius>.",
+			Handler = MirageVehicleCommands.HandleDeleteVehicle
+		} );
 	}
 }
