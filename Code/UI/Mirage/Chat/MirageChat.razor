@@ -1,0 +1,333 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@using Sandbox.Mirage
+@using Sandbox.Mirage.UI
+@inherits PanelComponent
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-chat @(_isFocused ? "mirage-chat--open" : "") @(_isHidden ? "mirage-chat--hidden" : "")">
+
+    <div class="messages">
+        @foreach ( var entry in VisibleEntries() )
+        {
+            var stale = !_isFocused && entry.TimeSinceAdded > FadeAfterSeconds;
+            <div class="line line--@(entry.Message.Kind.ToString().ToLower()) @(stale ? "line--stale" : "")">
+                @if ( entry.Message.Kind == MirageChatMessage.MessageKind.Chat && entry.Message.SteamId > 0 )
+                {
+                    <div class="avatar" style="background-image: url( avatar:@entry.Message.SteamId )"></div>
+                }
+                else if ( entry.Message.Kind == MirageChatMessage.MessageKind.System )
+                {
+                    <div class="badge badge--system"><Label Text="i" /></div>
+                }
+                else if ( entry.Message.Kind == MirageChatMessage.MessageKind.Error )
+                {
+                    <div class="badge badge--error"><Label Text="!" /></div>
+                }
+
+                @if ( !string.IsNullOrEmpty( entry.Message.Author ) )
+                {
+                    <Label class="author" Text="@entry.Message.Author" />
+                }
+                <Label class="body" Text="@entry.Message.Body" />
+            </div>
+        }
+    </div>
+
+    @if ( _isFocused && _suggestions.Count > 0 )
+    {
+        <div class="suggestions">
+            @for ( int i = 0; i < _suggestions.Count; i++ )
+            {
+                var idx = i;
+                var s = _suggestions[i];
+                var selected = idx == 0;
+                <div class="suggestion @(selected ? "suggestion--selected" : "")" @onclick="@(() => ApplySuggestion( s ))">
+                    <Label class="token" Text="@($"/{BuildSuggestionPath( s )}")" />
+                    @if ( !string.IsNullOrEmpty( s.Description ) )
+                    {
+                        <Label class="hint" Text="@s.Description" />
+                    }
+                </div>
+            }
+            <div class="suggestion-foot">
+                <Label class="kbd" Text="TAB" />
+                <Label class="kbd-hint" Text="pour compléter" />
+            </div>
+        </div>
+    }
+
+    <div class="input-row">
+        <MirageChatEntry @ref="_entry"
+                         class="entry"
+                         Placeholder="@InputPlaceholder"
+                         MaxLength="@MaxBodyLength"
+                         OnTextEdited="@OnInputChange"
+                         @onsubmit="@OnInputSubmit" />
+    </div>
+
+</root>
+
+@code
+{
+    private const int MaxBodyLength = 300;
+    private const float FadeAfterSeconds = 20f;
+    private const int MaxRenderedEntries = 50;
+    private const int MaxHistoryEntries = 50;
+    private const string InputPlaceholder = "Appuie sur Entrée pour parler. Tape / pour les commandes.";
+
+    private MirageChatEntry _entry;
+    private bool _isFocused;
+    private bool _isHidden;
+    private string _currentInput = "";
+    private List<CommandSuggestion> _suggestions = new();
+    private int _renderedVersion = -1;
+    private RealTimeSince _timeSinceTick;
+
+    // Local history of submitted lines. Up arrow walks backward toward older
+    // entries, down arrow walks forward toward the live draft. _historyIndex
+    // == -1 means "live", anything else points into _history.
+    private readonly List<string> _history = new();
+    private int _historyIndex = -1;
+    private string _draft = "";
+
+    protected override void OnStart()
+    {
+        base.OnStart();
+        // Re-bind callbacks each session so the entry knows where to send
+        // Tab / arrow key events. Refs survive hot reloads but the closures
+        // captured in the @ref'd component need to point at this instance.
+        if ( _entry is not null )
+        {
+            _entry.OnTabKey = OnTabKey;
+            _entry.OnArrowUp = OnArrowUp;
+            _entry.OnArrowDown = OnArrowDown;
+        }
+    }
+
+    protected override void OnUpdate()
+    {
+        if ( _entry is null ) return;
+
+        // The @ref binds after the first render, so we wire the callbacks
+        // here as well. Cheap to set every frame, idempotent.
+        if ( _entry.OnTabKey is null )
+        {
+            _entry.OnTabKey = OnTabKey;
+            _entry.OnArrowUp = OnArrowUp;
+            _entry.OnArrowDown = OnArrowDown;
+        }
+
+        var focused = _entry.HasFocus;
+
+        // Press the chat key to focus the input. The Sandbox base game binds
+        // this action to Enter; while focused, the TextEntry consumes the
+        // press and submits via @onsubmit.
+        if ( !focused && Input.Pressed( "Chat" ) )
+        {
+            _entry.Focus();
+            focused = true;
+        }
+
+        if ( focused != _isFocused )
+        {
+            _isFocused = focused;
+            StateHasChanged();
+        }
+
+        var hidden = Player.FindLocalPlayer()?.WantsHideHud ?? false;
+        if ( hidden != _isHidden )
+        {
+            _isHidden = hidden;
+            StateHasChanged();
+        }
+
+        if ( _renderedVersion != MirageChatLog.Version )
+        {
+            _renderedVersion = MirageChatLog.Version;
+            StateHasChanged();
+        }
+
+        // Re-render once a second so the fade-out kicks in without holding
+        // a per-entry timer.
+        if ( _timeSinceTick > 1f )
+        {
+            _timeSinceTick = 0f;
+            StateHasChanged();
+        }
+    }
+
+    private IEnumerable<MirageChatLog.Entry> VisibleEntries()
+    {
+        var entries = MirageChatLog.Entries;
+        var start = Math.Max( 0, entries.Count - MaxRenderedEntries );
+        for ( int i = start; i < entries.Count; i++ )
+        {
+            yield return entries[i];
+        }
+    }
+
+    private void OnInputChange( string text )
+    {
+        _currentInput = text ?? "";
+        // Stay in history navigation only as long as the displayed text still
+        // matches the entry the arrow keys put there. If the user typed
+        // something else, drop back to live-draft mode and remember it.
+        if ( _historyIndex >= 0 && _historyIndex < _history.Count
+            && _currentInput == _history[_historyIndex] )
+        {
+            // still walking the history, leave _draft alone
+        }
+        else
+        {
+            _historyIndex = -1;
+            _draft = _currentInput;
+        }
+        RebuildSuggestions();
+        StateHasChanged();
+    }
+
+    private void OnInputSubmit()
+    {
+        var trimmed = (_entry?.Text ?? "").Trim();
+        if ( !string.IsNullOrEmpty( trimmed ) )
+        {
+            MirageChatBus.RpcSubmit( trimmed );
+            PushHistory( trimmed );
+        }
+        if ( _entry is not null ) _entry.Text = "";
+        _currentInput = "";
+        _draft = "";
+        _historyIndex = -1;
+        _suggestions.Clear();
+        StateHasChanged();
+    }
+
+    private void PushHistory( string line )
+    {
+        // Don't duplicate the most recent entry.
+        if ( _history.Count > 0 && _history[_history.Count - 1] == line ) return;
+        _history.Add( line );
+        while ( _history.Count > MaxHistoryEntries )
+        {
+            _history.RemoveAt( 0 );
+        }
+    }
+
+    private void OnTabKey()
+    {
+        if ( _suggestions.Count == 0 ) return;
+        ApplySuggestion( _suggestions[0] );
+    }
+
+    private void OnArrowUp()
+    {
+        if ( _history.Count == 0 ) return;
+
+        // First press: stash the live draft and jump to the most recent line.
+        if ( _historyIndex < 0 )
+        {
+            _draft = _entry?.Text ?? "";
+            _historyIndex = _history.Count - 1;
+        }
+        else if ( _historyIndex > 0 )
+        {
+            _historyIndex--;
+        }
+
+        SetEntryText( _history[_historyIndex] );
+    }
+
+    private void OnArrowDown()
+    {
+        if ( _historyIndex < 0 ) return;
+
+        if ( _historyIndex < _history.Count - 1 )
+        {
+            _historyIndex++;
+            SetEntryText( _history[_historyIndex] );
+        }
+        else
+        {
+            // Walked past the newest entry, restore the draft and exit history.
+            _historyIndex = -1;
+            SetEntryText( _draft );
+        }
+    }
+
+    private void SetEntryText( string value )
+    {
+        if ( _entry is null ) return;
+        _entry.Text = value ?? "";
+        // Park the caret past the last character so the operator keeps typing
+        // from the end after a Tab completion or a history walk.
+        _entry.CaretPosition = _entry.TextLength;
+        _currentInput = _entry.Text;
+        RebuildSuggestions();
+        StateHasChanged();
+    }
+
+    private void RebuildSuggestions()
+    {
+        if ( string.IsNullOrEmpty( _currentInput ) || !_currentInput.TrimStart().StartsWith( "/" ) )
+        {
+            _suggestions.Clear();
+            return;
+        }
+        _suggestions = CommandRegistry.Suggest( _currentInput, MiragePermissionsState.HasLocal );
+    }
+
+    private void ApplySuggestion( CommandSuggestion s )
+    {
+        if ( s is null || _entry is null ) return;
+
+        var raw = _entry.Text ?? "";
+        var leading = "";
+        var rest = raw;
+        if ( rest.StartsWith( "/" ) )
+        {
+            leading = "/";
+            rest = rest.Substring( 1 );
+        }
+
+        bool endsOnSpace = rest.Length > 0 && char.IsWhiteSpace( rest[rest.Length - 1] );
+        string completed;
+        if ( endsOnSpace || rest.Length == 0 )
+        {
+            completed = rest;
+        }
+        else
+        {
+            var lastSpace = rest.LastIndexOf( ' ' );
+            completed = lastSpace < 0 ? "" : rest.Substring( 0, lastSpace + 1 );
+        }
+
+        var newText = leading + completed + s.Token + " ";
+        SetEntryText( newText );
+    }
+
+    private string BuildSuggestionPath( CommandSuggestion s )
+    {
+        // Show the full path of the suggestion as the user would type it,
+        // not just the leaf token. e.g. "/permissions editor".
+        var raw = _currentInput ?? "";
+        var rest = raw;
+        if ( rest.StartsWith( "/" ) ) rest = rest.Substring( 1 );
+
+        bool endsOnSpace = rest.Length > 0 && char.IsWhiteSpace( rest[rest.Length - 1] );
+        string completed;
+        if ( endsOnSpace || rest.Length == 0 ) completed = rest;
+        else
+        {
+            var lastSpace = rest.LastIndexOf( ' ' );
+            completed = lastSpace < 0 ? "" : rest.Substring( 0, lastSpace + 1 );
+        }
+
+        return completed + s.Token;
+    }
+
+    protected override int BuildHash() => System.HashCode.Combine( _isFocused, _isHidden, _currentInput, _suggestions.Count, MirageChatLog.Version, RealTime.Now.CeilToInt() );
+}

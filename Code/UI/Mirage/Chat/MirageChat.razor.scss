@@ -1,0 +1,217 @@
+// @author Epyi
+
+@import "/UI/Mirage/Theme/MirageTheme.scss";
+
+MirageChat
+{
+    position: absolute;
+    top: $mirage-space-3;
+    left: $mirage-space-3;
+    width: 480px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: $mirage-space-2;
+    pointer-events: none;
+    z-index: 50;
+    font-family: $mirage-font-family;
+
+    &.mirage-chat--hidden
+    {
+        opacity: 0;
+    }
+
+    .messages
+    {
+        // Fixed-height window with newest messages anchored at the bottom.
+        // Older messages get pushed up and clipped past the top edge so each
+        // line keeps its natural height rather than getting squeezed when
+        // many lines stack up.
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: stretch;
+        gap: $mirage-space-1;
+        height: 320px;
+        overflow: hidden;
+
+        .line
+        {
+            flex-direction: row;
+            align-items: center;
+            flex-shrink: 0;
+            gap: $mirage-space-2;
+            padding: $mirage-space-1 $mirage-space-2;
+            background-color: rgba( 0, 0, 0, 0.55 );
+            border: $mirage-border-width solid $mirage-border-soft;
+            font-size: $mirage-font-sm;
+            line-height: 1em;
+            transition: opacity $mirage-transition;
+
+            .avatar
+            {
+                width: 14px;
+                height: 14px;
+                background-position: center;
+                background-size: cover;
+                flex-shrink: 0;
+            }
+
+            .badge
+            {
+                width: 14px;
+                height: 14px;
+                justify-content: center;
+                align-items: center;
+                flex-shrink: 0;
+                font-weight: 800;
+                font-size: $mirage-font-xs;
+                background-color: rgba( 255, 255, 255, 0.05 );
+                border: 1px solid $mirage-border;
+                color: $mirage-text-secondary;
+
+                &.badge--error
+                {
+                    color: $mirage-danger;
+                    border-color: $mirage-border-danger;
+                }
+            }
+
+            .author
+            {
+                color: $mirage-text-primary;
+                font-weight: 700;
+                font-size: $mirage-font-sm;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            .body
+            {
+                color: $mirage-text-primary;
+                font-weight: 400;
+                font-size: $mirage-font-sm;
+                white-space: normal;
+            }
+
+            &.line--system
+            {
+                .body { color: $mirage-text-secondary; font-style: italic; }
+            }
+
+            &.line--error
+            {
+                .body { color: $mirage-danger; font-weight: 600; }
+            }
+
+            &.line--stale
+            {
+                opacity: 0.0;
+            }
+        }
+    }
+
+    &.mirage-chat--open
+    {
+        .messages
+        {
+            // Once the chat is open the operator can scroll the backlog and
+            // every message is visible regardless of age.
+            overflow: scroll;
+
+            .line.line--stale
+            {
+                opacity: 1.0;
+            }
+        }
+    }
+
+    .suggestions
+    {
+        pointer-events: auto;
+        flex-direction: column;
+        align-items: stretch;
+        background-color: $mirage-bg-elevated;
+        border: $mirage-border-width solid $mirage-border-strong;
+        backdrop-filter: blur( 12px );
+        padding: $mirage-space-1 0;
+        gap: 1px;
+
+        .suggestion
+        {
+            flex-direction: row;
+            align-items: center;
+            gap: $mirage-space-3;
+            padding: $mirage-space-2 $mirage-space-3;
+            cursor: pointer;
+            transition: background-color $mirage-transition-fast;
+
+            .token
+            {
+                color: $mirage-text-primary;
+                font-weight: 700;
+                font-size: $mirage-font-md;
+                flex-shrink: 0;
+            }
+
+            .hint
+            {
+                color: $mirage-text-secondary;
+                font-size: $mirage-font-sm;
+            }
+
+            &:hover, &.suggestion--selected
+            {
+                background-color: $mirage-bg-active;
+            }
+        }
+
+        .suggestion-foot
+        {
+            flex-direction: row;
+            align-items: center;
+            gap: $mirage-space-2;
+            padding: $mirage-space-1 $mirage-space-3;
+            border-top: 1px solid $mirage-border-soft;
+
+            .kbd
+            {
+                color: $mirage-text-primary;
+                font-weight: 700;
+                font-size: $mirage-font-xs;
+                letter-spacing: $mirage-letter-wide;
+                background-color: rgba( 255, 255, 255, 0.08 );
+                border: 1px solid $mirage-border-soft;
+                padding: 2px 6px;
+            }
+
+            .kbd-hint
+            {
+                color: $mirage-text-muted;
+                font-size: $mirage-font-xs;
+            }
+        }
+    }
+
+    .input-row
+    {
+        pointer-events: auto;
+        opacity: 0;
+        max-height: 0px;
+        transition: opacity $mirage-transition, max-height $mirage-transition;
+
+        .entry
+        {
+            @include mirage-input-base;
+            width: 100%;
+            font-size: $mirage-font-md;
+        }
+    }
+
+    &.mirage-chat--open
+    {
+        .input-row
+        {
+            opacity: 1;
+            max-height: 80px;
+        }
+    }
+}

@@ -104,7 +104,7 @@
           "__guid": "f4db1e0e-10e2-4605-bc99-25e03b774b7f",
           "__version": 2,
           "Flags": 0,
-          "Name": "Chat",
+          "Name": "Mirage Chat",
           "Position": "0,0,0",
           "Rotation": "0,0,0,1",
           "Scale": "1,1,1",
@@ -117,7 +117,7 @@
           "OwnerTransfer": 1,
           "Components": [
             {
-              "__type": "Sandbox.UI.Chat",
+              "__type": "Sandbox.Mirage.UI.MirageChat",
               "__guid": "9eba23b9-74cc-4d75-9f32-615a2060759c",
               "__enabled": true,
               "Flags": 0,

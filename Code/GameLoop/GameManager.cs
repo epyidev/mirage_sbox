@@ -23,7 +23,7 @@ public sealed partial class GameManager : GameObjectSystem<GameManager>, Compone
 		CheckConnectionAchievement( channel );
 		CheckFriendsOnlineStat();
 
-		Scene.Get<Chat>()?.AddSystemText( $"{channel.DisplayName} has joined the game", "👋" );
+		Sandbox.Mirage.MirageChatBus.BroadcastSystem( $"{channel.DisplayName} a rejoint la partie." );
 	}
 
 	/// <summary>
@@ -42,7 +42,7 @@ public sealed partial class GameManager : GameObjectSystem<GameManager>, Compone
 		if ( _kickedPlayers.Remove( channel.Id ) ) return;
 		if ( BanSystem.Current?.IsBanned( channel.SteamId ) ?? false ) return;
 
-		Scene.Get<Chat>()?.AddSystemText( $"{channel.DisplayName} has left the game", "👋" );
+		Sandbox.Mirage.MirageChatBus.BroadcastSystem( $"{channel.DisplayName} a quitté la partie." );
 	}
 
 	private PlayerData CreatePlayerInfo( Connection channel )

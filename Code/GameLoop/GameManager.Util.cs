@@ -21,7 +21,7 @@ public sealed partial class GameManager
 		Assert.True( Networking.IsHost, "Only the host may kick players." );
 
 		_kickedPlayers.Add( connection.Id );
-		Scene.Get<Chat>()?.AddSystemText( $"{connection.DisplayName} was kicked: {reason}", "🥾" );
+		Sandbox.Mirage.MirageChatBus.BroadcastSystem( $"{connection.DisplayName} a été expulsé : {reason}." );
 		connection.Kick( reason );
 	}
 
@@ -82,7 +82,6 @@ public sealed partial class GameManager
 
 		ConsoleSystem.Run( name, value ? "true" : "false" );
 
-		var chat = Game.ActiveScene?.Get<Chat>();
-		chat?.AddSystemText( $"{name} set to {(value ? "On" : "Off")}", "⚙️" );
+		Sandbox.Mirage.MirageChatBus.BroadcastSystem( $"{name} : {(value ? "On" : "Off")}." );
 	}
 }
