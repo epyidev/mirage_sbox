@@ -10,9 +10,9 @@
 
 <root class="mirage-inventory-panel @(MirageInventoryPanelState.IsOpen ? "open" : "")">
 
-    <div class="backdrop" @onclick="@Close" @onmouseup="@( ( MousePanelEvent e ) => OnBackdropMouseUp( e ) )"></div>
+    <div class="backdrop" @onclick="@Close" @onmouseup="@OnBackdropMouseUp"></div>
 
-    <div class="frame" @onmouseup="@( ( MousePanelEvent e ) => OnFrameMouseUp( e ) )">
+    <div class="frame" @onmouseup="@OnFrameMouseUp">
 
         <div class="frame-header">
             <MirageLabel Variant="@(MirageLabel.LabelVariant.Heading)" Text="Inventaire" />
@@ -52,8 +52,8 @@
                         var empty = slot is null || slot.IsEmpty;
                         var dragging = _dragSource == idx;
                         <div class="cell @(selected ? "cell--selected" : "") @(empty ? "cell--empty" : "") @(dragging ? "cell--dragging" : "")"
-                             @onmousedown="@( ( MousePanelEvent e ) => OnSlotMouseDown( captured, e ) )"
-                             @onmouseup="@( ( MousePanelEvent e ) => OnSlotMouseUp( captured, e ) )"
+                             @onmousedown="@(() => OnSlotMouseDown( captured ))"
+                             @onmouseup="@(() => OnSlotMouseUp( captured ))"
                              @onmouseover="@(() => OnSlotHover( captured ))">
                             <div class="cell-top">
                                 <Label class="cell-key" Text="@(row == 0 ? (col + 1).ToString() : "")" />
@@ -174,10 +174,16 @@
 
     // -------- Drag and drop interactions --------
 
-    private void OnSlotMouseDown( int idx, MousePanelEvent e )
+    // No event-arg overloads on these handlers: s&box's Razor binds
+    // @onmouseup to an Action that gets the source Panel, not a
+    // MousePanelEvent, so typing the parameter as MousePanelEvent triggers
+    // an InvalidCastException at every render. The behaviour stays correct
+    // because the slot handler clears _dragSource before the frame handler
+    // bubbles, so the frame's "cancel drag" branch becomes a no-op.
+
+    private void OnSlotMouseDown( int idx )
     {
         if ( _inventory is null ) return;
-        if ( e is not null && e.MouseButton != MouseButtons.Left ) return;
         var slot = _inventory.Slot( idx );
         if ( slot is null || slot.IsEmpty ) return;
         _dragSource = idx;
@@ -186,42 +192,36 @@
         StateHasChanged();
     }
 
-    private void OnSlotMouseUp( int idx, MousePanelEvent e )
+    private void OnSlotMouseUp( int idx )
     {
-        if ( !IsDragging )
-        {
-            // No drag in flight: stop here so the frame's mouseup does not
-            // also fire on this same press-release sequence.
-            e?.StopPropagation();
-            return;
-        }
+        if ( !IsDragging ) return;
 
         if ( _dragSource != idx )
         {
             MirageInventoryService.RpcMoveSlot( _dragSource, idx );
         }
         CancelDrag();
-        e?.StopPropagation();
     }
 
-    private void OnFrameMouseUp( MousePanelEvent e )
+    private void OnFrameMouseUp()
     {
         // Mouseup landed on the frame chrome but not on a slot: cancel the
-        // drag without dropping or moving anything. The frame is a sibling
-        // of the backdrop so no drop-to-floor will fire either.
+        // drag without dropping or moving anything. Slot handlers run first
+        // and clear _dragSource, so this is a no-op when the mouseup
+        // actually landed on a slot inside the frame.
         if ( !IsDragging ) return;
         CancelDrag();
-        e?.StopPropagation();
     }
 
-    private void OnBackdropMouseUp( MousePanelEvent e )
+    private void OnBackdropMouseUp()
     {
         // Mouseup outside the frame entirely (the backdrop fills the rest
-        // of the screen): drop the dragged stack into the world.
+        // of the screen): drop the dragged stack into the world. The
+        // backdrop is a sibling of the frame, not an ancestor, so frame /
+        // slot mouseups do not bubble here.
         if ( !IsDragging ) return;
         MirageInventoryService.RpcDropSlot( _dragSource, 0 );
         CancelDrag();
-        e?.StopPropagation();
     }
 
     private void CancelDrag()
