@@ -89,6 +89,22 @@
             }
         }
 
+        // Mouse wheel cycles through hotbar slots. Skip while the inventory
+        // panel is open so wheel scroll inside the panel does not
+        // accidentally also rotate the hotbar selection.
+        if ( !MirageInventoryPanelState.IsOpen )
+        {
+            var wheel = Input.MouseWheel.y;
+            if ( wheel != 0f )
+            {
+                var step = wheel > 0f ? -1 : 1;
+                var current = _inventory.SelectedSlot;
+                if ( current < 0 ) current = 0;
+                var next = (current + step + MirageInventory.HotbarColumns) % MirageInventory.HotbarColumns;
+                MirageInventoryService.RpcSelectSlot( next );
+            }
+        }
+
         if ( Input.Pressed( "Drop" ) )
         {
             var sel = _inventory.SelectedSlot;

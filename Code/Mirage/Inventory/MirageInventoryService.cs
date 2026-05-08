@@ -18,11 +18,12 @@ public static class MirageInventoryService
 	{
 		var (player, inv) = ResolveCallerInventory();
 		if ( inv is null ) return;
-		if ( slotIndex < -1 || slotIndex >= MirageInventory.HotbarColumns ) return;
+		if ( slotIndex < 0 || slotIndex >= MirageInventory.HotbarColumns ) return;
 
-		// Toggle off when the operator presses the same hotbar key twice.
-		var next = inv.SelectedSlot == slotIndex ? -1 : slotIndex;
-		inv.SetSelectedSlot( next );
+		// No toggle: pressing the same hotbar key twice keeps the slot
+		// selected. The operator always has exactly one hotbar slot in
+		// hand, the only way to switch is to point at another one.
+		inv.SetSelectedSlot( slotIndex );
 		MirageInventoryEquip.ApplyEquip( player, inv );
 	}
 

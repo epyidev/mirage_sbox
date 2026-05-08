@@ -19,11 +19,14 @@ public sealed class MirageInventory : Component
 	private MirageInventorySlot[] _slots;
 
 	/// <summary>
-	/// Currently selected hotbar slot, in range [0, <see cref="HotbarColumns"/>).
-	/// -1 means nothing in hand. Synced so listeners (weapon equip, animations)
-	/// react on every client.
+	/// Currently selected hotbar slot, in range
+	/// [0, <see cref="HotbarColumns"/>). The first slot is selected by
+	/// default and the operator can never end up with no slot in hand
+	/// through the UI: pressing the same hotbar key twice keeps the slot
+	/// selected, only switching to a different slot (or scrolling) moves
+	/// the selection.
 	/// </summary>
-	[Sync( SyncFlags.FromHost ), Change] public int SelectedSlot { get; set; } = -1;
+	[Sync( SyncFlags.FromHost ), Change] public int SelectedSlot { get; set; } = 0;
 
 	/// <summary>
 	/// Sync change callback. Bumps <see cref="Version"/> so the local UI
@@ -229,7 +232,7 @@ public sealed class MirageInventory : Component
 	public void SetSelectedSlot( int slotIndex )
 	{
 		Assert.True( Networking.IsHost, "MirageInventory.SetSelectedSlot must run on the host" );
-		if ( slotIndex < -1 || slotIndex >= HotbarColumns ) return;
+		if ( slotIndex < 0 || slotIndex >= HotbarColumns ) return;
 		if ( SelectedSlot == slotIndex ) return;
 		SelectedSlot = slotIndex;
 		Version++;
