@@ -88,12 +88,11 @@ public sealed class MirageSession : GameObjectSystem<MirageSession>, ISceneStart
 		var player = Scene.GetAll<Player>().FirstOrDefault( x => x.Network.Owner?.Id == pd.PlayerId );
 		if ( !player.IsValid() ) return;
 
-		var pos = player.WorldPosition;
-		float yaw = player.Controller.IsValid() ? player.Controller.EyeAngles.yaw : 0f;
-		long steamId = pd.SteamId;
-		string charId = pd.ActiveCharacterId;
-
-		_ = FlushPositionAsync( steamId, charId, new MiragePosition { X = pos.x, Y = pos.y, Z = pos.z, Yaw = yaw } );
+		// Atomic full-snapshot flush before the connection is gone. We
+		// fire-and-forget here because the engine does not give us a way
+		// to await on disconnect, but the snapshot has already been built
+		// from live state by the time the request leaves the host.
+		_ = MirageCharacterSave.FlushPlayerAsync( player );
 	}
 
 	void Global.IPlayerEvents.OnPlayerRespawning( PlayerRespawnEvent e )
@@ -178,18 +177,6 @@ public sealed class MirageSession : GameObjectSystem<MirageSession>, ISceneStart
 		catch ( Exception ex )
 		{
 			Log.Warning( $"[Mirage] Failed to track OOC profile for {steamId}: {ex.Message}" );
-		}
-	}
-
-	private static async Task FlushPositionAsync( long steamId, string characterId, MiragePosition pos )
-	{
-		try
-		{
-			await MirageApiClient.UpdateCharacterPositionAsync( steamId, characterId, pos );
-		}
-		catch ( Exception ex )
-		{
-			Log.Warning( $"[Mirage] Failed to flush position for character {characterId}: {ex.Message}" );
 		}
 	}
 
@@ -278,12 +265,14 @@ public sealed class MirageSession : GameObjectSystem<MirageSession>, ISceneStart
 	{
 		try
 		{
-			var list = await MirageApiClient.ListCharactersAsync( (long)caller.SteamId );
-			var pick = list.FirstOrDefault( c => c.Id == characterId );
+			// Single API round trip that pulls the full character payload
+			// (identity + position + vitals + wallets + inventory) so we
+			// can hydrate the in-memory components in one go.
+			var detail = await MirageApiClient.GetCharacterDetailAsync( (long)caller.SteamId, characterId );
 
 			await GameTask.MainThread();
 
-			if ( pick is null )
+			if ( detail is null || detail.SteamId != caller.SteamId.ToString() )
 			{
 				DeliverError( caller, "Personnage introuvable." );
 				return;
@@ -292,18 +281,16 @@ public sealed class MirageSession : GameObjectSystem<MirageSession>, ISceneStart
 			var pd = PlayerData.For( caller );
 			if ( pd is null ) return;
 
-			pd.ActiveCharacterId = pick.Id;
-			pd.FirstName = pick.FirstName;
-			pd.LastName = pick.LastName;
+			pd.ActiveCharacterId = detail.Id;
+			pd.FirstName = detail.FirstName;
+			pd.LastName = detail.LastName;
 
-			// Move the player out of limbo. Use the saved last position when
-			// available, otherwise pick a SpawnPoint. The teleport runs on the
-			// owning client (Rpc.Owner) so the controller picks up the new
-			// position cleanly.
 			var player = Game.ActiveScene.GetAll<Player>().FirstOrDefault( x => x.Network.Owner?.Id == pd.PlayerId );
 			if ( player.IsValid() )
 			{
-				var target = ResolveCharacterSpawn( pick );
+				ApplyLoadedState( player, detail );
+
+				var target = ResolveCharacterSpawn( detail );
 				player.MirageTeleport( target.Position, target.Rotation.Angles() );
 				ApplyLimboVisibility( player );
 			}
@@ -314,6 +301,76 @@ public sealed class MirageSession : GameObjectSystem<MirageSession>, ISceneStart
 			await GameTask.MainThread();
 			DeliverError( caller, "Impossible de sélectionner le personnage." );
 		}
+	}
+
+	/// <summary>
+	/// Host-only. Save the active character, clear every per-character
+	/// component (identity, inventory, wallet, equipped weapon), then send
+	/// the player back to the character-select limbo. Used by /relog so
+	/// the operator can swap character without a full deco/reco.
+	/// </summary>
+	public static async Task SendBackToCharacterSelectAsync( Player player )
+	{
+		Assert.True( Networking.IsHost, "MirageSession.SendBackToCharacterSelectAsync must run on the host" );
+		if ( !player.IsValid() ) return;
+		var pd = player.PlayerData;
+		if ( pd is null || !pd.HasActiveCharacter ) return;
+
+		// Persist the current character first so nothing is lost on the way out.
+		await MirageCharacterSave.FlushPlayerAsync( player );
+
+		// Clear identity. PlayerData fields are FromHost so the client
+		// re-reads the limbo state. The character-select UI keys on
+		// HasActiveCharacter so it reopens on its own.
+		pd.ActiveCharacterId = null;
+		pd.FirstName = "";
+		pd.LastName = "";
+
+		// Drop every active carryable so we do not keep the previous
+		// character's gun in the new character's hand.
+		var legacy = player.GetComponent<PlayerInventory>();
+		if ( legacy is not null )
+		{
+			foreach ( var carryable in legacy.Weapons.ToArray() )
+			{
+				carryable?.GameObject?.Destroy();
+			}
+			legacy.SwitchWeapon( null, allowHolster: true );
+		}
+
+		player.GetComponent<MirageInventory>()?.ClearAll();
+		player.GetComponent<MirageWallet>()?.Clear();
+
+		// Park the player back at the character-select limbo spot.
+		var target = new Transform(
+			MirageConVars.CharacterSelectPlayerPosition,
+			Rotation.FromYaw( MirageConVars.CharacterSelectPlayerYaw )
+		);
+		player.MirageTeleport( target.Position, target.Rotation.Angles() );
+		ApplyLimboVisibility( player );
+	}
+
+	/// <summary>
+	/// Push the API-loaded state onto the in-memory components. Health and
+	/// armour go through the synced fields on <see cref="Player"/>, the
+	/// wallet and the inventory each have a host-only Replace/LoadFromApi.
+	/// </summary>
+	private static void ApplyLoadedState( Player player, MirageCharacterDetail detail )
+	{
+		if ( detail is null || !player.IsValid() ) return;
+
+		// Vitals: clamp to the engine range so a corrupt row cannot push
+		// the player past the [Range] declared on Player.
+		player.Health = Math.Clamp( detail.Health, 0f, player.MaxHealth );
+		if ( detail.MaxHealth > 0 ) player.MaxHealth = detail.MaxHealth;
+		player.Armour = Math.Clamp( detail.Armour, 0f, player.MaxArmour );
+
+		var wallet = player.GetComponent<MirageWallet>();
+		wallet?.Replace( detail.Accounts );
+
+		var inv = player.GetComponent<MirageInventory>();
+		inv?.LoadFromApi( detail.Inventory );
+		MirageInventoryEquip.ApplyEquip( player, inv );
 	}
 
 	private static void DeliverCharacters( Connection target, List<MirageCharacterSummary> list )
