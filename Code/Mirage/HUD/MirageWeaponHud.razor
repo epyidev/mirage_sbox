@@ -7,57 +7,84 @@
 @inherits PanelComponent
 @namespace Sandbox.Mirage.UI
 
-@if ( !_player.IsValid() || _player.WantsHideHud )
-    return;
-
-@{
-    var slot = _inventory?.Slot( _inventory?.SelectedSlot ?? -1 );
-    var item = slot?.Item;
-    if ( item is null || string.IsNullOrEmpty( item.WeaponPrefab ) )
-        return;
-
-    var legacy = _player.GetComponent<PlayerInventory>();
-    var weapon = legacy?.ActiveWeapon as BaseWeapon;
-    if ( weapon is null || !weapon.UsesAmmo )
-        return;
-
-    var clip = weapon.UsesClips ? weapon.ClipContents : 0;
-    var clipMax = weapon.UsesClips ? weapon.ClipMaxSize : 0;
-    var reserve = !string.IsNullOrEmpty( item.WeaponAmmoType )
-        ? _inventory.CountById( item.WeaponAmmoType )
-        : weapon.ReserveAmmo;
-
-    var lowClass = weapon.UsesClips && clipMax > 0 && clip <= Math.Max( 1, clipMax / 4 ) ? "is-low" : "";
-}
-
 <root class="mirage-weapon-hud">
-
-    @if ( !string.IsNullOrEmpty( item.Image ) )
-    {
-        <div class="weapon-icon" style="background-image: url(@item.Image);"></div>
+    @{
+        var ctx = ResolveActiveWeapon();
     }
 
-    <div class="ammo-block @lowClass">
-        @if ( weapon.UsesClips )
-        {
-            <Label class="ammo-mag" Text="@clip.ToString()" />
-            <Label class="ammo-sep" Text="/" />
-            <Label class="ammo-reserve" Text="@reserve.ToString()" />
-        }
-        else
-        {
-            <Label class="ammo-mag" Text="@reserve.ToString()" />
-        }
-    </div>
+    @if ( ctx is not null )
+    {
+        var item = ctx.Item;
+        var weapon = ctx.Weapon;
+        var clipMax = weapon.UsesClips ? weapon.ClipMaxSize : 0;
+        var lowClass = weapon.UsesClips && clipMax > 0 && ctx.Clip <= Math.Max( 1, clipMax / 4 ) ? "is-low" : "";
 
-    <Label class="weapon-name" Text="@item.Label" />
+        <div class="frame">
 
+            @if ( !string.IsNullOrEmpty( item.Image ) )
+            {
+                <div class="weapon-icon" style="background-image: url(@item.Image);"></div>
+            }
+
+            <div class="ammo-block @lowClass">
+                @if ( weapon.UsesClips )
+                {
+                    <Label class="ammo-mag" Text="@ctx.Clip.ToString()" />
+                    <Label class="ammo-sep" Text="/" />
+                    <Label class="ammo-reserve" Text="@ctx.Reserve.ToString()" />
+                }
+                else
+                {
+                    <Label class="ammo-mag" Text="@ctx.Reserve.ToString()" />
+                }
+            </div>
+
+            <Label class="weapon-name" Text="@item.Label" />
+
+        </div>
+    }
 </root>
 
 @code
 {
     private Player _player;
     private MirageInventory _inventory;
+
+    private sealed class ActiveWeaponCtx
+    {
+        public MirageItem Item;
+        public BaseWeapon Weapon;
+        public int Clip;
+        public int Reserve;
+    }
+
+    /// <summary>
+    /// Resolve everything needed to render the weapon HUD. Returns null
+    /// when there is no weapon to display: empty hotbar slot, non-weapon
+    /// item in hand (bandage, phone, ...) or a weapon component that
+    /// does not consume ammo. The Razor block above only renders the
+    /// .frame visual when this returns a non-null context, so the panel
+    /// is fully invisible the rest of the time (no empty pill on screen).
+    /// </summary>
+    private ActiveWeaponCtx ResolveActiveWeapon()
+    {
+        if ( !_player.IsValid() || _player.WantsHideHud ) return null;
+        var slotIndex = _inventory?.SelectedSlot ?? -1;
+        var slot = _inventory?.Slot( slotIndex );
+        var item = slot?.Item;
+        if ( item is null || string.IsNullOrEmpty( item.WeaponPrefab ) ) return null;
+
+        var legacy = _player.GetComponent<PlayerInventory>();
+        if ( legacy?.ActiveWeapon is not BaseWeapon weapon ) return null;
+        if ( !weapon.UsesAmmo ) return null;
+
+        var clip = weapon.UsesClips ? weapon.ClipContents : 0;
+        var reserve = !string.IsNullOrEmpty( item.WeaponAmmoType )
+            ? _inventory.CountById( item.WeaponAmmoType )
+            : weapon.ReserveAmmo;
+
+        return new ActiveWeaponCtx { Item = item, Weapon = weapon, Clip = clip, Reserve = reserve };
+    }
 
     protected override void OnUpdate()
     {

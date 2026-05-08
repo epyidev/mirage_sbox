@@ -4,23 +4,32 @@
 
 MirageWeaponHud
 {
+    // The root only carries placement and is intentionally
+    // transparent: the visible panel lives on .frame, which only
+    // renders when the operator is actively holding a weapon. This
+    // keeps the corner empty when an empty slot, a non-weapon item
+    // (bandage, phone) or no item at all is in hand.
     position: absolute;
     bottom: $mirage-space-5;
     right: $mirage-space-5;
-    flex-direction: row;
-    align-items: center;
-    gap: $mirage-space-3;
-    // Vertical padding gives the tall mag digit (xxl = 36px) enough
-    // room above the baseline; without this the top of glyphs like
-    // "8" or "0" gets clipped by the panel border.
-    padding: $mirage-space-3 $mirage-space-4;
-    min-height: 64px;
-    background-color: rgba( 0, 0, 0, 0.55 );
-    border: $mirage-border-width solid $mirage-border-soft;
-    backdrop-filter: blur( 8px );
     pointer-events: none;
     z-index: 30;
     font-family: $mirage-font-family;
+
+    .frame
+    {
+        flex-direction: row;
+        align-items: center;
+        gap: $mirage-space-3;
+        // Vertical padding gives the tall mag digit (xxl = 36px) enough
+        // room above the baseline; without this the top of glyphs like
+        // "8" or "0" gets clipped by the panel border.
+        padding: $mirage-space-3 $mirage-space-4;
+        min-height: 64px;
+        background-color: rgba( 0, 0, 0, 0.55 );
+        border: $mirage-border-width solid $mirage-border-soft;
+        backdrop-filter: blur( 8px );
+    }
 
     .weapon-icon
     {
