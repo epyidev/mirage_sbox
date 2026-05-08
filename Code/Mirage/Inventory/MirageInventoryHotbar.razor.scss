@@ -26,7 +26,6 @@ MirageInventoryHotbar
         pointer-events: auto;
         flex-direction: column;
         align-items: stretch;
-        justify-content: flex-end;
         width: 64px;
         height: 64px;
         padding: $mirage-space-1;
@@ -36,52 +35,52 @@ MirageInventoryHotbar
         cursor: pointer;
         transition: border-color $mirage-transition-fast, background-color $mirage-transition-fast;
 
-        .cell-key
+        .cell-top
         {
-            position: absolute;
-            top: 4px;
-            left: 6px;
-            color: $mirage-text-muted;
-            font-size: $mirage-font-xs;
-            font-weight: 700;
-            letter-spacing: $mirage-letter-wide;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-shrink: 0;
+
+            .cell-key
+            {
+                color: $mirage-text-muted;
+                font-size: $mirage-font-xs;
+                font-weight: 700;
+                letter-spacing: $mirage-letter-wide;
+            }
+
+            .cell-count
+            {
+                color: $mirage-text-primary;
+                font-size: $mirage-font-xs;
+                font-weight: 700;
+                background-color: rgba( 0, 0, 0, 0.65 );
+                padding: 1px 4px;
+                border: 1px solid $mirage-border-soft;
+            }
         }
 
         .cell-letter
         {
+            flex: 1 1 0;
+            align-items: center;
+            justify-content: center;
             color: $mirage-text-primary;
             font-size: $mirage-font-xl;
             font-weight: 800;
-            text-align: center;
-            align-self: center;
-            margin-top: auto;
-            margin-bottom: auto;
-        }
-
-        .cell-count
-        {
-            position: absolute;
-            bottom: 4px;
-            right: 6px;
-            color: $mirage-text-primary;
-            font-size: $mirage-font-xs;
-            font-weight: 700;
-            background-color: rgba( 0, 0, 0, 0.65 );
-            padding: 2px 5px;
-            border: 1px solid $mirage-border-soft;
         }
 
         .cell-name
         {
-            position: absolute;
-            bottom: 2px;
-            left: 4px;
-            right: 4px;
+            flex-shrink: 0;
+            justify-content: center;
             color: $mirage-text-secondary;
             font-size: 9px;
             font-weight: 600;
             text-align: center;
             white-space: nowrap;
+            overflow: hidden;
         }
 
         &.cell--empty

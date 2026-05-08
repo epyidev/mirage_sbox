@@ -16,18 +16,28 @@
         var slot = _inventory?.Slot( idx );
         var item = slot?.Item;
         var selected = _inventory?.SelectedSlot == idx;
-        <div class="cell @(selected ? "cell--selected" : "") @(slot is null || slot.IsEmpty ? "cell--empty" : "")"
+        var empty = slot is null || slot.IsEmpty;
+        <div class="cell @(selected ? "cell--selected" : "") @(empty ? "cell--empty" : "")"
              @onclick="@(() => OnCellClick( idx ))">
-            <Label class="cell-key" Text="@((idx + 1).ToString())" />
-            @if ( slot is not null && !slot.IsEmpty )
-            {
-                <Label class="cell-letter" Text="@GetItemBadge( item, slot.ItemId )" />
-                @if ( slot.Count > 1 )
+            <div class="cell-top">
+                <Label class="cell-key" Text="@((idx + 1).ToString())" />
+                @if ( !empty && slot.Count > 1 )
                 {
                     <Label class="cell-count" Text="@slot.Count.ToString()" />
                 }
-                <Label class="cell-name" Text="@(item?.Label ?? slot.ItemId)" />
-            }
+            </div>
+            <div class="cell-letter">
+                @if ( !empty )
+                {
+                    <Label Text="@GetItemBadge( item, slot.ItemId )" />
+                }
+            </div>
+            <div class="cell-name">
+                @if ( !empty )
+                {
+                    <Label Text="@(item?.Label ?? slot.ItemId)" />
+                }
+            </div>
         </div>
     }
 
@@ -44,7 +54,6 @@
         _inventory ??= MirageInventory.ForLocalPlayer();
         if ( _inventory is null )
         {
-            // Player not yet spawned (character select). Hide the hotbar.
             if ( !_isHidden ) { _isHidden = true; StateHasChanged(); }
             return;
         }
@@ -70,8 +79,6 @@
     {
         if ( _inventory is null ) return;
         if ( _isHidden ) return;
-        // Skip key handling while a Mirage modal eats inputs (chat, panel, ...).
-        if ( MirageInventoryPanelState.IsOpen ) { /* still allow numbers, see below */ }
 
         for ( int i = 0; i < MirageInventory.HotbarColumns; i++ )
         {

@@ -329,14 +329,11 @@ public sealed partial class GameManager : GameObjectSystem<GameManager>, Compone
 
 		if ( s is null ) return;
 
-		var loadout = player.GetComponent<PlayerLoadout>();
-
 		// If there's already a spawner weapon in this slot, just update
 		if ( inventory.GetSlot( slot ) is SpawnerWeapon existingSpawner )
 		{
 			existingSpawner.SetSpawner( s );
 			inventory.SwitchWeapon( existingSpawner );
-			loadout?.SaveLoadout();
 			return;
 		}
 
@@ -349,7 +346,6 @@ public sealed partial class GameManager : GameObjectSystem<GameManager>, Compone
 
 		spawner.SetSpawner( s );
 		inventory.SwitchWeapon( spawner );
-		loadout?.SaveLoadout();
 	}
 
 	void IScenePhysicsEvents.OnOutOfBounds( Rigidbody body )
