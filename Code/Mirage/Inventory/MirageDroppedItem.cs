@@ -159,17 +159,19 @@ public sealed class MirageDroppedItem : Component, Component.IPressable
 	{
 		var go = new GameObject( true, "Mirage Drop" );
 		go.WorldPosition = position;
+		// The stock s&box cardboard box is sized for an adult to carry, so
+		// shrink the GameObject down to a small parcel that fits a player's
+		// pocket-sized item.
+		go.WorldScale = new Vector3( 0.45f, 0.45f, 0.45f );
 
 		var renderer = go.AddComponent<ModelRenderer>();
 		try { renderer.Model = Model.Load( DefaultBagModel ); } catch { }
 
-		// Cardboard box, sized for a portable parcel rather than a full
-		// shipping crate.
 		var collider = go.AddComponent<BoxCollider>();
 		collider.Scale = new Vector3( 16f, 16f, 14f );
 
 		var rb = go.AddComponent<Rigidbody>();
-		rb.MassOverride = 2f;
+		rb.MassOverride = 1.5f;
 
 		return go;
 	}
