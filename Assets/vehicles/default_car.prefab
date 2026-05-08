@@ -93,6 +93,19 @@
         "Torque": 24000
       },
       {
+        "__type": "Sandbox.Mirage.Vehicles.MirageVehicleSeat",
+        "__guid": "1c8e0a04-9c18-4b91-aa3d-a22a1d3b66f1",
+        "DriverPlayerId": "",
+        "SeatOffset": "0,0,28",
+        "ExitOffset": 90,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
+      },
+      {
         "__type": "Sandbox.Mirage.Vehicles.MirageKnockOnContact",
         "__guid": "34c15905-0cbe-4a8c-8971-23de3d7e94f0",
         "OnComponentDestroy": null,

@@ -44,28 +44,17 @@ public static class MirageVehicleSpawner
 	public static GameObject Spawn( Player player, MirageVehicle model )
 	{
 		Assert.True( Networking.IsHost, "MirageVehicleSpawner.Spawn must run on the host" );
-		if ( !player.IsValid() || model is null )
-		{
-			Log.Warning( "[Mirage] Vehicle spawn aborted: invalid player or model." );
-			return null;
-		}
-		if ( string.IsNullOrEmpty( model.PrefabPath ) )
-		{
-			Log.Warning( $"[Mirage] Vehicle '{model.Id}' has empty PrefabPath." );
-			return null;
-		}
-
-		Log.Info( $"[Mirage] Spawning vehicle '{model.Id}' from prefab '{model.PrefabPath}'..." );
+		if ( !player.IsValid() || model is null ) return null;
+		if ( string.IsNullOrEmpty( model.PrefabPath ) ) return null;
 
 		var prefab = GameObject.GetPrefab( model.PrefabPath );
 		if ( !prefab.IsValid() )
 		{
-			Log.Warning( $"[Mirage] Vehicle prefab '{model.PrefabPath}' could not be loaded (GameObject.GetPrefab returned null/invalid)." );
+			Log.Warning( $"[Mirage] Vehicle prefab '{model.PrefabPath}' could not be loaded." );
 			return null;
 		}
 
 		var spawn = ResolveSpawnTransform( player );
-		Log.Info( $"[Mirage] Vehicle spawn position: {spawn.Position} yaw={spawn.Rotation.Yaw()}" );
 
 		GameObject go;
 		try
@@ -82,14 +71,8 @@ public static class MirageVehicleSpawner
 			return null;
 		}
 
-		if ( !go.IsValid() )
-		{
-			Log.Warning( "[Mirage] prefab.Clone returned an invalid GameObject." );
-			return null;
-		}
+		if ( !go.IsValid() ) return null;
 
-		// Tag stamping so /dv and trace filters can find the vehicle
-		// without walking every component on the GameObject.
 		go.Tags.Add( VehicleTag );
 		go.Tags.Add( MirageVehicleTag );
 		go.Name = $"Mirage Vehicle ({model.Id})";
@@ -102,9 +85,6 @@ public static class MirageVehicleSpawner
 		go.NetworkSpawn( true, player.Network.Owner );
 
 		_registered.Add( go );
-
-		var tagsList = string.Join( ", ", go.Tags );
-		Log.Info( $"[Mirage] Vehicle '{model.Id}' spawned successfully (guid={go.Id}, tags=[{tagsList}], parent={go.Parent?.Name ?? "<scene root>"}), registry={_registered.Count}." );
 		return go;
 	}
 
@@ -136,18 +116,11 @@ public static class MirageVehicleSpawner
 
 		var origin = player.WorldPosition;
 		var radiusSq = radius * radius;
-		var spawned = AllSpawned().ToList();
-		Log.Info( $"[Mirage] DespawnInRadius: registry contains {spawned.Count} vehicle(s). Origin={origin}, radius={radius}." );
-
-		var hits = spawned
+		var hits = AllSpawned()
 			.Where( go => go.IsValid() && (go.WorldPosition - origin).LengthSquared <= radiusSq )
 			.ToList();
 
-		foreach ( var go in hits )
-		{
-			Log.Info( $"[Mirage]   despawning {go.Name} at {go.WorldPosition}." );
-			go.Destroy();
-		}
+		foreach ( var go in hits ) go.Destroy();
 		_registered.RemoveAll( go => !go.IsValid() );
 		return hits.Count;
 	}
@@ -206,19 +179,47 @@ public static class MirageVehicleSpawner
 	}
 
 	/// <summary>
-	/// World transform for a fresh spawn. Currently in close-debug
-	/// mode: 100 units forward (about 2.5 m) and 80 up so the operator
-	/// always lands the car in their immediate view, regardless of how
-	/// busy the surroundings are. Once the rendering side is confirmed
-	/// working we can push this back to a more comfortable distance.
+	/// World transform for a fresh spawn: project a point ~3.5 metres
+	/// in front of the player at their heading, then ground-trace
+	/// straight down so the vehicle lands flat on the floor instead of
+	/// dropping from the sky and clipping the operator's head. A small
+	/// lift gives the wheel suspension room to settle without the
+	/// chassis spawning intersecting the geometry.
 	/// </summary>
 	private static Transform ResolveSpawnTransform( Player player )
 	{
 		var ang = player.Controller.IsValid() ? player.Controller.EyeAngles : Angles.Zero;
 		var yaw = ang.yaw;
 		var forward = Rotation.From( 0, yaw, 0 ).Forward;
-		var pos = player.WorldPosition + forward * 100f + Vector3.Up * 80f;
-		Log.Info( $"[Mirage] ResolveSpawnTransform: player@{player.WorldPosition} yaw={yaw} -> spawn@{pos}" );
+
+		// Front offset large enough that a ~140-unit-long car body does
+		// not overlap the operator on spawn, and small enough that they
+		// stay in the same room.
+		const float ForwardOffset = 160f;
+		const float GroundLift = 16f;
+		const float TraceUp = 96f;
+		const float TraceDown = 1024f;
+
+		var origin = player.WorldPosition + forward * ForwardOffset + Vector3.Up * TraceUp;
+		var endPos = origin + Vector3.Down * TraceDown;
+		var trace = Game.ActiveScene.Trace
+			.Ray( origin, endPos )
+			.WithoutTags( "player", "vehicle", "mirage_vehicle" )
+			.Run();
+
+		Vector3 floor;
+		if ( trace.Hit )
+		{
+			floor = trace.EndPosition;
+		}
+		else
+		{
+			// No floor under the spawn point. Fall back to the player's
+			// own elevation so we at least put the car on a sensible Z.
+			floor = (player.WorldPosition + forward * ForwardOffset).WithZ( player.WorldPosition.z );
+		}
+
+		var pos = floor + Vector3.Up * GroundLift;
 		return new Transform( pos, Rotation.FromYaw( yaw ) );
 	}
 }

@@ -23,6 +23,18 @@ public sealed partial class PlayerData
 	[Sync( SyncFlags.FromHost )] public string ActiveCharacterId { get; set; }
 
 	/// <summary>
+	/// GameObject id of the vehicle the player is currently driving.
+	/// Empty string when the player is on foot. Set by
+	/// <see cref="Sandbox.Mirage.Vehicles.MirageVehicleSeat"/>; the
+	/// player's controller gates its WASD input on this so the
+	/// operator can drive without their character also walking around.
+	/// </summary>
+	[Sync( SyncFlags.FromHost )] public string InVehicleId { get; set; } = "";
+
+	/// <summary>True when this player is currently seated in any Mirage vehicle.</summary>
+	public bool IsInVehicle => !string.IsNullOrEmpty( InVehicleId );
+
+	/// <summary>
 	/// First name of the active character. Empty until a character is selected.
 	/// </summary>
 	[Sync( SyncFlags.FromHost )] public string FirstName { get; set; } = "";

@@ -308,6 +308,15 @@ public sealed partial class Player : Component, Component.IDamageable, PlayerCon
 			Controller.UseInputControls = true;
 		}
 
+		// Mirage hook: while the operator is seated in a vehicle we
+		// suspend the player controller so WASD does not also walk
+		// the character. Vehicle input goes to MirageCar via the
+		// fallback Input.AnalogMove read.
+		if ( PlayerData.IsValid() && PlayerData.IsInVehicle )
+		{
+			Controller.UseInputControls = false;
+		}
+
 		if ( Input.Pressed( "die" ) )
 		{
 			KillSelf();
