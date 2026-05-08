@@ -197,16 +197,33 @@ MirageInventoryPanel
             font-size: $mirage-font-xl;
             font-weight: 800;
 
-            // PNG icon when the item has one. background-size: contain
-            // keeps the source art's aspect ratio and avoids stretching
-            // (a horizontal weapon silhouette stays horizontal).
+            // Two-layer icon stack: a blurred + brightened copy sits
+            // behind the sharp icon to create a soft glow halo around
+            // the silhouette. The stack is 90% of the cell-letter, so
+            // icons feel a touch smaller and breathe inside the cell.
+            .cell-icon-stack
+            {
+                position: relative;
+                width: 90%;
+                height: 90%;
+            }
+
             .cell-icon
             {
+                position: absolute;
+                top: 0;
+                left: 0;
                 width: 100%;
                 height: 100%;
                 background-size: contain;
                 background-repeat: no-repeat;
                 background-position: center;
+            }
+
+            .cell-icon--glow
+            {
+                filter: blur( 8px ) brightness( 1.5 );
+                opacity: 0.85;
             }
         }
 
@@ -245,13 +262,33 @@ MirageInventoryPanel
         pointer-events: none;
         z-index: 400;
 
+        // Drag preview mirrors the cell exactly: same 90% stack with a
+        // blurred+brightened copy behind the sharp icon for the same
+        // glow halo as the source slot.
+        .drag-icon-stack
+        {
+            position: relative;
+            flex: 1 1 0;
+            width: 90%;
+            align-self: center;
+        }
+
         .drag-icon
         {
-            flex: 1 1 0;
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
+        }
+
+        .drag-icon--glow
+        {
+            filter: blur( 8px ) brightness( 1.5 );
+            opacity: 0.85;
         }
 
         .drag-letter

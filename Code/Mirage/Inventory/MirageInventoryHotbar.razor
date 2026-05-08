@@ -31,7 +31,10 @@
                 {
                     if ( !string.IsNullOrEmpty( item?.Image ) )
                     {
-                        <div class="cell-icon" style="background-image: url(@item.Image);"></div>
+                        <div class="cell-icon-stack">
+                            <div class="cell-icon cell-icon--glow" style="background-image: url(@item.Image);"></div>
+                            <div class="cell-icon" style="background-image: url(@item.Image);"></div>
+                        </div>
                     }
                     else
                     {
