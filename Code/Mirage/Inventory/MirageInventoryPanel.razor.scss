@@ -170,17 +170,18 @@ MirageInventoryPanel
             }
         }
 
-        // Stack count: bare floating text in the bottom-right corner,
-        // matches the hotbar treatment for consistency.
+        // Stack count: bare floating text hugging the bottom-right
+        // corner. Matches the hotbar treatment for consistency.
         .cell-count
         {
             position: absolute;
-            right: 6px;
-            bottom: 4px;
+            right: 4px;
+            bottom: 2px;
             color: $mirage-text-primary;
-            font-size: $mirage-font-sm;
+            font-size: $mirage-font-lg;
             font-weight: 800;
             line-height: 1;
+            text-align: right;
             text-shadow: 0px 1px 3px rgba( 0, 0, 0, 0.95 );
             pointer-events: none;
             z-index: 3;
@@ -225,50 +226,55 @@ MirageInventoryPanel
         &:hover { border-color: $mirage-border-strong; }
     }
 
+    // Drag preview: a 1:1 visual clone of the inventory cell the
+    // operator just lifted. Same size, same surface, same icon
+    // padding, same count placement. The only deliberate difference
+    // is the accent border, which highlights "this is the thing on
+    // your cursor" without changing the layout.
     .drag-visual
     {
         position: absolute;
-        // Same dimensions as the inventory cell so the drag preview
-        // visually matches what was lifted.
-        width: 84px;
-        height: 84px;
+        width: 80px;
+        height: 80px;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background-color: rgba( 0, 0, 0, 0.85 );
-        border: 2px solid $mirage-border-accent;
+        align-items: stretch;
+        padding: $mirage-space-2;
+        background-color: rgba( 0, 0, 0, 0.55 );
+        border: $mirage-border-width solid $mirage-border-accent;
+        backdrop-filter: blur( 8px );
         pointer-events: none;
         z-index: 400;
 
-        .drag-letter
-        {
-            color: $mirage-text-primary;
-            font-size: $mirage-font-xxl;
-            font-weight: 800;
-        }
-
-        // Same icon treatment as the cell so the lifted preview matches
-        // the cell it came out of pixel-for-pixel.
         .drag-icon
         {
+            flex: 1 1 0;
             width: 100%;
-            height: 100%;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
         }
 
+        .drag-letter
+        {
+            flex: 1 1 0;
+            align-items: center;
+            justify-content: center;
+            color: $mirage-text-primary;
+            font-size: $mirage-font-xl;
+            font-weight: 800;
+        }
+
         .drag-count
         {
             position: absolute;
-            bottom: 4px;
-            right: 6px;
+            right: 4px;
+            bottom: 2px;
             color: $mirage-text-primary;
-            font-size: $mirage-font-xs;
-            font-weight: 700;
-            background-color: rgba( 0, 0, 0, 0.85 );
-            padding: 1px 4px;
-            border: 1px solid $mirage-border-accent;
+            font-size: $mirage-font-lg;
+            font-weight: 800;
+            line-height: 1;
+            text-align: right;
+            text-shadow: 0px 1px 3px rgba( 0, 0, 0, 0.95 );
         }
     }
 

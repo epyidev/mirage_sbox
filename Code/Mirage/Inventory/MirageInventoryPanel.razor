@@ -95,7 +95,7 @@
             }
             @if ( _dragCount > 1 )
             {
-                <Label class="drag-count" Text="@_dragCount.ToString()" />
+                <Label class="drag-count" Text="@($"x{_dragCount}")" />
             }
         </div>
     }
@@ -140,7 +140,7 @@
     private float _tooltipX, _tooltipY;
     private bool _hasTooltipItem;
 
-    private const float DragVisualSize = 84f;
+    private const float DragVisualSize = 80f;
 
     protected override void OnStart()
     {

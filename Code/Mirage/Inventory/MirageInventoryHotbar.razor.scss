@@ -86,19 +86,20 @@ MirageInventoryHotbar
             }
         }
 
-        // Stack count: bare floating text in the bottom-right corner,
-        // no box, no border. A thick text-shadow keeps it readable
-        // against busy icons or transparent slots without competing
-        // visually with the cell frame.
+        // Stack count: bare floating text hugging the bottom-right
+        // corner, no box, no border. Thick text-shadow keeps it
+        // readable against busy icons or transparent slots without
+        // competing visually with the cell frame.
         .cell-count
         {
             position: absolute;
-            right: 5px;
-            bottom: 3px;
+            right: 4px;
+            bottom: 2px;
             color: $mirage-text-primary;
-            font-size: $mirage-font-sm;
+            font-size: $mirage-font-lg;
             font-weight: 800;
             line-height: 1;
+            text-align: right;
             text-shadow: 0px 1px 3px rgba( 0, 0, 0, 0.95 );
             pointer-events: none;
             z-index: 3;
