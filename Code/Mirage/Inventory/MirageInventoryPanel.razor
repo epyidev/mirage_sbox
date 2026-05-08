@@ -41,6 +41,7 @@
         </div>
 
         <MirageInventoryWheelHook class="grid-wheel-hook" OnWheel="@OnGridWheel">
+            <Body>
         <div class="grid" @ref="_grid">
             @for ( int row = 0; row < MirageInventory.SlotCount / MirageInventory.HotbarColumns; row++ )
             {
@@ -87,6 +88,7 @@
                 </div>
             }
         </div>
+            </Body>
         </MirageInventoryWheelHook>
 
     </div>
