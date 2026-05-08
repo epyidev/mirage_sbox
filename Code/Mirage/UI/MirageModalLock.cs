@@ -59,7 +59,7 @@ public static class MirageModalLock
 		"Jump", "Duck", "Run", "Walk",
 		// Other gameplay
 		"Use", "Voice", "Flashlight", "Spray", "die", "View",
-		"InspectMenu", "spawnmenu", "Score", "undo", "Chat"
+		"InspectMenu", "spawnmenu", "undo", "Chat"
 	};
 
 	private static bool _wasActive;
