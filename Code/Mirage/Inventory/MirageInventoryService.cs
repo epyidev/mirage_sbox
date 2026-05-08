@@ -36,6 +36,22 @@ public static class MirageInventoryService
 		MirageInventoryEquip.ApplyEquip( player, inv );
 	}
 
+	/// <summary>
+	/// Host-only. Move <paramref name="amount"/> units from <paramref name="from"/>
+	/// to <paramref name="to"/>. Used by the right-click drag flow to split
+	/// a stack across two slots. The destination must be empty or hold the
+	/// same item id with matching metadata, otherwise the call is a no-op
+	/// (the UI cancels and reverts visually).
+	/// </summary>
+	[Rpc.Host]
+	public static void RpcSplitMove( int from, int to, int amount )
+	{
+		var (player, inv) = ResolveCallerInventory();
+		if ( inv is null ) return;
+		inv.SplitMove( from, to, amount );
+		MirageInventoryEquip.ApplyEquip( player, inv );
+	}
+
 	[Rpc.Host]
 	public static void RpcDropSlot( int slotIndex, int count )
 	{

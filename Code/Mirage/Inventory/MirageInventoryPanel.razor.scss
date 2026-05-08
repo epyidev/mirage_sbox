@@ -21,8 +21,8 @@ MirageInventoryPanel
     {
         pointer-events: all;
 
-        .backdrop { opacity: 1; }
-        .frame    { transform: translateX( 0 ); opacity: 1; }
+        .backdrop     { opacity: 1; }
+        .frame-column { transform: translateX( 0 ); opacity: 1; }
     }
 
     .backdrop
@@ -37,13 +37,23 @@ MirageInventoryPanel
         transition: opacity 0.25s ease-in-out;
     }
 
+    // Column wrapper holding the inventory frame and the info button
+    // below it. The slide animation lives here so both elements move
+    // together when the panel opens / closes.
+    .frame-column
+    {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: $mirage-space-2;
+        flex-shrink: 0;
+
+        opacity: 0;
+        transform: translateX( 600px );
+        transition: transform 0.35s ease-in-out, opacity 0.35s ease-in-out;
+    }
+
     .frame
     {
-        // Vertical centering and right anchor are driven by the parent
-        // flex (align-items: center, justify-content: flex-end), no
-        // transform involved on the static layout. The slide animation
-        // only touches translateX, so the frame never flashes at top:0
-        // before snapping to its real position.
         // The elevated surface mixin pulls in the same blurred background,
         // border and radius used by the other Mirage panels so the
         // inventory matches the rest of the UI without blurring the whole
@@ -55,13 +65,101 @@ MirageInventoryPanel
         gap: $mirage-space-3;
         padding: $mirage-space-4;
         flex-shrink: 0;
+    }
 
-        // Closed state slides the frame off-screen to the RIGHT (where it
-        // lives), so opening it slides in from the same edge instead of
-        // crossing the entire screen.
-        opacity: 0;
-        transform: translateX( 600px );
-        transition: transform 0.35s ease-in-out, opacity 0.35s ease-in-out;
+    // Tiny "i" pill below the frame, outside the main panel. Click
+    // toggles the in-inventory help overlay listing every shortcut.
+    .frame-info-button
+    {
+        width: 28px;
+        height: 28px;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba( 0, 0, 0, 0.55 );
+        border: $mirage-border-width solid $mirage-border-soft;
+        backdrop-filter: blur( 8px );
+        color: $mirage-text-primary;
+        font-size: $mirage-font-md;
+        font-weight: 800;
+        font-style: italic;
+        cursor: pointer;
+        pointer-events: auto;
+        transition: border-color $mirage-transition-fast, background-color $mirage-transition-fast;
+
+        &:hover
+        {
+            border-color: $mirage-border-accent;
+            background-color: rgba( 255, 255, 255, 0.08 );
+        }
+    }
+
+    // Help overlay covers the whole panel area. Click outside the
+    // .help-frame closes the overlay; the frame swallows clicks so
+    // they do not bubble.
+    .help-overlay
+    {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba( 0, 0, 0, 0.7 );
+        backdrop-filter: blur( 4px );
+        z-index: 200;
+        pointer-events: auto;
+
+        .help-frame
+        {
+            @include mirage-surface-elevated;
+            min-width: 460px;
+            max-width: 560px;
+            flex-direction: column;
+            align-items: stretch;
+            gap: $mirage-space-3;
+            padding: $mirage-space-4 $mirage-space-5;
+        }
+
+        .help-title { flex-shrink: 0; }
+
+        .help-list
+        {
+            flex-direction: column;
+            gap: $mirage-space-2;
+
+            .help-row
+            {
+                flex-direction: row;
+                gap: $mirage-space-3;
+                padding: $mirage-space-1 0;
+                border-bottom: 1px solid $mirage-border-soft;
+
+                .help-key
+                {
+                    color: $mirage-text-primary;
+                    font-size: $mirage-font-sm;
+                    font-weight: 700;
+                    width: 220px;
+                    flex-shrink: 0;
+                }
+
+                .help-desc
+                {
+                    color: $mirage-text-secondary;
+                    font-size: $mirage-font-sm;
+                    font-weight: 400;
+                    flex: 1 1 0;
+                    white-space: normal;
+                }
+            }
+        }
+
+        .help-footer
+        {
+            flex-direction: row;
+            justify-content: flex-end;
+        }
     }
 
     .frame-header
@@ -128,11 +226,11 @@ MirageInventoryPanel
         flex-direction: row;
         gap: $mirage-space-1;
 
+        // Slight extra spacing under the hotbar row so the eye still
+        // groups it as the bound row, but no visible divider.
         &.row--hotbar
         {
-            padding-bottom: $mirage-space-1;
-            border-bottom: 1px solid $mirage-border-soft;
-            margin-bottom: $mirage-space-1;
+            margin-bottom: $mirage-space-2;
         }
     }
 

@@ -159,12 +159,19 @@
         if ( _inventory is null ) return;
         if ( _isHidden ) return;
 
-        for ( int i = 0; i < MirageInventory.HotbarColumns; i++ )
+        // While the inventory panel is open the Slot1..Slot5 keys are
+        // repurposed: they swap the hovered slot with the matching
+        // hotbar slot. The panel handles that path itself, so we skip
+        // selection here to avoid both firing on the same frame.
+        if ( !MirageInventoryPanelState.IsOpen )
         {
-            var action = "Slot" + (i + 1);
-            if ( Input.Pressed( action ) )
+            for ( int i = 0; i < MirageInventory.HotbarColumns; i++ )
             {
-                MirageInventoryService.RpcSelectSlot( i );
+                var action = "Slot" + (i + 1);
+                if ( Input.Pressed( action ) )
+                {
+                    MirageInventoryService.RpcSelectSlot( i );
+                }
             }
         }
 

@@ -13,6 +13,8 @@
 
     <div class="backdrop" @onclick="@Close"></div>
 
+    <div class="frame-column">
+
     <div class="frame" @ref="_frame">
 
         <div class="frame-header">
@@ -72,9 +74,12 @@
                                     }
                                 }
                             </div>
-                            @if ( !empty && slot.Count > 1 )
+                            @{
+                                var displayCount = ResolveDisplayCount( idx, slot, empty );
+                            }
+                            @if ( displayCount > 1 )
                             {
-                                <Label class="cell-count" Text="@($"x{slot.Count}")" />
+                                <Label class="cell-count" Text="@($"x{displayCount}")" />
                             }
                         </div>
                     }
@@ -84,9 +89,40 @@
 
     </div>
 
+    <div class="frame-info-button" @onclick="@ToggleHelp">
+        <Label Text="i" />
+    </div>
+
+    </div>
+
+    @if ( _helpOpen )
+    {
+        <div class="help-overlay" @onclick="@CloseHelp">
+            <div class="help-frame" @onclick="@OnHelpFrameClick">
+                <div class="help-title">
+                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Heading)" Text="Inventaire — Raccourcis" />
+                </div>
+                <div class="help-list">
+                    <div class="help-row"><Label class="help-key" Text="Glisser-déposer" /><Label class="help-desc" Text="Déplace un stack vers une autre case ou échange deux cases" /></div>
+                    <div class="help-row"><Label class="help-key" Text="Clic droit + glisser" /><Label class="help-desc" Text="Coupe le stack en deux et déplace la moitié, à régler avec la molette" /></div>
+                    <div class="help-row"><Label class="help-key" Text="Molette pendant un split" /><Label class="help-desc" Text="Ajuste de ±1 le nombre d'items détachés" /></div>
+                    <div class="help-row"><Label class="help-key" Text="Survol + 1 à 5" /><Label class="help-desc" Text="Echange l'item survolé avec la case correspondante de la hotbar" /></div>
+                    <div class="help-row"><Label class="help-key" Text="Glisser hors du cadre" /><Label class="help-desc" Text="Drop l'item au sol (la moitié pendant un split)" /></div>
+                    <div class="help-row"><Label class="help-key" Text="Tab" /><Label class="help-desc" Text="Ouvre / ferme l'inventaire" /></div>
+                    <div class="help-row"><Label class="help-key" Text="Molette hors panel" /><Label class="help-desc" Text="Cycle entre les slots de la hotbar" /></div>
+                    <div class="help-row"><Label class="help-key" Text="G" /><Label class="help-desc" Text="Drop le slot actuellement équipé" /></div>
+                </div>
+                <div class="help-footer">
+                    <MirageButton Text="Fermer" Variant="@(MirageButton.ButtonVariant.Secondary)" Size="@(MirageButton.ButtonSize.Small)" ClickAction="@CloseHelp" />
+                </div>
+            </div>
+        </div>
+    }
+
     @if ( IsDragging )
     {
-        <div class="drag-visual" @ref="_dragVisual" style="left: @(_dragX)px; top: @(_dragY)px;">
+        var dragDisplayCount = _splitMode ? _splitAmount : _dragCount;
+        <div class="drag-visual @(_splitMode ? "drag-visual--split" : "")" @ref="_dragVisual" style="left: @(_dragX)px; top: @(_dragY)px;">
             @if ( !string.IsNullOrEmpty( _dragImage ) )
             {
                 <div class="drag-icon-stack">
@@ -97,9 +133,9 @@
             {
                 <Label class="drag-letter" Text="@_dragBadge" />
             }
-            @if ( _dragCount > 1 )
+            @if ( dragDisplayCount > 1 || _splitMode )
             {
-                <Label class="drag-count" Text="@($"x{_dragCount}")" />
+                <Label class="drag-count" Text="@($"x{dragDisplayCount}")" />
             }
         </div>
     }
@@ -138,13 +174,28 @@
     private float _dragX, _dragY;
     private bool IsDragging => _dragSource >= 0;
 
+    // Right-click split mode. The source stack stays put visually with
+    // (Total - Amount) on it, the drag preview shows Amount, and the
+    // operator can re-balance live with the mouse wheel before
+    // releasing.
+    private bool _splitMode;
+    private int _splitTotal;
+    private int _splitAmount;
+
     // Hit-test cache
     private int _dropTarget = -1;
     private int _tooltipSlot = -1;
     private float _tooltipX, _tooltipY;
     private bool _hasTooltipItem;
 
+    // Number-key hover swap edge detection. Without this we would fire a
+    // swap on every frame the key is held down.
+    private bool[] _slotKeyArmed = new bool[5];
+
     private const float DragVisualSize = 80f;
+
+    // Help overlay (the small "i" button below the frame)
+    private bool _helpOpen;
 
     protected override void OnStart()
     {
@@ -169,6 +220,13 @@
             MirageInventoryPanelState.Toggle();
         }
 
+        var openBefore = MirageInventoryPanelState.IsOpen;
+
+        // Sample the Slot1..Slot5 keys BEFORE MirageModalLock clears
+        // them. Without this snapshot the panel can never see them:
+        // SetActive nukes the action state for the rest of the frame.
+        bool[] slotPressed = SampleSlotKeys( openBefore );
+
         var open = MirageInventoryPanelState.IsOpen;
         SetClass( "open", open );
         MirageModalLock.SetActive( open );
@@ -177,6 +235,7 @@
         {
             CancelDrag();
             if ( _hasTooltipItem ) { _tooltipSlot = -1; _hasTooltipItem = false; StateHasChanged(); }
+            ResetSlotKeyArmed();
             return;
         }
 
@@ -189,6 +248,43 @@
         var mouse = Mouse.Position;
         var hover = HitTestSlot( mouse );
         var scale = Panel.ScaleFromScreen;
+
+        // Number-key hover swap: pressing 1..5 while hovering a slot
+        // (and not dragging) swaps that slot with the matching hotbar
+        // slot. Edge-detected so a held key only fires once.
+        if ( !IsDragging && hover >= 0 )
+        {
+            for ( int i = 0; i < 5; i++ )
+            {
+                if ( slotPressed[i] && !_slotKeyArmed[i] )
+                {
+                    _slotKeyArmed[i] = true;
+                    if ( hover != i )
+                    {
+                        MirageInventoryService.RpcMoveSlot( hover, i );
+                    }
+                }
+                else if ( !slotPressed[i] )
+                {
+                    _slotKeyArmed[i] = false;
+                }
+            }
+        }
+        else
+        {
+            ResetSlotKeyArmed();
+        }
+
+        // Mouse-wheel adjusts the split point during a split drag.
+        if ( IsDragging && _splitMode )
+        {
+            var wheel = Input.MouseWheel.y;
+            if ( wheel != 0f )
+            {
+                var step = wheel > 0f ? 1 : -1;
+                SetSplitAmount( _splitAmount + step );
+            }
+        }
 
         if ( IsDragging )
         {
@@ -237,24 +333,84 @@
     {
         if ( IsDragging ) return;
         MirageInventoryPanelState.SetOpen( false );
+        _helpOpen = false;
         StateHasChanged();
+    }
+
+    private void ToggleHelp()
+    {
+        _helpOpen = !_helpOpen;
+        StateHasChanged();
+    }
+
+    private void CloseHelp()
+    {
+        if ( !_helpOpen ) return;
+        _helpOpen = false;
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// The help backdrop closes the overlay when clicked. Clicks on the
+    /// frame itself need to be swallowed so they do not bubble back to
+    /// the backdrop and dismiss the modal mid-read.
+    /// </summary>
+    private void OnHelpFrameClick()
+    {
+        // No-op on purpose: stops the click from reaching the
+        // backdrop's @onclick="Close".
     }
 
     private void OnSlotMouseDown( int idx )
     {
         if ( _inventory is null ) return;
+        if ( IsDragging ) return;
+
         var slot = _inventory.Slot( idx );
         if ( slot is null || slot.IsEmpty ) return;
+
+        // The mouse-down binding fires on any button. We check attack2
+        // (right click) at this exact moment to decide whether this
+        // is a split drag or a regular full-stack move. Mouse events
+        // fire before MirageModalLock's per-frame Input.Clear runs,
+        // so the action is still readable here. Stacks of 1 fall back
+        // to a normal drag because there is nothing to split off.
+        bool wantsSplit = Input.Down( "attack2" ) && slot.Count > 1;
+        BeginDragFrom( idx, slot, splitMode: wantsSplit );
+    }
+
+    private void BeginDragFrom( int idx, MirageInventorySlot slot, bool splitMode )
+    {
         _dragSource = idx;
         _dragBadge = GetItemBadge( slot.Item, slot.ItemId );
         _dragImage = slot.Item?.Image;
         _dragCount = slot.Count;
+        _splitMode = splitMode;
+        if ( splitMode )
+        {
+            _splitTotal = slot.Count;
+            _splitAmount = Math.Max( 1, slot.Count / 2 );
+        }
+        else
+        {
+            _splitTotal = 0;
+            _splitAmount = 0;
+        }
         var scale = Panel.ScaleFromScreen;
         var mouse = Mouse.Position;
         _dragX = mouse.x * scale - DragVisualSize / 2f;
         _dragY = mouse.y * scale - DragVisualSize / 2f;
         _tooltipSlot = -1;
         _hasTooltipItem = false;
+        StateHasChanged();
+    }
+
+    private void SetSplitAmount( int amount )
+    {
+        if ( !_splitMode ) return;
+        var clamped = Math.Clamp( amount, 1, Math.Max( 1, _splitTotal - 1 ) );
+        if ( clamped == _splitAmount ) return;
+        _splitAmount = clamped;
         StateHasChanged();
     }
 
@@ -271,34 +427,74 @@
 
         if ( target >= 0 )
         {
-            // Cursor over a slot: only act if it is a different one than
-            // the source. Same slot release just cancels.
             if ( target != _dragSource )
             {
-                MirageInventoryService.RpcMoveSlot( _dragSource, target );
+                if ( _splitMode )
+                {
+                    MirageInventoryService.RpcSplitMove( _dragSource, target, _splitAmount );
+                }
+                else
+                {
+                    MirageInventoryService.RpcMoveSlot( _dragSource, target );
+                }
             }
         }
         else if ( !IsInsideFrame( mouse ) )
         {
-            // Cursor is fully outside the inventory frame: drop the stack
-            // into the world.
-            MirageInventoryService.RpcDropSlot( _dragSource, 0 );
+            // Cursor is fully outside the inventory frame: drop into the
+            // world. In split mode only the carried half goes; otherwise
+            // the whole stack goes.
+            var dropCount = _splitMode ? _splitAmount : 0;
+            MirageInventoryService.RpcDropSlot( _dragSource, dropCount );
         }
-        // Inside the frame but not on a slot (header, weight bar, gaps):
-        // cancel without doing anything.
+        // Inside the frame but not on a slot: cancel.
 
         CancelDrag();
     }
 
     private void CancelDrag()
     {
-        if ( _dragSource < 0 && _dropTarget < 0 ) return;
+        if ( _dragSource < 0 && _dropTarget < 0 && !_splitMode ) return;
         _dragSource = -1;
         _dragBadge = null;
         _dragImage = null;
         _dragCount = 0;
         _dropTarget = -1;
+        _splitMode = false;
+        _splitTotal = 0;
+        _splitAmount = 0;
         StateHasChanged();
+    }
+
+    private bool[] SampleSlotKeys( bool open )
+    {
+        var arr = new bool[5];
+        if ( !open ) return arr;
+        for ( int i = 0; i < 5; i++ )
+        {
+            arr[i] = Input.Down( "Slot" + (i + 1) );
+        }
+        return arr;
+    }
+
+    private void ResetSlotKeyArmed()
+    {
+        for ( int i = 0; i < _slotKeyArmed.Length; i++ ) _slotKeyArmed[i] = false;
+    }
+
+    /// <summary>
+    /// Count to render on cell <paramref name="idx"/>. During a split
+    /// drag the source cell shows the leftover (Total - Amount) so the
+    /// operator sees the split happen live before they commit.
+    /// </summary>
+    private int ResolveDisplayCount( int idx, MirageInventorySlot slot, bool empty )
+    {
+        if ( empty || slot is null ) return 0;
+        if ( _splitMode && _dragSource == idx )
+        {
+            return Math.Max( 0, slot.Count - _splitAmount );
+        }
+        return slot.Count;
     }
 
     private bool IsInsideFrame( Vector2 mouse )
@@ -344,6 +540,7 @@
         _tooltipSlot,
         _dropTarget,
         _dragSource,
-        _hasTooltipItem
+        _hasTooltipItem,
+        System.HashCode.Combine( _splitMode, _splitAmount, _helpOpen )
     );
 }

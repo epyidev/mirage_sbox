@@ -309,6 +309,61 @@ public sealed class MirageInventory : Component
 		BroadcastSnapshot();
 	}
 
+	/// <summary>
+	/// Host-only. Move <paramref name="amount"/> units from <paramref name="from"/>
+	/// to <paramref name="to"/>. Backs the right-click split drag in the
+	/// inventory UI. Skips when the destination is occupied with a
+	/// different item or with the same item but mismatched metadata
+	/// (those would lose data on the merge).
+	/// </summary>
+	public void SplitMove( int from, int to, int amount )
+	{
+		Assert.True( Networking.IsHost, "MirageInventory.SplitMove must run on the host" );
+		EnsureSlots();
+		if ( amount <= 0 ) return;
+		if ( from == to ) return;
+		if ( from < 0 || from >= SlotCount ) return;
+		if ( to < 0 || to >= SlotCount ) return;
+
+		var src = _slots[from];
+		if ( src.IsEmpty ) return;
+		if ( amount >= src.Count )
+		{
+			// Asking to move the whole stack: defer to the regular move
+			// path which handles swap / merge cleanly.
+			Move( from, to );
+			return;
+		}
+
+		var def = src.Item;
+		var dst = _slots[to];
+
+		if ( dst.IsEmpty )
+		{
+			dst.ItemId = src.ItemId;
+			dst.Count = amount;
+			dst.Metadata = src.Metadata is null ? new() : new Dictionary<string, string>( src.Metadata );
+			src.Count -= amount;
+			BroadcastSnapshot();
+			return;
+		}
+
+		if ( !string.Equals( dst.ItemId, src.ItemId, StringComparison.OrdinalIgnoreCase ) )
+			return;
+		if ( !MetadataEquals( src.Metadata, dst.Metadata ) )
+			return;
+
+		var max = def?.MaxStack ?? 1;
+		var room = max - dst.Count;
+		if ( room <= 0 ) return;
+
+		var move = Math.Min( amount, room );
+		dst.Count += move;
+		src.Count -= move;
+		if ( src.Count <= 0 ) src.Clear();
+		BroadcastSnapshot();
+	}
+
 	/// <summary>Host-only. Replace the whole inventory state in one go.</summary>
 	public void Replace( IEnumerable<MirageInventorySlot> snapshot )
 	{
