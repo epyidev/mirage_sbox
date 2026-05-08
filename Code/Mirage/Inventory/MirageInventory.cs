@@ -16,6 +16,9 @@ public sealed class MirageInventory : Component
 	public const int SlotCount = 25;
 	public const int HotbarColumns = 5;
 
+	/// <summary>Carry capacity in grams. 24 kg total.</summary>
+	public const int MaxWeightGrams = 24_000;
+
 	private MirageInventorySlot[] _slots;
 
 	/// <summary>
@@ -76,12 +79,27 @@ public sealed class MirageInventory : Component
 		var def = MirageItems.Find( itemId );
 		if ( def is null ) return count;
 
+		// Cap the request by the remaining carry capacity. Anything past it
+		// stays as leftover and the caller decides what to do (drop on the
+		// floor, refuse the give, leave the world pickup behind, ...).
+		var requested = count;
+		var allowed = count;
+		if ( def.Weight > 0 )
+		{
+			var free = Math.Max( 0, MaxWeightGrams - CurrentWeightGrams );
+			var maxByWeight = free / def.Weight;
+			if ( maxByWeight < allowed ) allowed = maxByWeight;
+		}
+		if ( allowed <= 0 ) return requested;
+
+		var added = 0;
+
 		// Stack first onto existing slots that already hold this item, when
 		// the metadata matches. Stacks with different metadata cannot merge,
 		// since their per-instance state (durability, ammo, ...) differs.
 		if ( def.Stackable )
 		{
-			for ( int i = 0; i < SlotCount && count > 0; i++ )
+			for ( int i = 0; i < SlotCount && added < allowed; i++ )
 			{
 				var slot = _slots[i];
 				if ( slot.IsEmpty ) continue;
@@ -89,27 +107,52 @@ public sealed class MirageInventory : Component
 				if ( !MetadataEquals( slot.Metadata, metadata ) ) continue;
 				var room = def.MaxStack - slot.Count;
 				if ( room <= 0 ) continue;
-				var move = Math.Min( room, count );
+				var move = Math.Min( room, allowed - added );
 				slot.Count += move;
-				count -= move;
+				added += move;
 			}
 		}
 
 		// Then drop the rest into the first empty slot(s).
-		while ( count > 0 )
+		while ( added < allowed )
 		{
 			var idx = FindFirstEmpty();
 			if ( idx < 0 ) break;
-			var batch = def.Stackable ? Math.Min( count, def.MaxStack ) : 1;
+			var batch = def.Stackable ? Math.Min( allowed - added, def.MaxStack ) : 1;
 			_slots[idx].ItemId = def.Id;
 			_slots[idx].Count = batch;
 			_slots[idx].Metadata = SeedMetadata( def, metadata );
-			count -= batch;
+			added += batch;
 		}
 
-		BroadcastSnapshot();
-		return count;
+		if ( added > 0 ) BroadcastSnapshot();
+		return requested - added;
 	}
+
+	/// <summary>
+	/// Total weight currently held in this inventory, in grams. Recomputed on
+	/// every read; the slot count is small so the cost is negligible.
+	/// </summary>
+	public int CurrentWeightGrams
+	{
+		get
+		{
+			EnsureSlots();
+			var total = 0;
+			for ( int i = 0; i < SlotCount; i++ )
+			{
+				var slot = _slots[i];
+				if ( slot.IsEmpty ) continue;
+				var def = slot.Item;
+				if ( def is null ) continue;
+				total += slot.Count * def.Weight;
+			}
+			return total;
+		}
+	}
+
+	/// <summary>How much capacity (in grams) is still free.</summary>
+	public int FreeWeightGrams => Math.Max( 0, MaxWeightGrams - CurrentWeightGrams );
 
 	/// <summary>
 	/// Host-only. Remove up to <paramref name="count"/> units from

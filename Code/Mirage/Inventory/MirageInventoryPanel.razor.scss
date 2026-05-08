@@ -54,6 +54,57 @@ MirageInventoryPanel
         flex-shrink: 0;
     }
 
+    .weight
+    {
+        flex-direction: column;
+        align-items: stretch;
+        gap: $mirage-space-1;
+        flex-shrink: 0;
+
+        .weight-row
+        {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+
+            .weight-numbers
+            {
+                color: $mirage-text-primary;
+                font-size: $mirage-font-sm;
+                font-weight: 700;
+            }
+        }
+
+        .weight-track
+        {
+            height: 6px;
+            background-color: rgba( 0, 0, 0, 0.55 );
+            border: 1px solid $mirage-border-soft;
+
+            .weight-fill
+            {
+                height: 100%;
+                transition: width $mirage-transition-fast, background-color $mirage-transition-fast;
+            }
+        }
+
+        &.weight--ok .weight-fill
+        {
+            background-color: $mirage-success;
+        }
+
+        &.weight--warn .weight-fill
+        {
+            background-color: $mirage-warning;
+        }
+
+        &.weight--full
+        {
+            .weight-numbers { color: $mirage-danger; }
+            .weight-fill    { background-color: $mirage-danger; }
+        }
+    }
+
     .grid
     {
         flex-direction: column;
@@ -144,15 +195,48 @@ MirageInventoryPanel
             border-color: $mirage-border-accent;
         }
 
-        &.cell--picked
+        &.cell--dragging
         {
-            border-color: $mirage-info;
-            background-color: rgba( 110, 200, 255, 0.12 );
+            opacity: 0.35;
+            border-color: $mirage-border-accent;
         }
 
         &:hover
         {
             border-color: $mirage-border-strong;
+        }
+    }
+
+    .drag-visual
+    {
+        position: absolute;
+        width: 48px;
+        height: 48px;
+        background-color: rgba( 0, 0, 0, 0.85 );
+        border: 2px solid $mirage-border-accent;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 400;
+
+        .drag-letter
+        {
+            color: $mirage-text-primary;
+            font-size: $mirage-font-xl;
+            font-weight: 800;
+        }
+
+        .drag-count
+        {
+            position: absolute;
+            bottom: 2px;
+            right: 4px;
+            color: $mirage-text-primary;
+            font-size: $mirage-font-xs;
+            font-weight: 700;
+            background-color: rgba( 0, 0, 0, 0.85 );
+            padding: 1px 4px;
+            border: 1px solid $mirage-border-accent;
         }
     }
 
