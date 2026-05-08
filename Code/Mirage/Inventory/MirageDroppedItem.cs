@@ -14,7 +14,7 @@ namespace Sandbox.Mirage;
 /// </summary>
 public sealed class MirageDroppedItem : Component, Component.IPressable
 {
-	private const string DefaultBagModel = "models/citizen_props/crate01.vmdl";
+	private const string DefaultBagModel = "models/citizen_props/trashbag02.vmdl";
 
 	[Sync( SyncFlags.FromHost )] public string ItemId { get; set; }
 	[Sync( SyncFlags.FromHost )] public int Count { get; set; }
@@ -78,10 +78,19 @@ public sealed class MirageDroppedItem : Component, Component.IPressable
 
 		var spawnPos = ResolveSpawnPosition( player );
 
-		GameObject go;
-		if ( item is not null && !string.IsNullOrEmpty( item.DropPrefab ) )
+		// Pick the visual: explicit DropPrefab wins, then weapon items fall
+		// back to their carryable prefab so a dropped pistol shows the
+		// pistol model, then a generic trashbag for everything else.
+		string visualPrefab = item?.DropPrefab;
+		if ( string.IsNullOrEmpty( visualPrefab ) && !string.IsNullOrEmpty( item?.WeaponPrefab ) )
 		{
-			var prefab = GameObject.GetPrefab( item.DropPrefab );
+			visualPrefab = item.WeaponPrefab;
+		}
+
+		GameObject go;
+		if ( !string.IsNullOrEmpty( visualPrefab ) )
+		{
+			var prefab = GameObject.GetPrefab( visualPrefab );
 			if ( prefab.IsValid() )
 			{
 				go = prefab.Clone( new CloneConfig
@@ -89,10 +98,23 @@ public sealed class MirageDroppedItem : Component, Component.IPressable
 					Transform = new Transform( spawnPos ),
 					StartEnabled = true
 				} );
+
+				// The Sandbox base weapon prefab carries a DroppedWeapon
+				// component whose own IPressable handler routes pickups
+				// into the legacy PlayerInventory. Strip it so Mirage owns
+				// the pickup interaction end to end.
+				var legacyPickup = go.GetComponent<DroppedWeapon>();
+				if ( legacyPickup is not null ) legacyPickup.Destroy();
+
+				// Force the carryable into its dropped state so the world
+				// model, collider and rigidbody come alive (otherwise the
+				// freshly-cloned prefab sits frozen as if it was held).
+				var carryable = go.GetComponent<BaseCarryable>();
+				if ( carryable.IsValid() ) carryable.SetDropped( true );
 			}
 			else
 			{
-				Log.Warning( $"[Mirage] DropPrefab '{item.DropPrefab}' could not be loaded, falling back to bag." );
+				Log.Warning( $"[Mirage] Visual prefab '{visualPrefab}' could not be loaded, falling back to bag." );
 				go = BuildGenericBag( spawnPos );
 			}
 		}
@@ -141,11 +163,14 @@ public sealed class MirageDroppedItem : Component, Component.IPressable
 		var renderer = go.AddComponent<ModelRenderer>();
 		try { renderer.Model = Model.Load( DefaultBagModel ); } catch { }
 
+		// Trashbag is roughly 30x30x40 cm in world units, the collider
+		// hugs that volume instead of the previous oversized 24-cube
+		// crate fallback.
 		var collider = go.AddComponent<BoxCollider>();
-		collider.Scale = new Vector3( 24f, 24f, 24f );
+		collider.Scale = new Vector3( 14f, 14f, 18f );
 
 		var rb = go.AddComponent<Rigidbody>();
-		rb.MassOverride = 4f;
+		rb.MassOverride = 2f;
 
 		return go;
 	}
