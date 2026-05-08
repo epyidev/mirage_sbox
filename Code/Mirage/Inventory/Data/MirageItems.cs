@@ -24,7 +24,7 @@ public static class MirageItems
 	/// from the new code instead of silently serving stale entries (e.g. an
 	/// old WeaponPrefab path renamed since the last reload).
 	/// </summary>
-	private const int CatalogueVersion = 4;
+	private const int CatalogueVersion = 5;
 	private static int _builtVersion = -1;
 
 	private static void EnsureBuilt()
@@ -34,6 +34,12 @@ public static class MirageItems
 		_ordered = new List<MirageItem>();
 		Build();
 		_builtVersion = CatalogueVersion;
+		// One-line sanity dump so the editor console makes it obvious when
+		// the catalogue gets rebuilt and what is in it. If you ever need to
+		// debug a "/give foo says unknown" report, this is the first place
+		// to look: if you do not see this line on startup or hot reload,
+		// Build() did not run.
+		Log.Info( $"[Mirage] Catalogue v{CatalogueVersion} built with {_ordered.Count} items." );
 	}
 
 	private static void Add( MirageItem item )
