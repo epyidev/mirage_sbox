@@ -1,0 +1,171 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@using Sandbox.Mirage
+@using Sandbox.Mirage.UI
+@inherits PanelComponent
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-coords-panel @(MirageCoordsState.IsOpen ? "open" : "")">
+
+    <div class="backdrop" @onclick="@Close"></div>
+
+    <div class="frame">
+
+        <MirageHeader Title="Mes coordonnées" Closable="@(true)" OnClose="@Close" />
+
+        <div class="body">
+
+            <div class="section">
+                <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="POSITION DU JOUEUR" />
+                @RenderRow( "Vector3 brut", _posCsv )
+                @RenderRow( "C# literal", _posCSharp )
+            </div>
+
+            <MirageDivider />
+
+            <div class="section">
+                <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="PERSONNAGE (position + orientation)" />
+                @RenderRow( "Yaw", _yawDeg )
+                @RenderRow( "Transform position + yaw", _transformYaw )
+                @RenderRow( "Transform complet (rotation 3 axes)", _transformFull )
+            </div>
+
+            <MirageDivider />
+
+            <div class="section">
+                <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="CAMÉRA" />
+                @RenderRow( "Position", _camPosCsv )
+                @RenderRow( "Eye angles", _camAngles )
+                @RenderRow( "Transform complet", _camTransform )
+            </div>
+
+            <MirageDivider />
+
+            <div class="section">
+                <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="TOUT EN UN BLOC" />
+                @RenderRow( "Tout copier", _bundle, large: true )
+            </div>
+
+        </div>
+
+        @if ( !string.IsNullOrEmpty( _toast ) )
+        {
+            <div class="toast">
+                <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Text="@_toast" />
+            </div>
+        }
+
+    </div>
+
+</root>
+
+@code
+{
+    // Cached strings, refreshed every tick while the panel is open.
+    private string _posCsv = "";
+    private string _posCSharp = "";
+    private string _yawDeg = "";
+    private string _transformYaw = "";
+    private string _transformFull = "";
+    private string _camPosCsv = "";
+    private string _camAngles = "";
+    private string _camTransform = "";
+    private string _bundle = "";
+
+    private string _toast;
+    private RealTimeSince _toastSince;
+
+    protected override void OnStart()
+    {
+        base.OnStart();
+        // Fresh session: never inherit a stale "open" flag from a hot reload.
+        MirageCoordsState.SetOpen( false );
+    }
+
+    protected override void OnUpdate()
+    {
+        var open = MirageCoordsState.IsOpen;
+        SetClass( "open", open );
+        MirageModalLock.SetActive( open );
+
+        if ( !open )
+        {
+            if ( !string.IsNullOrEmpty( _toast ) )
+            {
+                _toast = null;
+                StateHasChanged();
+            }
+            return;
+        }
+
+        Refresh();
+
+        if ( !string.IsNullOrEmpty( _toast ) && _toastSince > 1.5f )
+        {
+            _toast = null;
+            StateHasChanged();
+        }
+    }
+
+    private void Close()
+    {
+        MirageCoordsState.SetOpen( false );
+        StateHasChanged();
+    }
+
+    private void Refresh()
+    {
+        var player = Player.FindLocalPlayer();
+        var pos = player?.WorldPosition ?? Vector3.Zero;
+        var yaw = player?.WorldRotation.Yaw() ?? 0f;
+
+        var camera = Scene?.Camera;
+        var camPos = camera?.WorldPosition ?? Vector3.Zero;
+        var camAng = camera?.WorldRotation.Angles() ?? Angles.Zero;
+
+        _posCsv = $"{pos.x:F2}, {pos.y:F2}, {pos.z:F2}";
+        _posCSharp = $"new Vector3( {pos.x:F2}f, {pos.y:F2}f, {pos.z:F2}f )";
+
+        _yawDeg = $"{yaw:F2}°";
+        _transformYaw = $"new Transform( new Vector3( {pos.x:F2}f, {pos.y:F2}f, {pos.z:F2}f ), Rotation.FromYaw( {yaw:F2}f ) )";
+        _transformFull = $"new Transform( new Vector3( {pos.x:F2}f, {pos.y:F2}f, {pos.z:F2}f ), Rotation.From( {camAng.pitch:F2}f, {camAng.yaw:F2}f, {camAng.roll:F2}f ) )";
+
+        _camPosCsv = $"{camPos.x:F2}, {camPos.y:F2}, {camPos.z:F2}";
+        _camAngles = $"pitch={camAng.pitch:F2}° / yaw={camAng.yaw:F2}° / roll={camAng.roll:F2}°";
+        _camTransform = $"new Transform( new Vector3( {camPos.x:F2}f, {camPos.y:F2}f, {camPos.z:F2}f ), Rotation.From( {camAng.pitch:F2}f, {camAng.yaw:F2}f, {camAng.roll:F2}f ) )";
+
+        _bundle = string.Join( "\n",
+            $"Player position : {_posCsv}",
+            $"Player yaw      : {yaw:F2}",
+            $"Camera position : {_camPosCsv}",
+            $"Camera angles   : pitch={camAng.pitch:F2} yaw={camAng.yaw:F2} roll={camAng.roll:F2}"
+        );
+    }
+
+    private RenderFragment RenderRow( string label, string value, bool large = false ) => @<text>
+        <div class="row @(large ? "row--large" : "")">
+            <Label class="row-label" Text="@label" />
+            <Label class="row-value" Text="@value" />
+            <MirageButton Text="Copier" Variant="@(MirageButton.ButtonVariant.Secondary)" Size="@(MirageButton.ButtonSize.Small)" ClickAction="@(() => Copy( value, label ))" />
+        </div>
+    </text>;
+
+    private void Copy( string text, string label )
+    {
+        if ( string.IsNullOrEmpty( text ) ) return;
+        Clipboard.SetText( text );
+        _toast = $"« {label} » copié dans le presse-papiers.";
+        _toastSince = 0f;
+        StateHasChanged();
+    }
+
+    protected override int BuildHash() => System.HashCode.Combine(
+        MirageCoordsState.IsOpen,
+        _posCsv,
+        _camAngles,
+        _toast
+    );
+}

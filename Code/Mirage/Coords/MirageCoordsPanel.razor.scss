@@ -1,0 +1,122 @@
+// @author Epyi
+
+@import "/Mirage/UI/Theme/MirageTheme.scss";
+
+MirageCoordsPanel
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity $mirage-transition;
+    z-index: 200;
+    font-family: $mirage-font-family;
+
+    &.open
+    {
+        pointer-events: all;
+        opacity: 1;
+    }
+
+    .backdrop
+    {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba( 0, 0, 0, 0.55 );
+        backdrop-filter: blur( 6px );
+    }
+
+    .frame
+    {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate( -50%, -50% );
+        width: 720px;
+        max-width: 92%;
+        max-height: 86%;
+        flex-direction: column;
+        align-items: stretch;
+        background-color: $mirage-bg-elevated;
+        border: $mirage-border-width solid $mirage-border-strong;
+    }
+
+    .body
+    {
+        flex-direction: column;
+        align-items: stretch;
+        padding: $mirage-space-4 $mirage-space-5;
+        gap: $mirage-space-3;
+        overflow: scroll;
+    }
+
+    .section
+    {
+        flex-direction: column;
+        align-items: stretch;
+        gap: $mirage-space-2;
+    }
+
+    .row
+    {
+        flex-direction: row;
+        align-items: center;
+        gap: $mirage-space-3;
+        padding: $mirage-space-2 $mirage-space-3;
+        background-color: rgba( 255, 255, 255, 0.03 );
+        border: 1px solid $mirage-border-soft;
+
+        .row-label
+        {
+            color: $mirage-text-secondary;
+            font-size: $mirage-font-sm;
+            font-weight: 600;
+            white-space: nowrap;
+            width: 220px;
+            flex-shrink: 0;
+        }
+
+        .row-value
+        {
+            flex: 1 1 0;
+            color: $mirage-text-primary;
+            font-size: $mirage-font-sm;
+            font-weight: 500;
+            white-space: normal;
+        }
+
+        MirageButton
+        {
+            flex-shrink: 0;
+        }
+
+        &.row--large
+        {
+            align-items: flex-start;
+
+            .row-value
+            {
+                white-space: pre-wrap;
+                font-size: $mirage-font-xs;
+            }
+        }
+    }
+
+    .toast
+    {
+        position: absolute;
+        bottom: $mirage-space-4;
+        left: 50%;
+        transform: translateX( -50% );
+        padding: $mirage-space-2 $mirage-space-4;
+        background-color: rgba( 0, 0, 0, 0.85 );
+        border: 1px solid $mirage-border-accent;
+        color: $mirage-text-primary;
+    }
+}

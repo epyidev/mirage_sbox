@@ -31,5 +31,16 @@ public static class MirageCommands
 				}
 			}
 		} );
+
+		CommandRegistry.Register( new CommandSpec
+		{
+			Name = "coords",
+			Description = "Affiche tes coordonnées dans plusieurs formats",
+			Permission = "command.coords",
+			Handler = ( ctx ) =>
+			{
+				MirageCoordsBridge.OpenForCaller( ctx.Caller );
+			}
+		} );
 	}
 }
