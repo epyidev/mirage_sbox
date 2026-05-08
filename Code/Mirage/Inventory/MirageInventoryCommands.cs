@@ -11,17 +11,23 @@ namespace Sandbox.Mirage;
 public static class MirageInventoryCommands
 {
 	/// <summary>
-	/// `/give &lt;itemId&gt; [count]` adds an item to the caller's inventory.
+	/// <c>/give &lt;id|me&gt; &lt;itemId&gt; [count]</c> gives an item to the
+	/// target player. The target must be connected and out of the
+	/// character-selection limbo (an empty inventory has no slots to
+	/// write to). <c>me</c> targets the caller.
 	/// </summary>
 	public static void HandleGive( CommandContext ctx )
 	{
-		if ( ctx.Args.Length < 1 )
+		if ( ctx.Args.Length < 2 )
 		{
-			ctx.ReplyError( "Usage : /give <itemId> [count]." );
+			ctx.ReplyError( "Usage : /give <id|me> <itemId> [count]." );
 			return;
 		}
 
-		var itemId = ctx.Args[0];
+		var target = MiragePlayerLookup.Resolve( ctx, ctx.Args[0] );
+		if ( target is null ) return;
+
+		var itemId = ctx.Args[1];
 		if ( !MirageItems.IsKnown( itemId ) )
 		{
 			ctx.ReplyError( $"Item inconnu : « {itemId} ». Tape /items pour la liste." );
@@ -29,32 +35,31 @@ public static class MirageInventoryCommands
 		}
 
 		var count = 1;
-		if ( ctx.Args.Length >= 2 && int.TryParse( ctx.Args[1], out var parsed ) && parsed > 0 )
+		if ( ctx.Args.Length >= 3 && int.TryParse( ctx.Args[2], out var parsed ) && parsed > 0 )
 		{
 			count = parsed;
 		}
 
-		var player = FindCallerPlayer( ctx );
-		if ( player is null ) { ctx.ReplyError( "Joueur introuvable." ); return; }
-		var inv = player.GetComponent<MirageInventory>();
+		var inv = target.GetComponent<MirageInventory>();
 		if ( inv is null ) { ctx.ReplyError( "Inventaire indisponible." ); return; }
 
 		var leftover = inv.Add( itemId, count );
-		MirageInventoryEquip.ApplyEquip( player, inv );
+		MirageInventoryEquip.ApplyEquip( target, inv );
 
 		var given = count - leftover;
+		var who = target == FindCallerPlayer( ctx ) ? "toi" : $"#{target.PlayerData?.MirageId}";
 		if ( given <= 0 )
 		{
-			ctx.ReplyError( "Inventaire plein." );
+			ctx.ReplyError( $"Inventaire de {who} plein." );
 			return;
 		}
 		if ( leftover > 0 )
 		{
-			ctx.Reply( $"{given}x {itemId} ajouté(s). {leftover} unités n'ont pas pu rentrer." );
+			ctx.Reply( $"{given}x {itemId} donné(s) à {who}. {leftover} unités n'ont pas pu rentrer." );
 		}
 		else
 		{
-			ctx.Reply( $"{given}x {itemId} ajouté(s)." );
+			ctx.Reply( $"{given}x {itemId} donné(s) à {who}." );
 		}
 	}
 
@@ -69,15 +74,28 @@ public static class MirageInventoryCommands
 		MirageItemsBrowserBridge.OpenForCaller( ctx.Caller );
 	}
 
+	/// <summary>
+	/// <c>/clearinv &lt;id|me&gt;</c> wipes the target's inventory. Self-target
+	/// with <c>me</c>; admin-target with a numeric Mirage id.
+	/// </summary>
 	public static void HandleClear( CommandContext ctx )
 	{
-		var player = FindCallerPlayer( ctx );
-		if ( player is null ) { ctx.ReplyError( "Joueur introuvable." ); return; }
-		var inv = player.GetComponent<MirageInventory>();
+		if ( ctx.Args.Length < 1 )
+		{
+			ctx.ReplyError( "Usage : /clearinv <id|me>." );
+			return;
+		}
+
+		var target = MiragePlayerLookup.Resolve( ctx, ctx.Args[0] );
+		if ( target is null ) return;
+
+		var inv = target.GetComponent<MirageInventory>();
 		if ( inv is null ) { ctx.ReplyError( "Inventaire indisponible." ); return; }
-		inv.Replace( Array.Empty<MirageInventorySlot>() );
-		MirageInventoryEquip.ApplyEquip( player, inv );
-		ctx.Reply( "Inventaire vidé." );
+		inv.ClearAll();
+		MirageInventoryEquip.ApplyEquip( target, inv );
+
+		var who = target == FindCallerPlayer( ctx ) ? "ton inventaire" : $"l'inventaire de #{target.PlayerData?.MirageId}";
+		ctx.Reply( $"{who} a été vidé." );
 	}
 
 	private static Player FindCallerPlayer( CommandContext ctx )

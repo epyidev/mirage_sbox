@@ -46,9 +46,9 @@ public static class MirageCommands
 		CommandRegistry.Register( new CommandSpec
 		{
 			Name = "give",
-			Description = "Donne un item au joueur courant",
+			Description = "Donne un item à un joueur",
 			Permission = "command.give",
-			UsageHint = "Usage : /give <itemId> [count].",
+			UsageHint = "Usage : /give <id|me> <itemId> [count].",
 			Handler = MirageInventoryCommands.HandleGive
 		} );
 
@@ -63,25 +63,46 @@ public static class MirageCommands
 		CommandRegistry.Register( new CommandSpec
 		{
 			Name = "clearinv",
-			Description = "Vide ton inventaire",
+			Description = "Vide l'inventaire d'un joueur",
 			Permission = "command.give",
+			UsageHint = "Usage : /clearinv <id|me>.",
 			Handler = MirageInventoryCommands.HandleClear
 		} );
 
 		CommandRegistry.Register( new CommandSpec
 		{
 			Name = "relog",
-			Description = "Sauvegarde ton personnage et retourne à la sélection",
+			Description = "Renvoie un joueur à la sélection de personnage (avec save)",
 			Permission = "command.relog",
+			UsageHint = "Usage : /relog <id|me>.",
 			Handler = MirageSessionCommands.HandleRelog
 		} );
 
 		CommandRegistry.Register( new CommandSpec
 		{
-			Name = "saveallcharacters",
-			Description = "Force la sauvegarde de tous les personnages connectés",
-			Permission = "command.saveallcharacters",
-			Handler = MirageSessionCommands.HandleSaveAllCharacters
+			Name = "savecharacter",
+			Description = "Force la sauvegarde d'un (specific) ou de tous (all) les personnages connectés",
+			Permission = "command.savecharacter",
+			UsageHint = "Usage : /savecharacter all   |   /savecharacter specific <id>.",
+			Handler = MirageSessionCommands.HandleSaveCharacter
+		} );
+
+		CommandRegistry.Register( new CommandSpec
+		{
+			Name = "goto",
+			Description = "Téléporte-toi sur un joueur",
+			Permission = "command.goto",
+			UsageHint = "Usage : /goto <id>.",
+			Handler = MirageSessionCommands.HandleGoto
+		} );
+
+		CommandRegistry.Register( new CommandSpec
+		{
+			Name = "bring",
+			Description = "Ramène un joueur sur toi",
+			Permission = "command.bring",
+			UsageHint = "Usage : /bring <id>.",
+			Handler = MirageSessionCommands.HandleBring
 		} );
 	}
 }
