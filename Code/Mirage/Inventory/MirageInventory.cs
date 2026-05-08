@@ -16,25 +16,31 @@ public sealed class MirageInventory : Component
 	public const int SlotCount = 25;
 	public const int HotbarColumns = 5;
 
-	private readonly MirageInventorySlot[] _slots = new MirageInventorySlot[SlotCount];
+	private MirageInventorySlot[] _slots;
 
 	/// <summary>
 	/// Currently selected hotbar slot, in range [0, <see cref="HotbarColumns"/>).
 	/// -1 means nothing in hand. Synced so listeners (weapon equip, animations)
 	/// react on every client.
 	/// </summary>
-	[Sync( SyncFlags.FromHost )] public int SelectedSlot { get; private set; } = -1;
+	[Sync( SyncFlags.FromHost )] public int SelectedSlot { get; set; } = -1;
 
-	public MirageInventory()
+	private void EnsureSlots()
 	{
+		if ( _slots is not null ) return;
+		_slots = new MirageInventorySlot[SlotCount];
 		for ( int i = 0; i < SlotCount; i++ )
 			_slots[i] = new MirageInventorySlot();
 	}
 
-	public IReadOnlyList<MirageInventorySlot> Slots => _slots;
+	public IReadOnlyList<MirageInventorySlot> Slots
+	{
+		get { EnsureSlots(); return _slots; }
+	}
 
 	public MirageInventorySlot Slot( int index )
 	{
+		EnsureSlots();
 		if ( index < 0 || index >= SlotCount ) return null;
 		return _slots[index];
 	}
@@ -53,6 +59,7 @@ public sealed class MirageInventory : Component
 	public int Add( string itemId, int count, IReadOnlyDictionary<string, string> metadata = null )
 	{
 		Assert.True( Networking.IsHost, "MirageInventory.Add must run on the host" );
+		EnsureSlots();
 		if ( count <= 0 ) return 0;
 		var def = MirageItems.Find( itemId );
 		if ( def is null ) return count;
@@ -100,6 +107,7 @@ public sealed class MirageInventory : Component
 	public int RemoveAt( int slotIndex, int count = int.MaxValue )
 	{
 		Assert.True( Networking.IsHost, "MirageInventory.RemoveAt must run on the host" );
+		EnsureSlots();
 		if ( slotIndex < 0 || slotIndex >= SlotCount ) return 0;
 
 		var slot = _slots[slotIndex];
@@ -122,6 +130,7 @@ public sealed class MirageInventory : Component
 	public void Move( int from, int to )
 	{
 		Assert.True( Networking.IsHost, "MirageInventory.Move must run on the host" );
+		EnsureSlots();
 		if ( from == to ) return;
 		if ( from < 0 || from >= SlotCount ) return;
 		if ( to < 0 || to >= SlotCount ) return;
@@ -164,6 +173,7 @@ public sealed class MirageInventory : Component
 	public void Replace( IEnumerable<MirageInventorySlot> snapshot )
 	{
 		Assert.True( Networking.IsHost, "MirageInventory.Replace must run on the host" );
+		EnsureSlots();
 		for ( int i = 0; i < SlotCount; i++ ) _slots[i].Clear();
 		if ( snapshot is null ) { BroadcastSnapshot(); return; }
 		foreach ( var s in snapshot )
@@ -188,6 +198,7 @@ public sealed class MirageInventory : Component
 	public void SetSlot( int index, string itemId, int count, IReadOnlyDictionary<string, string> metadata = null )
 	{
 		Assert.True( Networking.IsHost, "MirageInventory.SetSlot must run on the host" );
+		EnsureSlots();
 		if ( index < 0 || index >= SlotCount ) return;
 		var slot = _slots[index];
 		if ( string.IsNullOrEmpty( itemId ) || count <= 0 )
@@ -224,6 +235,7 @@ public sealed class MirageInventory : Component
 	public void BroadcastSnapshot()
 	{
 		if ( !Networking.IsHost ) return;
+		EnsureSlots();
 		var owner = Network.Owner;
 		if ( owner is null ) return;
 		var json = Sandbox.Json.Serialize( _slots );
@@ -234,6 +246,7 @@ public sealed class MirageInventory : Component
 	[Rpc.Broadcast( NetFlags.HostOnly | NetFlags.Reliable )]
 	private void RpcDeliverSnapshot( string json )
 	{
+		EnsureSlots();
 		// Apply locally on the receiving (owner) client.
 		MirageInventorySlot[] arr;
 		try { arr = Sandbox.Json.Deserialize<MirageInventorySlot[]>( json ); }
@@ -262,6 +275,7 @@ public sealed class MirageInventory : Component
 
 	private int FindFirstEmpty()
 	{
+		EnsureSlots();
 		for ( int i = 0; i < SlotCount; i++ )
 			if ( _slots[i].IsEmpty ) return i;
 		return -1;

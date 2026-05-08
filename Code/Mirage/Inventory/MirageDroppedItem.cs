@@ -84,7 +84,11 @@ public sealed class MirageDroppedItem : Component, Component.IPressable
 			var prefab = GameObject.GetPrefab( item.DropPrefab );
 			if ( prefab.IsValid() )
 			{
-				go = prefab.Clone( spawnPos );
+				go = prefab.Clone( new CloneConfig
+				{
+					Transform = new Transform( spawnPos ),
+					StartEnabled = true
+				} );
 			}
 			else
 			{
@@ -98,6 +102,7 @@ public sealed class MirageDroppedItem : Component, Component.IPressable
 		}
 
 		go.Name = $"Mirage Drop ({itemId} x{count})";
+		go.Tags.Add( "removable" );
 
 		var dropped = go.GetComponent<MirageDroppedItem>();
 		if ( dropped is null ) dropped = go.AddComponent<MirageDroppedItem>();
@@ -105,6 +110,7 @@ public sealed class MirageDroppedItem : Component, Component.IPressable
 		dropped.Count = count;
 		dropped.MetadataJson = metadata is null ? "" : Sandbox.Json.Serialize( metadata );
 
+		Ownable.Set( go, player.Network.Owner );
 		go.NetworkSpawn();
 
 		// Push it slightly away from the player and add a bit of velocity
