@@ -53,8 +53,11 @@ MirageInventoryPanel
         border: $mirage-border-width solid $mirage-border-strong;
         flex-shrink: 0;
 
+        // Closed state slides the frame off-screen to the RIGHT (where it
+        // lives), so opening it slides in from the same edge instead of
+        // crossing the entire screen.
         opacity: 0;
-        transform: translateX( -2400px );
+        transform: translateX( 600px );
         transition: transform 0.35s ease-in-out, opacity 0.35s ease-in-out;
     }
 
@@ -194,12 +197,12 @@ MirageInventoryPanel
         &.cell--dragging    { opacity: 0.35; border-color: $mirage-border-accent; }
 
         // Highlighted while a drag is in flight and the cursor is over
-        // this cell. Brighter than selected so the operator clearly sees
-        // where the stack will land if they release here.
+        // this cell. Neutral white tint so it stays generic and does not
+        // clash with the rest of the Mirage palette.
         &.cell--drop-target
         {
-            border-color: $mirage-info;
-            background-color: rgba( 110, 200, 255, 0.18 );
+            border-color: $mirage-text-primary;
+            background-color: rgba( 255, 255, 255, 0.14 );
         }
 
         &:hover { border-color: $mirage-border-strong; }

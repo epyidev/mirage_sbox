@@ -8,11 +8,12 @@
 @inherits PanelComponent
 @namespace Sandbox.Mirage.UI
 
-<root class="mirage-inventory-panel @(MirageInventoryPanelState.IsOpen ? "open" : "")">
+<root class="mirage-inventory-panel @(MirageInventoryPanelState.IsOpen ? "open" : "")"
+      @onmouseup="@OnRootMouseUp">
 
-    <div class="backdrop" @onclick="@Close" @onmouseup="@OnBackdropMouseUp"></div>
+    <div class="backdrop" @onclick="@Close"></div>
 
-    <div class="frame" @onmouseup="@OnFrameMouseUp">
+    <div class="frame" @ref="_frame">
 
         <div class="frame-header">
             <MirageLabel Variant="@(MirageLabel.LabelVariant.Heading)" Text="Inventaire" />
@@ -112,6 +113,7 @@
     private int _renderedVersion = -1;
 
     // Refs into the rendered tree.
+    private Panel _frame;
     private Panel _grid;
     private Panel _dragVisual;
     private Panel _tooltip;
@@ -163,7 +165,6 @@
             StateHasChanged();
         }
 
-        // Update cursor-driven state every frame.
         var mouse = Mouse.Position;
         var hover = HitTestSlot( mouse );
         var scale = Panel.ScaleFromScreen;
@@ -226,9 +227,6 @@
         _dragSource = idx;
         _dragBadge = GetItemBadge( slot.Item, slot.ItemId );
         _dragCount = slot.Count;
-        // Pre-position the floating preview at the cursor so the first
-        // rendered frame already shows it where it should be, no top-left
-        // flash.
         var scale = Panel.ScaleFromScreen;
         var mouse = Mouse.Position;
         _dragX = mouse.x * scale - DragVisualSize / 2f;
@@ -238,24 +236,35 @@
         StateHasChanged();
     }
 
-    private void OnFrameMouseUp()
+    /// <summary>
+    /// Single mouseup handler at the panel root: resolves the drop based on
+    /// where the cursor is when the operator releases the mouse, instead of
+    /// relying on which child element captured the up event.
+    /// </summary>
+    private void OnRootMouseUp()
     {
         if ( !IsDragging ) return;
-        // Slot mousedown captures the mouse so mouseup always lands on the
-        // source slot. We hit-test the cursor against the grid's cell rects
-        // to figure out where the operator actually wants to drop.
-        var target = HitTestSlot( Mouse.Position );
-        if ( target >= 0 && target != _dragSource )
-        {
-            MirageInventoryService.RpcMoveSlot( _dragSource, target );
-        }
-        CancelDrag();
-    }
+        var mouse = Mouse.Position;
+        var target = HitTestSlot( mouse );
 
-    private void OnBackdropMouseUp()
-    {
-        if ( !IsDragging ) return;
-        MirageInventoryService.RpcDropSlot( _dragSource, 0 );
+        if ( target >= 0 )
+        {
+            // Cursor over a slot: only act if it is a different one than
+            // the source. Same slot release just cancels.
+            if ( target != _dragSource )
+            {
+                MirageInventoryService.RpcMoveSlot( _dragSource, target );
+            }
+        }
+        else if ( !IsInsideFrame( mouse ) )
+        {
+            // Cursor is fully outside the inventory frame: drop the stack
+            // into the world.
+            MirageInventoryService.RpcDropSlot( _dragSource, 0 );
+        }
+        // Inside the frame but not on a slot (header, weight bar, gaps):
+        // cancel without doing anything.
+
         CancelDrag();
     }
 
@@ -267,6 +276,11 @@
         _dragCount = 0;
         _dropTarget = -1;
         StateHasChanged();
+    }
+
+    private bool IsInsideFrame( Vector2 mouse )
+    {
+        return _frame is not null && _frame.IsValid() && _frame.Box.Rect.IsInside( mouse );
     }
 
     private int HitTestSlot( Vector2 mouse )
