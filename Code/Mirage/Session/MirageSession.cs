@@ -120,6 +120,20 @@ public sealed class MirageSession : GameObjectSystem<MirageSession>, ISceneStart
 		ApplyLimboVisibility( player );
 	}
 
+	void Global.IPlayerEvents.OnPlayerDamaging( PlayerDamageEvent e )
+	{
+		if ( e?.Player is null ) return;
+		var pd = e.Player.PlayerData;
+		if ( pd is null ) return;
+		if ( pd.HasActiveCharacter ) return;
+
+		// Limbo players are not really alive yet. Block every incoming
+		// damage so nothing (fall damage, world triggers, an early-firing
+		// weapon, etc.) can kill them before they have even picked a
+		// character.
+		e.Cancelled = true;
+	}
+
 	/// <summary>
 	/// Host-side. Hide the player body GameObject while the player has no
 	/// active character. The Enabled flag replicates through the network

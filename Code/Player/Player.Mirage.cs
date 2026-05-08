@@ -27,4 +27,26 @@ public sealed partial class Player
 			Controller.EyeAngles = eyeAngles;
 		}
 	}
+
+	protected override void OnUpdate()
+	{
+		// Pin the local player's body at the configured character-select spot
+		// while no character is bound. Without this the controller still
+		// applies gravity, the body falls out of the sky and racks up fall
+		// damage even though it is hidden and the operator is staring at the
+		// selection screen. Damage itself is also cancelled in
+		// MirageSession.OnPlayerDamaging as a belt-and-suspenders guard.
+		if ( !IsLocalPlayer ) return;
+		if ( PlayerData is not { HasActiveCharacter: false } ) return;
+
+		WorldPosition = MirageConVars.CharacterSelectPlayerPosition;
+
+		// Controller.Velocity is read-only; clear the underlying Rigidbody's
+		// velocity instead so falls do not accumulate frame to frame.
+		if ( Controller.IsValid() && Controller.Body.IsValid() )
+		{
+			Controller.Body.Velocity = Vector3.Zero;
+			Controller.Body.AngularVelocity = Vector3.Zero;
+		}
+	}
 }
