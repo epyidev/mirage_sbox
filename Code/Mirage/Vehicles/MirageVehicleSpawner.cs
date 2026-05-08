@@ -95,7 +95,11 @@ public static class MirageVehicleSpawner
 		go.Name = $"Mirage Vehicle ({model.Id})";
 
 		Ownable.Set( go, player.Network.Owner );
-		go.NetworkSpawn( false, player.Network.Owner );
+		// NetworkSpawn(true, owner) spawns enabled on every client and
+		// hands ownership to the caller. The Pickup-style false-first
+		// variant used by PlayerInventory is for items that start
+		// disabled and get enabled later when held.
+		go.NetworkSpawn( true, player.Network.Owner );
 
 		_registered.Add( go );
 
