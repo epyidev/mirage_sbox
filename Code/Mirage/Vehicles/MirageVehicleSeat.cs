@@ -33,8 +33,14 @@ public sealed class MirageVehicleSeat : Component, Component.IPressable
 	/// </summary>
 	[Sync( SyncFlags.FromHost )] public string DriverPlayerId { get; set; } = "";
 
-	/// <summary>How far above the chassis origin to lift the driver while seated.</summary>
-	[Property] public Vector3 SeatOffset { get; set; } = new Vector3( 0f, 0f, 24f );
+	/// <summary>
+	/// Local-space position the driver is parked at while seated. The
+	/// player's body and controller are disabled while in the seat so
+	/// the value is mostly used by the first-person camera that sits
+	/// at the player's eye height. <c>(0, 0, 0)</c> = car origin and
+	/// usually puts the eye at cabin level for a small chassis.
+	/// </summary>
+	[Property] public Vector3 SeatOffset { get; set; } = new Vector3( 0f, 0f, 0f );
 
 	/// <summary>How far away from the vehicle to teleport the driver on exit.</summary>
 	[Property] public float ExitOffset { get; set; } = 90f;
@@ -97,9 +103,16 @@ public sealed class MirageVehicleSeat : Component, Component.IPressable
 		DriverPlayerId = pd.PlayerId.ToString();
 		pd.InVehicleId = GameObject.Id.ToString();
 
-		// Park the player at the seat point so they ride along with
-		// the chassis. Body stays visible by default; if you want a
-		// cleaner cockpit later, gate Body.Enabled here.
+		// Hide the body and freeze the controller so the operator does
+		// not visually slip off the vehicle when it accelerates: the
+		// player's own physics would otherwise fight the parent
+		// transform we just set.
+		if ( player.Body.IsValid() ) player.Body.Enabled = false;
+		if ( player.Controller.IsValid() ) player.Controller.Enabled = false;
+
+		// Parent the Player GameObject to the vehicle so the camera
+		// (a child of the player) follows the chassis. Local position
+		// pins the eye at the seat anchor.
 		player.GameObject.SetParent( GameObject, false );
 		player.GameObject.LocalPosition = SeatOffset;
 		player.GameObject.LocalRotation = Rotation.Identity;
@@ -114,6 +127,12 @@ public sealed class MirageVehicleSeat : Component, Component.IPressable
 		{
 			pd.InVehicleId = "";
 		}
+
+		// Re-enable the player visuals and physics before un-parenting.
+		// Doing it in this order avoids a one-frame flash where the
+		// controller would try to apply gravity at world-zero.
+		if ( player.Body.IsValid() ) player.Body.Enabled = true;
+		if ( player.Controller.IsValid() ) player.Controller.Enabled = true;
 
 		// Unparent and drop the player one body-length to the side of
 		// the vehicle, on the ground if we can find one.

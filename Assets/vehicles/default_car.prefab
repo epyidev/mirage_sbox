@@ -96,7 +96,7 @@
         "__type": "Sandbox.Mirage.Vehicles.MirageVehicleSeat",
         "__guid": "1c8e0a04-9c18-4b91-aa3d-a22a1d3b66f1",
         "DriverPlayerId": "",
-        "SeatOffset": "0,0,28",
+        "SeatOffset": "0,0,0",
         "ExitOffset": 90,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
