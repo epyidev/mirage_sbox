@@ -87,7 +87,8 @@ public static class MirageVehicleSpawner
 		Ownable.Set( go, player.Network.Owner );
 		go.NetworkSpawn( false, player.Network.Owner );
 
-		Log.Info( $"[Mirage] Vehicle '{model.Id}' spawned successfully (guid={go.Id})." );
+		var tagsList = string.Join( ", ", go.Tags );
+		Log.Info( $"[Mirage] Vehicle '{model.Id}' spawned successfully (guid={go.Id}, tags=[{tagsList}], parent={go.Parent?.Name ?? "<scene root>"})." );
 		return go;
 	}
 
@@ -119,7 +120,15 @@ public static class MirageVehicleSpawner
 
 		var origin = player.WorldPosition;
 		var radiusSq = radius * radius;
-		var hits = AllSpawned()
+		var spawned = AllSpawned().ToList();
+		Log.Info( $"[Mirage] DespawnInRadius: scene contains {spawned.Count} mirage_vehicle object(s). Origin={origin}, radius={radius}." );
+		foreach ( var go in spawned )
+		{
+			var d = (go.WorldPosition - origin).Length;
+			Log.Info( $"[Mirage]   - {go.Name} at {go.WorldPosition} ({d:F0} units away)." );
+		}
+
+		var hits = spawned
 			.Where( go => go.IsValid() && (go.WorldPosition - origin).LengthSquared <= radiusSq )
 			.ToList();
 
@@ -136,8 +145,17 @@ public static class MirageVehicleSpawner
 	/// </summary>
 	public static IEnumerable<GameObject> AllSpawned()
 	{
-		return Game.ActiveScene.GetAllObjects( true )
-			.Where( go => go.IsValid() && go.Tags.Has( MirageVehicleTag ) );
+		// Walk the scene root chain manually so disabled / freshly
+		// spawned children that may not yet be reachable through
+		// GetAllObjects show up too. Tag presence is the only filter.
+		var scene = Game.ActiveScene;
+		if ( scene is null ) yield break;
+		foreach ( var go in scene.GetAllObjects( true ) )
+		{
+			if ( !go.IsValid() ) continue;
+			if ( !go.Tags.Has( MirageVehicleTag ) ) continue;
+			yield return go;
+		}
 	}
 
 	/// <summary>
