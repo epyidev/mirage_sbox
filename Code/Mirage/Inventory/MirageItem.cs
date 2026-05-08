@@ -61,6 +61,14 @@ public sealed class MirageItem
 	public string DropPrefab { get; init; }
 
 	/// <summary>
+	/// For weapon items only: id of the inventory item that counts as a
+	/// cartridge for this weapon (e.g. <c>ammo_9</c>). Reserve ammo is the
+	/// number of these units the operator carries, and reloading pulls
+	/// cartridges from there. Null on melee, throwables and tools.
+	/// </summary>
+	public string WeaponAmmoType { get; init; }
+
+	/// <summary>
 	/// Default metadata seeded on a fresh stack. Useful for weapon defaults
 	/// (durability=100, ammo=mag size, etc.).
 	/// </summary>

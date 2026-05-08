@@ -24,7 +24,7 @@ public static class MirageItems
 	/// from the new code instead of silently serving stale entries (e.g. an
 	/// old WeaponPrefab path renamed since the last reload).
 	/// </summary>
-	private const int CatalogueVersion = 3;
+	private const int CatalogueVersion = 4;
 	private static int _builtVersion = -1;
 
 	private static void EnsureBuilt()
@@ -156,6 +156,72 @@ public static class MirageItems
 			Image = "ui/items/identification.png"
 		} );
 
+		// ---- Ammunition ----
+		// One stackable item per cartridge family. Carrying these in the
+		// inventory acts as the reserve magazine: reloading a weapon
+		// pulls cartridges out of the matching ammo stack until the clip
+		// is full or the stack is empty. The ids must match the
+		// WeaponAmmoType wired on the weapon entries below.
+		Add( new MirageItem
+		{
+			Id = "ammo_9",
+			Label = "Munitions 9mm",
+			Weight = 12,
+			MaxStack = 200,
+			Category = "ammo",
+			Image = "ui/items/ammo_9.png"
+		} );
+
+		Add( new MirageItem
+		{
+			Id = "ammo_45",
+			Label = "Munitions .45 ACP",
+			Weight = 15,
+			MaxStack = 200,
+			Category = "ammo",
+			Image = "ui/items/ammo_45.png"
+		} );
+
+		Add( new MirageItem
+		{
+			Id = "ammo_shotgun",
+			Label = "Cartouches calibre 12",
+			Weight = 45,
+			MaxStack = 100,
+			Category = "ammo",
+			Image = "ui/items/ammo_shotgun.png"
+		} );
+
+		Add( new MirageItem
+		{
+			Id = "ammo_5-56",
+			Label = "Munitions 5.56",
+			Weight = 14,
+			MaxStack = 200,
+			Category = "ammo",
+			Image = "ui/items/ammo_5-56.png"
+		} );
+
+		Add( new MirageItem
+		{
+			Id = "ammo_7-62",
+			Label = "Munitions 7.62",
+			Weight = 22,
+			MaxStack = 100,
+			Category = "ammo",
+			Image = "ui/items/ammo_7-62.png"
+		} );
+
+		Add( new MirageItem
+		{
+			Id = "ammo_rpg",
+			Label = "Roquette",
+			Weight = 2500,
+			MaxStack = 5,
+			Category = "ammo",
+			Image = "ui/items/ammo_rpg.png"
+		} );
+
 		// ---- Weapons bound to the existing Sandbox carryables ----
 		// Weapon item ids are prefixed with "weapon_" so any reader can
 		// tell at a glance that the slot holds an armed item. WeaponPrefab
@@ -172,6 +238,7 @@ public static class MirageItems
 			Category = "weapon",
 			Image = "ui/items/weapon_colt1911.png",
 			WeaponPrefab = "weapons/Colt1911/colt1911.prefab",
+			WeaponAmmoType = "ammo_45",
 			DefaultMetadata = new Dictionary<string, string>
 			{
 				["ammo"] = "7",
@@ -188,6 +255,7 @@ public static class MirageItems
 			Category = "weapon",
 			Image = "ui/items/weapon_glock.png",
 			WeaponPrefab = "weapons/Glock/glock.prefab",
+			WeaponAmmoType = "ammo_9",
 			DefaultMetadata = new Dictionary<string, string>
 			{
 				["ammo"] = "17",
@@ -204,6 +272,7 @@ public static class MirageItems
 			Category = "weapon",
 			Image = "ui/items/weapon_mp5.png",
 			WeaponPrefab = "weapons/Mp5/mp5.prefab",
+			WeaponAmmoType = "ammo_9",
 			DefaultMetadata = new Dictionary<string, string>
 			{
 				["ammo"] = "30",
@@ -220,6 +289,7 @@ public static class MirageItems
 			Category = "weapon",
 			Image = "ui/items/weapon_shotgun.png",
 			WeaponPrefab = "weapons/Shotgun/shotgun.prefab",
+			WeaponAmmoType = "ammo_shotgun",
 			DefaultMetadata = new Dictionary<string, string>
 			{
 				["ammo"] = "8",
@@ -236,6 +306,7 @@ public static class MirageItems
 			Category = "weapon",
 			Image = "ui/items/weapon_m4a1.png",
 			WeaponPrefab = "weapons/M4a1/m4a1.prefab",
+			WeaponAmmoType = "ammo_5-56",
 			DefaultMetadata = new Dictionary<string, string>
 			{
 				["ammo"] = "30",
@@ -252,6 +323,7 @@ public static class MirageItems
 			Category = "weapon",
 			Image = "ui/items/weapon_sniper.png",
 			WeaponPrefab = "weapons/Sniper/sniper.prefab",
+			WeaponAmmoType = "ammo_7-62",
 			DefaultMetadata = new Dictionary<string, string>
 			{
 				["ammo"] = "5",
@@ -268,6 +340,7 @@ public static class MirageItems
 			Category = "weapon",
 			Image = "ui/items/weapon_rpg.png",
 			WeaponPrefab = "weapons/Rpg/rpg.prefab",
+			WeaponAmmoType = "ammo_rpg",
 			DefaultMetadata = new Dictionary<string, string>
 			{
 				["ammo"] = "1",
