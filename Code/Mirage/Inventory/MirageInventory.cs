@@ -23,7 +23,16 @@ public sealed class MirageInventory : Component
 	/// -1 means nothing in hand. Synced so listeners (weapon equip, animations)
 	/// react on every client.
 	/// </summary>
-	[Sync( SyncFlags.FromHost )] public int SelectedSlot { get; set; } = -1;
+	[Sync( SyncFlags.FromHost ), Change] public int SelectedSlot { get; set; } = -1;
+
+	/// <summary>
+	/// Sync change callback. Bumps <see cref="Version"/> so the local UI
+	/// re-renders the hotbar highlight without subscribing to engine events.
+	/// </summary>
+	public void OnSelectedSlotChanged( int oldValue, int newValue )
+	{
+		Version++;
+	}
 
 	private void EnsureSlots()
 	{
@@ -221,7 +230,9 @@ public sealed class MirageInventory : Component
 	{
 		Assert.True( Networking.IsHost, "MirageInventory.SetSelectedSlot must run on the host" );
 		if ( slotIndex < -1 || slotIndex >= HotbarColumns ) return;
+		if ( SelectedSlot == slotIndex ) return;
 		SelectedSlot = slotIndex;
+		Version++;
 	}
 
 	// ------------------------------------------------------------------
