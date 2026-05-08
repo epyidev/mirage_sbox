@@ -202,16 +202,19 @@ public static class MirageVehicleSpawner
 	}
 
 	/// <summary>
-	/// World transform for a fresh spawn: 3 metres in front of the
-	/// player at eye yaw, lifted slightly so the vehicle does not clip
-	/// the floor as the wheel suspension settles.
+	/// World transform for a fresh spawn. Currently in close-debug
+	/// mode: 100 units forward (about 2.5 m) and 80 up so the operator
+	/// always lands the car in their immediate view, regardless of how
+	/// busy the surroundings are. Once the rendering side is confirmed
+	/// working we can push this back to a more comfortable distance.
 	/// </summary>
 	private static Transform ResolveSpawnTransform( Player player )
 	{
 		var ang = player.Controller.IsValid() ? player.Controller.EyeAngles : Angles.Zero;
 		var yaw = ang.yaw;
 		var forward = Rotation.From( 0, yaw, 0 ).Forward;
-		var pos = player.WorldPosition + forward * 220f + Vector3.Up * 24f;
+		var pos = player.WorldPosition + forward * 100f + Vector3.Up * 80f;
+		Log.Info( $"[Mirage] ResolveSpawnTransform: player@{player.WorldPosition} yaw={yaw} -> spawn@{pos}" );
 		return new Transform( pos, Rotation.FromYaw( yaw ) );
 	}
 }
