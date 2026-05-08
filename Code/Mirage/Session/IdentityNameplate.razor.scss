@@ -1,48 +1,52 @@
 // @author Epyi
 
-@import "/UI/Theme.scss";
+@import "/Mirage/UI/Theme/MirageTheme.scss";
 
 .mirage-identity
 {
     position: absolute;
-    left: 24px;
-    bottom: 24px;
+    top: $mirage-space-5;
+    left: $mirage-space-5;
     pointer-events: none;
     opacity: 0;
-    transform: translateY( 8px );
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transform: translateX( -8px );
+    transition: opacity $mirage-transition, transform $mirage-transition;
+    font-family: $mirage-font-family;
+    z-index: 30;
 
     &.open
     {
         opacity: 1;
-        transform: translateY( 0 );
+        transform: translateX( 0 );
     }
 
+    // Mirage card: square corners, neutral border, blurred dark surface,
+    // matches the rest of the HUD instead of standing out with rounded
+    // corners and a cyan accent stripe.
     .badge
     {
         flex-direction: column;
+        gap: 2px;
+        padding: $mirage-space-2 $mirage-space-4;
         background-color: rgba( 0, 0, 0, 0.55 );
-        backdrop-filter: blur( 4px );
-        border-left: 3px solid #6ec8ff;
-        border-radius: 4px;
-        padding: 10px 18px 12px 16px;
-        font-family: $title-font;
+        border: $mirage-border-width solid $mirage-border-soft;
+        backdrop-filter: blur( 8px );
 
         .label
         {
-            font-size: 11px;
-            color: rgba( 255, 255, 255, 0.55 );
+            color: $mirage-text-muted;
+            font-size: $mirage-font-xs;
+            font-weight: 700;
+            letter-spacing: $mirage-letter-xwide;
             text-transform: uppercase;
-            letter-spacing: 2px;
         }
 
         .name
         {
-            font-size: 22px;
+            color: $mirage-text-primary;
+            font-size: $mirage-font-lg;
             font-weight: 700;
-            color: #ffffff;
-            line-height: 1.1em;
-            margin-top: 2px;
+            line-height: 1.15;
         }
     }
 }
