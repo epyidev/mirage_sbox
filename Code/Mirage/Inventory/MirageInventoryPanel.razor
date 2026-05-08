@@ -12,11 +12,10 @@
 
     <div class="backdrop" @onclick="@Close" @onmouseup="@OnBackdropMouseUp"></div>
 
-    <div class="frame" @onmouseup="@OnFrameMouseUp">
+    <div class="frame" @ref="_frame" @onmouseup="@OnFrameMouseUp">
 
         <div class="frame-header">
             <MirageLabel Variant="@(MirageLabel.LabelVariant.Heading)" Text="Inventaire" />
-            <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Muted)" Text="@TopHint" />
         </div>
 
         @{
@@ -51,10 +50,10 @@
                         var selected = _inventory?.SelectedSlot == idx && row == 0;
                         var empty = slot is null || slot.IsEmpty;
                         var dragging = _dragSource == idx;
-                        <div class="cell @(selected ? "cell--selected" : "") @(empty ? "cell--empty" : "") @(dragging ? "cell--dragging" : "")"
-                             @onmousedown="@(() => OnSlotMouseDown( captured ))"
-                             @onmouseup="@(() => OnSlotMouseUp( captured ))"
-                             @onmouseover="@(() => OnSlotHover( captured ))">
+                        var dropTarget = IsDragging && _dropTarget == idx && _dropTarget != _dragSource;
+                        <div class="cell @(selected ? "cell--selected" : "") @(empty ? "cell--empty" : "") @(dragging ? "cell--dragging" : "") @(dropTarget ? "cell--drop-target" : "")"
+                             @ref="@(p => _cellPanels[captured] = p)"
+                             @onmousedown="@(() => OnSlotMouseDown( captured ))">
                             <div class="cell-top">
                                 <Label class="cell-key" Text="@(row == 0 ? (col + 1).ToString() : "")" />
                                 @if ( !empty && slot.Count > 1 )
@@ -80,22 +79,6 @@
             }
         </div>
 
-        <div class="actions">
-            @if ( !IsDragging && _hoverSlot >= 0 && !( _inventory?.Slot( _hoverSlot )?.IsEmpty ?? true ) )
-            {
-                @{ var hovered = _inventory.Slot( _hoverSlot ); var hoveredItem = hovered.Item; }
-                <div class="hover-info">
-                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Subtitle)" Text="@(hoveredItem?.Label ?? hovered.ItemId)" />
-                    @if ( !string.IsNullOrEmpty( hoveredItem?.Description ) )
-                    {
-                        <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Secondary)" Text="@hoveredItem.Description" />
-                    }
-                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Muted)" Text="@($"x{hovered.Count} · {hoveredItem?.Weight ?? 0}g pièce")" />
-                </div>
-            }
-            <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Muted)" Text="Glisse un item sur un autre slot pour déplacer ou empiler. Glisse en dehors de la fenêtre pour le lâcher au sol. Tab pour fermer." />
-        </div>
-
     </div>
 
     @if ( IsDragging )
@@ -109,24 +92,43 @@
         </div>
     }
 
+    @if ( !IsDragging && _tooltipSlot >= 0 )
+    {
+        @{ var tipSlot = _inventory?.Slot( _tooltipSlot ); var tipItem = tipSlot?.Item; }
+        @if ( tipSlot is not null && !tipSlot.IsEmpty )
+        {
+            <div class="slot-tooltip" @ref="_tooltip">
+                <Label class="tooltip-name" Text="@(tipItem?.Label ?? tipSlot.ItemId)" />
+                @if ( !string.IsNullOrEmpty( tipItem?.Description ) )
+                {
+                    <Label class="tooltip-desc" Text="@tipItem.Description" />
+                }
+                <Label class="tooltip-meta" Text="@($"x{tipSlot.Count} · {tipItem?.Weight ?? 0}g pièce")" />
+            </div>
+        }
+    }
+
 </root>
 
 @code
 {
     private MirageInventory _inventory;
     private int _renderedVersion = -1;
-    private int _hoverSlot = -1;
 
-    // Active drag source slot index, -1 when no drag in progress.
+    private Panel _frame;
+    private readonly Panel[] _cellPanels = new Panel[MirageInventory.SlotCount];
+
+    // Drag state
     private int _dragSource = -1;
     private string _dragBadge;
     private int _dragCount;
     private Panel _dragVisual;
     private bool IsDragging => _dragSource >= 0;
 
-    private string TopHint => IsDragging
-        ? "Lâche sur un slot pour déplacer, en dehors pour jeter au sol."
-        : "Tab pour fermer.";
+    // Hit-test cache
+    private int _dropTarget = -1;
+    private int _tooltipSlot = -1;
+    private Panel _tooltip;
 
     protected override void OnStart()
     {
@@ -150,6 +152,7 @@
         if ( !open )
         {
             CancelDrag();
+            if ( _tooltipSlot != -1 ) { _tooltipSlot = -1; StateHasChanged(); }
             return;
         }
 
@@ -159,9 +162,22 @@
             StateHasChanged();
         }
 
+        // Refresh cursor-based state every frame: which slot is hovered (for
+        // tooltip) and which slot is under the cursor while dragging (for
+        // drop-target highlight). One pass over the slot rects, cheap.
+        var mousePos = Mouse.Position;
+        var newHover = HitTestSlot( mousePos );
         if ( IsDragging )
         {
-            UpdateDragVisual();
+            if ( newHover != _dropTarget ) { _dropTarget = newHover; StateHasChanged(); }
+            if ( _tooltipSlot != -1 ) { _tooltipSlot = -1; StateHasChanged(); }
+            UpdateDragVisual( mousePos );
+        }
+        else
+        {
+            if ( newHover != _tooltipSlot ) { _tooltipSlot = newHover; StateHasChanged(); }
+            if ( _dropTarget != -1 ) { _dropTarget = -1; StateHasChanged(); }
+            UpdateTooltipPosition( mousePos );
         }
     }
 
@@ -174,13 +190,6 @@
 
     // -------- Drag and drop interactions --------
 
-    // No event-arg overloads on these handlers: s&box's Razor binds
-    // @onmouseup to an Action that gets the source Panel, not a
-    // MousePanelEvent, so typing the parameter as MousePanelEvent triggers
-    // an InvalidCastException at every render. The behaviour stays correct
-    // because the slot handler clears _dragSource before the frame handler
-    // bubbles, so the frame's "cancel drag" branch becomes a no-op.
-
     private void OnSlotMouseDown( int idx )
     {
         if ( _inventory is null ) return;
@@ -189,36 +198,30 @@
         _dragSource = idx;
         _dragBadge = GetItemBadge( slot.Item, slot.ItemId );
         _dragCount = slot.Count;
+        _tooltipSlot = -1;
         StateHasChanged();
-    }
-
-    private void OnSlotMouseUp( int idx )
-    {
-        if ( !IsDragging ) return;
-
-        if ( _dragSource != idx )
-        {
-            MirageInventoryService.RpcMoveSlot( _dragSource, idx );
-        }
-        CancelDrag();
     }
 
     private void OnFrameMouseUp()
     {
-        // Mouseup landed on the frame chrome but not on a slot: cancel the
-        // drag without dropping or moving anything. Slot handlers run first
-        // and clear _dragSource, so this is a no-op when the mouseup
-        // actually landed on a slot inside the frame.
+        // Slot mousedown captures the mouse so mouseup always lands on the
+        // source slot, never on the target. We hit-test the cursor against
+        // every slot's screen rect to figure out where the operator
+        // actually wants to drop.
         if ( !IsDragging ) return;
+        var target = HitTestSlot( Mouse.Position );
+        if ( target >= 0 && target != _dragSource )
+        {
+            MirageInventoryService.RpcMoveSlot( _dragSource, target );
+        }
         CancelDrag();
     }
 
     private void OnBackdropMouseUp()
     {
-        // Mouseup outside the frame entirely (the backdrop fills the rest
-        // of the screen): drop the dragged stack into the world. The
-        // backdrop is a sibling of the frame, not an ancestor, so frame /
-        // slot mouseups do not bubble here.
+        // Mouseup outside the frame entirely: drop the dragged stack into
+        // the world. Backdrop is a sibling of the frame so this only fires
+        // when the cursor is actually outside the panel.
         if ( !IsDragging ) return;
         MirageInventoryService.RpcDropSlot( _dragSource, 0 );
         CancelDrag();
@@ -226,26 +229,39 @@
 
     private void CancelDrag()
     {
-        if ( _dragSource < 0 ) return;
+        if ( _dragSource < 0 && _dropTarget < 0 ) return;
         _dragSource = -1;
         _dragBadge = null;
         _dragCount = 0;
+        _dropTarget = -1;
         StateHasChanged();
     }
 
-    private void UpdateDragVisual()
+    private int HitTestSlot( Vector2 mouse )
+    {
+        for ( int i = 0; i < _cellPanels.Length; i++ )
+        {
+            var p = _cellPanels[i];
+            if ( p is null || !p.IsValid() ) continue;
+            if ( p.Box.Rect.IsInside( mouse ) ) return i;
+        }
+        return -1;
+    }
+
+    private void UpdateDragVisual( Vector2 mouse )
     {
         if ( _dragVisual is null ) return;
         var scale = Panel.ScaleFromScreen;
-        var pos = Mouse.Position * scale;
-        _dragVisual.Style.Left = Length.Pixels( pos.x - 24 );
-        _dragVisual.Style.Top = Length.Pixels( pos.y - 24 );
+        _dragVisual.Style.Left = Length.Pixels( mouse.x * scale - 24 );
+        _dragVisual.Style.Top = Length.Pixels( mouse.y * scale - 24 );
     }
 
-    private void OnSlotHover( int idx )
+    private void UpdateTooltipPosition( Vector2 mouse )
     {
-        _hoverSlot = idx;
-        StateHasChanged();
+        if ( _tooltip is null ) return;
+        var scale = Panel.ScaleFromScreen;
+        _tooltip.Style.Left = Length.Pixels( mouse.x * scale + 18 );
+        _tooltip.Style.Top = Length.Pixels( mouse.y * scale + 18 );
     }
 
     private static string GetItemBadge( MirageItem item, string fallbackId )
@@ -259,7 +275,8 @@
         MirageInventoryPanelState.IsOpen,
         _inventory?.Version,
         _inventory?.SelectedSlot,
-        _hoverSlot,
+        _tooltipSlot,
+        _dropTarget,
         _dragSource
     );
 }

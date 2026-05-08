@@ -10,15 +10,15 @@ MirageInventoryPanel
     width: 100%;
     height: 100%;
     pointer-events: none;
-    opacity: 0;
-    transition: opacity $mirage-transition;
     z-index: 180;
     font-family: $mirage-font-family;
 
     &.open
     {
         pointer-events: all;
-        opacity: 1;
+
+        .backdrop { opacity: 1; }
+        .frame    { transform: translateY( -50% ) translateX( 0 ); opacity: 1; }
     }
 
     .backdrop
@@ -29,6 +29,8 @@ MirageInventoryPanel
         width: 100%;
         height: 100%;
         background-color: rgba( 0, 0, 0, 0.45 );
+        opacity: 0;
+        transition: opacity 0.25s ease-in-out;
     }
 
     .frame
@@ -36,7 +38,6 @@ MirageInventoryPanel
         position: absolute;
         top: 50%;
         right: $mirage-space-5;
-        transform: translateY( -50% );
         width: 460px;
         flex-direction: column;
         align-items: stretch;
@@ -44,6 +45,13 @@ MirageInventoryPanel
         padding: $mirage-space-4;
         background-color: $mirage-bg-elevated;
         border: $mirage-border-width solid $mirage-border-strong;
+
+        // Closed state slides the frame fully off-screen to the left and
+        // fades it out. The .open class flips to translateX(0) and
+        // opacity 1, the transition does the easing.
+        opacity: 0;
+        transform: translateY( -50% ) translateX( -2400px );
+        transition: transform 0.35s ease-in-out, opacity 0.35s ease-in-out;
     }
 
     .frame-header
@@ -88,16 +96,8 @@ MirageInventoryPanel
             }
         }
 
-        &.weight--ok .weight-fill
-        {
-            background-color: $mirage-success;
-        }
-
-        &.weight--warn .weight-fill
-        {
-            background-color: $mirage-warning;
-        }
-
+        &.weight--ok .weight-fill   { background-color: $mirage-success; }
+        &.weight--warn .weight-fill { background-color: $mirage-warning; }
         &.weight--full
         {
             .weight-numbers { color: $mirage-danger; }
@@ -185,26 +185,20 @@ MirageInventoryPanel
             overflow: hidden;
         }
 
-        &.cell--empty
+        &.cell--empty       { background-color: rgba( 0, 0, 0, 0.3 ); }
+        &.cell--selected    { border-color: $mirage-border-accent; }
+        &.cell--dragging    { opacity: 0.35; border-color: $mirage-border-accent; }
+
+        // Highlighted while a drag is in flight and the cursor is over
+        // this cell. Brighter than selected so the operator clearly sees
+        // where the stack will land if they release here.
+        &.cell--drop-target
         {
-            background-color: rgba( 0, 0, 0, 0.3 );
+            border-color: $mirage-info;
+            background-color: rgba( 110, 200, 255, 0.18 );
         }
 
-        &.cell--selected
-        {
-            border-color: $mirage-border-accent;
-        }
-
-        &.cell--dragging
-        {
-            opacity: 0.35;
-            border-color: $mirage-border-accent;
-        }
-
-        &:hover
-        {
-            border-color: $mirage-border-strong;
-        }
+        &:hover { border-color: $mirage-border-strong; }
     }
 
     .drag-visual
@@ -240,20 +234,39 @@ MirageInventoryPanel
         }
     }
 
-    .actions
+    .slot-tooltip
     {
+        position: absolute;
         flex-direction: column;
-        gap: $mirage-space-2;
-        padding-top: $mirage-space-2;
-        border-top: 1px solid $mirage-border-soft;
+        align-items: stretch;
+        gap: $mirage-space-1;
+        padding: $mirage-space-2 $mirage-space-3;
+        max-width: 280px;
+        background-color: rgba( 0, 0, 0, 0.92 );
+        border: 1px solid $mirage-border-accent;
+        pointer-events: none;
+        z-index: 450;
 
-        .hover-info
+        .tooltip-name
         {
-            flex-direction: column;
-            gap: $mirage-space-1;
-            padding: $mirage-space-2 $mirage-space-3;
-            background-color: rgba( 255, 255, 255, 0.03 );
-            border: 1px solid $mirage-border-soft;
+            color: $mirage-text-primary;
+            font-size: $mirage-font-md;
+            font-weight: 700;
+        }
+
+        .tooltip-desc
+        {
+            color: $mirage-text-secondary;
+            font-size: $mirage-font-sm;
+            font-weight: 400;
+            white-space: normal;
+        }
+
+        .tooltip-meta
+        {
+            color: $mirage-text-muted;
+            font-size: $mirage-font-xs;
+            font-weight: 600;
         }
     }
 }
