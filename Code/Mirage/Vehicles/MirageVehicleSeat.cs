@@ -6,20 +6,24 @@ namespace Sandbox.Mirage.Vehicles;
 /// Driver seat for a Mirage vehicle. Lives as a Component on the
 /// vehicle root and exposes a press-to-interact handle: pressing E on
 /// an empty seat puts the operator in the driver's seat, pressing E
-/// again (or any time while seated) ejects them next to the vehicle.
+/// again ejects them next to the vehicle.
 ///
-/// Seating state is held entirely on the host:
+/// Seating mechanics:
 /// <list type="bullet">
 ///   <item><see cref="DriverPlayerId"/> tracks the seated PlayerData by
-///   its connection guid so every client knows who's driving.</item>
-///   <item>The seated player's <see cref="Player.GameObject"/> is
-///   parented to the vehicle so they translate with the chassis, and
-///   <see cref="PlayerData.InVehicleId"/> is set so
-///   <see cref="Player"/>'s OnControl knows to suspend the player
-///   controller (gameplay WASD reaches <see cref="MirageCar"/> only).</item>
-///   <item>On exit the player is teleported one body-length to the
-///   left of the chassis at the vehicle's current yaw, the parent is
-///   cleared and the controller flag is released.</item>
+///   its connection guid so every client knows who is driving (used by
+///   <see cref="MirageCar"/> to refuse input from anyone else).</item>
+///   <item>The seated player is NOT parented to the vehicle; instead
+///   the host pins their WorldPosition to the seat anchor every fixed
+///   tick and zeroes the controller rigidbody velocity. Keeps the
+///   PlayerController fully alive (mouse-look, camera setup) while
+///   guaranteeing they never slide off as the car accelerates.</item>
+///   <item><see cref="PlayerData.InVehicleId"/> is set so the
+///   <see cref="Player"/> controller's input gating can suspend
+///   walking input while the operator is driving.</item>
+///   <item>The car's network ownership is transferred to the seated
+///   player on enter and dropped on exit, so <see cref="MirageCar"/>'s
+///   IsProxy gate matches the actual driver.</item>
 /// </list>
 /// </summary>
 [Category( "Mirage Vehicles" )]
@@ -34,11 +38,9 @@ public sealed class MirageVehicleSeat : Component, Component.IPressable
 	[Sync( SyncFlags.FromHost )] public string DriverPlayerId { get; set; } = "";
 
 	/// <summary>
-	/// Local-space position the driver is parked at while seated. The
-	/// player's body and controller are disabled while in the seat so
-	/// the value is mostly used by the first-person camera that sits
-	/// at the player's eye height. <c>(0, 0, 0)</c> = car origin and
-	/// usually puts the eye at cabin level for a small chassis.
+	/// Local-space anchor point for the driver. The player's eye
+	/// height is added on top so a value of <c>(0, 0, 0)</c> usually
+	/// puts the camera around cabin level for a standard car.
 	/// </summary>
 	[Property] public Vector3 SeatOffset { get; set; } = new Vector3( 0f, 0f, 0f );
 
@@ -46,6 +48,10 @@ public sealed class MirageVehicleSeat : Component, Component.IPressable
 	[Property] public float ExitOffset { get; set; } = 90f;
 
 	public bool IsOccupied => !string.IsNullOrEmpty( DriverPlayerId );
+
+	// Host-only cache so OnFixedUpdate does not have to walk every
+	// PlayerData every tick to find the seated player.
+	private Player _driverHost;
 
 	IPressable.Tooltip? IPressable.GetTooltip( IPressable.Event e )
 	{
@@ -57,8 +63,7 @@ public sealed class MirageVehicleSeat : Component, Component.IPressable
 
 	bool IPressable.Press( IPressable.Event e )
 	{
-		var presser = e.Source.GameObject;
-		HostHandlePress( presser );
+		HostHandlePress( e.Source.GameObject );
 		return true;
 	}
 
@@ -75,10 +80,6 @@ public sealed class MirageVehicleSeat : Component, Component.IPressable
 
 		if ( IsOccupied )
 		{
-			// Only the seated player can vacate the seat through a
-			// press; another player pressing E while it is occupied
-			// is silently ignored (use exit points or ramming if you
-			// want them out).
 			if ( DriverPlayerId == presserId )
 			{
 				ExitDriver( player );
@@ -86,8 +87,7 @@ public sealed class MirageVehicleSeat : Component, Component.IPressable
 			return;
 		}
 
-		// Refuse seating a player who is already in another vehicle
-		// (e.g. they pressed E mid-ride on a passing seat).
+		// Refuse seating a player who is already in another vehicle.
 		if ( !string.IsNullOrEmpty( pd.InVehicleId ) ) return;
 
 		EnterDriver( player );
@@ -100,22 +100,29 @@ public sealed class MirageVehicleSeat : Component, Component.IPressable
 		var pd = player.PlayerData;
 		if ( pd is null ) return;
 
+		_driverHost = player;
 		DriverPlayerId = pd.PlayerId.ToString();
 		pd.InVehicleId = GameObject.Id.ToString();
 
-		// Hide the body and freeze the controller so the operator does
-		// not visually slip off the vehicle when it accelerates: the
-		// player's own physics would otherwise fight the parent
-		// transform we just set.
+		// Hide the body so we do not see the operator awkwardly
+		// floating inside the cabin. The PlayerController stays alive
+		// so mouse-look and PostCameraSetup keep firing on the local
+		// client; we just suspend its WASD input via PlayerData.IsInVehicle
+		// (read in Player.OnControl).
 		if ( player.Body.IsValid() ) player.Body.Enabled = false;
-		if ( player.Controller.IsValid() ) player.Controller.Enabled = false;
 
-		// Parent the Player GameObject to the vehicle so the camera
-		// (a child of the player) follows the chassis. Local position
-		// pins the eye at the seat anchor.
-		player.GameObject.SetParent( GameObject, false );
-		player.GameObject.LocalPosition = SeatOffset;
-		player.GameObject.LocalRotation = Rotation.Identity;
+		// Hand over network ownership so MirageCar's IsProxy gate fires
+		// only on the driver's client. Without this, a passenger
+		// pressing E would drive the car owned by the original spawner.
+		var driverConn = pd.Connection;
+		if ( driverConn is not null )
+		{
+			Network.AssignOwnership( driverConn );
+		}
+
+		// Seed an initial pin so the body does not flash through the
+		// world before the first OnFixedUpdate kicks in.
+		PinDriverToSeat( player );
 	}
 
 	private void ExitDriver( Player player )
@@ -128,16 +135,10 @@ public sealed class MirageVehicleSeat : Component, Component.IPressable
 			pd.InVehicleId = "";
 		}
 
-		// Re-enable the player visuals and physics before un-parenting.
-		// Doing it in this order avoids a one-frame flash where the
-		// controller would try to apply gravity at world-zero.
 		if ( player.Body.IsValid() ) player.Body.Enabled = true;
-		if ( player.Controller.IsValid() ) player.Controller.Enabled = true;
 
-		// Unparent and drop the player one body-length to the side of
-		// the vehicle, on the ground if we can find one.
-		player.GameObject.SetParent( null, true );
-
+		// Drop the player one body-length to the right of the vehicle,
+		// on the ground if we can find one.
 		var sideDir = WorldRotation.Right;
 		var exitTarget = WorldPosition + sideDir * ExitOffset + Vector3.Up * 32f;
 		var trace = Game.ActiveScene.Trace
@@ -148,24 +149,25 @@ public sealed class MirageVehicleSeat : Component, Component.IPressable
 
 		player.MirageTeleport( floor, new Angles( 0f, WorldRotation.Yaw() + 90f, 0f ) );
 
+		// Drop network ownership of the car. The host becomes the
+		// authority again, MirageCar.OnFixedUpdate stops driving.
+		Network.DropOwnership();
+
+		_driverHost = null;
 		DriverPlayerId = "";
 	}
 
 	/// <summary>
-	/// Force-eject the current driver. Used when the vehicle is
-	/// destroyed so the player is not left dangling under a deleted
-	/// parent GameObject.
+	/// Force-eject the current driver. Called when the vehicle is
+	/// destroyed, so the operator does not stay frozen and invisible.
 	/// </summary>
 	public void ForceExit()
 	{
 		Assert.True( Networking.IsHost, "MirageVehicleSeat.ForceExit must run on the host" );
 		if ( !IsOccupied ) return;
-
-		var pd = PlayerData.All.FirstOrDefault( p => p.PlayerId.ToString() == DriverPlayerId );
-		var player = pd is null ? null : Game.ActiveScene.GetAll<Player>().FirstOrDefault( x => x.PlayerData == pd );
-		if ( player.IsValid() )
+		if ( _driverHost.IsValid() )
 		{
-			ExitDriver( player );
+			ExitDriver( _driverHost );
 		}
 		else
 		{
@@ -173,11 +175,33 @@ public sealed class MirageVehicleSeat : Component, Component.IPressable
 		}
 	}
 
+	/// <summary>
+	/// Host-only. Snap the driver to the seat anchor and zero their
+	/// rigidbody velocity. Runs every fixed tick so the operator
+	/// rides along with the chassis even if the controller tries to
+	/// add gravity or any other passive force.
+	/// </summary>
+	protected override void OnFixedUpdate()
+	{
+		if ( !Networking.IsHost ) return;
+		if ( !IsOccupied ) return;
+		PinDriverToSeat( _driverHost );
+	}
+
+	private void PinDriverToSeat( Player player )
+	{
+		if ( !player.IsValid() ) return;
+		var anchor = WorldTransform.PointToWorld( SeatOffset );
+		player.WorldPosition = anchor;
+		if ( player.Controller.IsValid() && player.Controller.Body.IsValid() )
+		{
+			player.Controller.Body.Velocity = Vector3.Zero;
+			player.Controller.Body.AngularVelocity = Vector3.Zero;
+		}
+	}
+
 	protected override void OnDestroy()
 	{
-		// Make sure a despawned vehicle releases its driver: otherwise
-		// PlayerData.InVehicleId stays set and the player controller
-		// remains frozen.
 		if ( Networking.IsHost && IsOccupied )
 		{
 			ForceExit();

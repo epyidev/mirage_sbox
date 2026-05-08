@@ -85,18 +85,41 @@ public sealed class MirageCar : Component, IPlayerControllable
 	{
 		if ( IsProxy ) return;
 
+		// Drive only when a player is actually seated in this vehicle.
+		// Without this gate the car would respond to the spawning
+		// player's WASD even before they pressed E to enter, because
+		// they own the GameObject and the OnFixedUpdate runs on the
+		// owner. The seat hands ownership over to the driver on enter
+		// (and back to the host on exit) so IsProxy + IsOccupied
+		// together guarantee the local update runs only on the driver
+		// who is currently in the seat.
+		var seat = GetComponent<MirageVehicleSeat>();
+		if ( seat is null || !seat.IsOccupied )
+		{
+			ThrottleInput = 0f;
+			SteerInput = 0f;
+			ApplyDriveTick();
+			return;
+		}
+
 		// Hybrid input source: the chair-based ControlSystem path fills
 		// ThrottleInput/SteerInput via OnControl when a player is
 		// seated, refreshing _timeSinceChairInput on every fixed tick.
 		// If that silence stretches past ChairInputTimeout we assume
-		// no seat is in play and fall back to direct input polling so
-		// the owning client can drive without a BaseChair attached.
+		// no chair-driven input and read Input.AnalogMove directly
+		// (works because we know we're the seated driver).
 		if ( _timeSinceChairInput > ChairInputTimeout )
 		{
 			var move = Input.AnalogMove;
 			ThrottleInput = move.x;
 			SteerInput = move.y;
 		}
+
+		ApplyDriveTick();
+	}
+
+	private void ApplyDriveTick()
+	{
 
 		float verticalInput = ThrottleInput;
 		float targetTorque = verticalInput * Torque;
