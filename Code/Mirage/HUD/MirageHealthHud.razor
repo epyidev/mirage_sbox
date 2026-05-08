@@ -7,75 +7,123 @@
 @inherits PanelComponent
 @namespace Sandbox.Mirage.UI
 
-@if ( !_player.IsValid() || _player.WantsHideHud )
-    return;
-
-<root class="mirage-health-hud">
-
-    @{
-        var hp = (int)Math.Ceiling( _player.Health );
-        var max = _player.MaxHealth <= 0 ? 100 : (int)_player.MaxHealth;
-        var hpFrac = max <= 0 ? 0f : Math.Clamp( _player.Health / max, 0f, 1f );
-        var hpPercent = (int)( hpFrac * 100f );
-        var armour = (int)Math.Ceiling( _player.Armour );
-        var armourFrac = Math.Clamp( _player.Armour / 100f, 0f, 1f );
-        var armourPercent = (int)( armourFrac * 100f );
-    }
-
-    <div class="row">
-        <Label class="row-key" Text="HP" />
-        <div class="row-bar">
-            <div class="row-fill" style="width: @(hpPercent)%;"></div>
-        </div>
-        <Label class="row-value" Text="@hp.ToString()" />
-    </div>
-
-    @if ( armour > 0 )
+<root class="mirage-character-card @(_visible ? "is-visible" : "")">
+    @if ( _visible )
     {
-        <div class="row row--armour">
-            <Label class="row-key" Text="ARM" />
-            <div class="row-bar bar--armour">
-                <div class="row-fill" style="width: @(armourPercent)%;"></div>
+        <div class="frame">
+
+            <div class="avatar">
+                @if ( _steamId != 0 )
+                {
+                    <div class="avatar-img" style="background-image: url( avatar:@_steamId )"></div>
+                }
             </div>
-            <Label class="row-value" Text="@armour.ToString()" />
+
+            <div class="info">
+                <Label class="name" Text="@_displayName" />
+
+                <div class="bar-row">
+                    <div class="row-bar">
+                        <div class="row-fill" style="width: @(_hpPercent)%;"></div>
+                    </div>
+                    <Label class="row-value" Text="@_hp.ToString()" />
+                </div>
+
+                @if ( _showArmour )
+                {
+                    <div class="bar-row">
+                        <div class="row-bar bar--armour">
+                            <div class="row-fill" style="width: @(_armourPercent)%;"></div>
+                        </div>
+                        <Label class="row-value" Text="@_armour.ToString()" />
+                    </div>
+                }
+            </div>
+
         </div>
     }
-
 </root>
 
 @code
 {
     private Player _player;
+
+    // State the renderer reads. Recomputed in OnUpdate so we can decide
+    // whether to fire StateHasChanged. Health and Armour are floats
+    // synced from the host, so we compare with a small epsilon and
+    // refresh the UI any time the visible value would actually move.
+    private bool _visible;
+    private long _steamId;
+    private string _displayName = "";
+    private int _hp;
+    private int _hpPercent;
+    private int _armour;
+    private int _armourPercent;
+    private bool _showArmour;
+
     private float _renderedHp = -1f;
     private float _renderedArmour = -1f;
-    private bool _renderedHidden;
 
     protected override void OnUpdate()
     {
         _player = Player.FindLocalPlayer();
-        if ( !_player.IsValid() ) return;
+        if ( !_player.IsValid() ) { TryHide(); return; }
 
-        // Health and Armour are floats synced from the host. We re-render
-        // any time the visible value would change (rounded ceiling), so a
-        // single point of damage is reflected immediately. BuildHash is
-        // not enough on its own here: the engine only diffs identical
-        // hashes, but we want the bar width transition to start from the
-        // exact moment the player took damage.
-        var hidden = _player.WantsHideHud;
-        if ( Math.Abs( _player.Health - _renderedHp ) > 0.05f
-            || Math.Abs( _player.Armour - _renderedArmour ) > 0.05f
-            || hidden != _renderedHidden )
-        {
-            _renderedHp = _player.Health;
-            _renderedArmour = _player.Armour;
-            _renderedHidden = hidden;
-            StateHasChanged();
-        }
+        var pd = _player.PlayerData;
+        var hasCharacter = pd is not null && pd.HasActiveCharacter;
+        var nextVisible = hasCharacter && !_player.WantsHideHud;
+
+        var nextSteamId = _player.SteamId;
+        var nextName = pd?.FullName ?? "";
+        var nextHp = (int)Math.Ceiling( _player.Health );
+        var maxHp = _player.MaxHealth <= 0 ? 100f : _player.MaxHealth;
+        var hpFrac = Math.Clamp( _player.Health / maxHp, 0f, 1f );
+        var nextHpPercent = (int)( hpFrac * 100f );
+        var nextArmour = (int)Math.Ceiling( _player.Armour );
+        var armourFrac = Math.Clamp( _player.Armour / 100f, 0f, 1f );
+        var nextArmourPercent = (int)( armourFrac * 100f );
+        var nextShowArmour = nextArmour > 0;
+
+        var changed = nextVisible != _visible
+            || nextSteamId != _steamId
+            || nextName != _displayName
+            || nextHp != _hp
+            || nextHpPercent != _hpPercent
+            || nextArmour != _armour
+            || nextArmourPercent != _armourPercent
+            || nextShowArmour != _showArmour
+            || Math.Abs( _player.Health - _renderedHp ) > 0.05f
+            || Math.Abs( _player.Armour - _renderedArmour ) > 0.05f;
+
+        if ( !changed ) return;
+
+        _visible = nextVisible;
+        _steamId = nextSteamId;
+        _displayName = nextName;
+        _hp = nextHp;
+        _hpPercent = nextHpPercent;
+        _armour = nextArmour;
+        _armourPercent = nextArmourPercent;
+        _showArmour = nextShowArmour;
+        _renderedHp = _player.Health;
+        _renderedArmour = _player.Armour;
+        StateHasChanged();
     }
 
-    protected override int BuildHash()
+    private void TryHide()
     {
-        if ( !_player.IsValid() ) return 0;
-        return System.HashCode.Combine( _player.WantsHideHud, _player.Health, _player.MaxHealth, _player.Armour );
+        if ( !_visible ) return;
+        _visible = false;
+        StateHasChanged();
     }
+
+    protected override int BuildHash() => System.HashCode.Combine(
+        _visible,
+        _steamId,
+        _displayName,
+        _hp,
+        _hpPercent,
+        _armour,
+        _armourPercent
+    );
 }

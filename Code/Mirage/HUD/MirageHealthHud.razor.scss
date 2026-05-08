@@ -4,71 +4,112 @@
 
 MirageHealthHud
 {
+    // The root carries placement and a fade animation, but the visible
+    // surface is on .frame so we can hide everything cleanly while
+    // PlayerData is still loading or character select is open.
     position: absolute;
     bottom: $mirage-space-5;
     left: $mirage-space-5;
-    flex-direction: column;
-    align-items: stretch;
-    gap: $mirage-space-1;
     pointer-events: none;
     z-index: 30;
     font-family: $mirage-font-family;
+    opacity: 0;
+    transform: translateX( -8px );
+    transition: opacity $mirage-transition, transform $mirage-transition;
 
-    .row
+    &.is-visible
+    {
+        opacity: 1;
+        transform: translateX( 0 );
+    }
+
+    .frame
     {
         flex-direction: row;
-        align-items: center;
-        gap: $mirage-space-2;
-        padding: $mirage-space-1 $mirage-space-2;
+        align-items: stretch;
+        gap: $mirage-space-3;
+        padding: $mirage-space-2;
         background-color: rgba( 0, 0, 0, 0.55 );
         border: $mirage-border-width solid $mirage-border-soft;
         backdrop-filter: blur( 8px );
+        min-width: 280px;
+    }
 
-        .row-key
+    // GTA-style mugshot square: kept square, framed with a thin border
+    // so it reads as a portrait card even on busy backgrounds. Steam
+    // avatar resolves through the engine's avatar:<steamid> URL scheme.
+    .avatar
+    {
+        width: 64px;
+        height: 64px;
+        background-color: rgba( 0, 0, 0, 0.6 );
+        border: 1px solid $mirage-border;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+
+        .avatar-img
         {
-            color: $mirage-text-muted;
-            font-size: $mirage-font-xs;
-            font-weight: 700;
-            letter-spacing: $mirage-letter-wide;
-            width: 32px;
-            flex-shrink: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
+    }
 
-        .row-bar
-        {
-            width: 200px;
-            height: 8px;
-            background-color: rgba( 0, 0, 0, 0.65 );
-            border: 1px solid $mirage-border-soft;
-            flex-shrink: 0;
+    .info
+    {
+        flex: 1 1 0;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+        gap: $mirage-space-1;
 
-            .row-fill
-            {
-                height: 100%;
-                // Blood red for the HP bar, kept dark and slightly
-                // desaturated so the HUD does not feel like a garish
-                // arcade overlay. The drop is animated so a sudden hit
-                // visibly shrinks the bar instead of jumping.
-                background-color: rgba( 132, 22, 22, 0.95 );
-                transition: width 0.18s ease-out;
-            }
-        }
-
-        .row-value
+        .name
         {
             color: $mirage-text-primary;
             font-size: $mirage-font-md;
             font-weight: 700;
-            min-width: 36px;
-            text-align: right;
-            flex-shrink: 0;
+            letter-spacing: $mirage-letter-tight;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
-        // Armour: keep the cool blue tint to read as a different
-        // resource than HP at a glance.
-        .bar--armour > .row-fill
+        .bar-row
         {
-            background-color: rgba( 70, 140, 200, 0.95 );
+            flex-direction: row;
+            align-items: center;
+            gap: $mirage-space-2;
+
+            .row-bar
+            {
+                flex: 1 1 0;
+                height: 8px;
+                background-color: rgba( 0, 0, 0, 0.65 );
+                border: 1px solid $mirage-border-soft;
+
+                .row-fill
+                {
+                    height: 100%;
+                    background-color: rgba( 132, 22, 22, 0.95 );
+                    transition: width 0.18s ease-out;
+                }
+
+                &.bar--armour > .row-fill
+                {
+                    background-color: rgba( 70, 140, 200, 0.95 );
+                }
+            }
+
+            .row-value
+            {
+                color: $mirage-text-primary;
+                font-size: $mirage-font-sm;
+                font-weight: 700;
+                min-width: 28px;
+                text-align: right;
+            }
         }
     }
 }
