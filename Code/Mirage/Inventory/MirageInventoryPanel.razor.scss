@@ -44,13 +44,16 @@ MirageInventoryPanel
         // transform involved on the static layout. The slide animation
         // only touches translateX, so the frame never flashes at top:0
         // before snapping to its real position.
+        // The elevated surface mixin pulls in the same blurred background,
+        // border and radius used by the other Mirage panels so the
+        // inventory matches the rest of the UI without blurring the whole
+        // screen (the .backdrop above stays a flat dim).
+        @include mirage-surface-elevated;
         width: 460px;
         flex-direction: column;
         align-items: stretch;
         gap: $mirage-space-3;
         padding: $mirage-space-4;
-        background-color: $mirage-bg-elevated;
-        border: $mirage-border-width solid $mirage-border-strong;
         flex-shrink: 0;
 
         // Closed state slides the frame off-screen to the RIGHT (where it
