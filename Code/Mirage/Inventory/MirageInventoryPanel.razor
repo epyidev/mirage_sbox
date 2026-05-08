@@ -222,9 +222,11 @@
 
         var openBefore = MirageInventoryPanelState.IsOpen;
 
-        // Sample the Slot1..Slot5 keys BEFORE MirageModalLock clears
+        // Sample gameplay-action keys BEFORE MirageModalLock clears
         // them. Without this snapshot the panel can never see them:
         // SetActive nukes the action state for the rest of the frame.
+        // attack2 (right click) flips a regular drag into a split.
+        bool attack2Down = openBefore && Input.Down( "attack2" );
         bool[] slotPressed = SampleSlotKeys( openBefore );
 
         var open = MirageInventoryPanelState.IsOpen;
@@ -237,6 +239,27 @@
             if ( _hasTooltipItem ) { _tooltipSlot = -1; _hasTooltipItem = false; StateHasChanged(); }
             ResetSlotKeyArmed();
             return;
+        }
+
+        // Right-click conversion: if attack2 is held while a drag is
+        // active and the source stack has > 1 unit, flip into split
+        // mode. This handles two flows:
+        //   1. The mouse-down event fires first and starts a regular
+        //      drag. attack2 is still held this frame, so the
+        //      conversion runs and the visual updates inside the same
+        //      frame, looking like an instant split start.
+        //   2. The operator presses right-click while already dragging
+        //      (rare). Same conversion path.
+        if ( IsDragging && !_splitMode && attack2Down )
+        {
+            var srcSlot = _inventory?.Slot( _dragSource );
+            if ( srcSlot is not null && !srcSlot.IsEmpty && srcSlot.Count > 1 )
+            {
+                _splitMode = true;
+                _splitTotal = srcSlot.Count;
+                _splitAmount = Math.Max( 1, srcSlot.Count / 2 );
+                StateHasChanged();
+            }
         }
 
         if ( _inventory is not null && _renderedVersion != _inventory.Version )
@@ -369,14 +392,15 @@
         var slot = _inventory.Slot( idx );
         if ( slot is null || slot.IsEmpty ) return;
 
-        // The mouse-down binding fires on any button. We check attack2
-        // (right click) at this exact moment to decide whether this
-        // is a split drag or a regular full-stack move. Mouse events
-        // fire before MirageModalLock's per-frame Input.Clear runs,
-        // so the action is still readable here. Stacks of 1 fall back
-        // to a normal drag because there is nothing to split off.
-        bool wantsSplit = Input.Down( "attack2" ) && slot.Count > 1;
-        BeginDragFrom( idx, slot, splitMode: wantsSplit );
+        // The mouse-down binding fires on any button but does not tell
+        // us which one. We always start as a regular drag; the right
+        // click is detected one step later in OnUpdate via the action
+        // system (Input.Pressed("attack2") sampled before
+        // MirageModalLock clears it) and converts this drag to a
+        // split if appropriate. The visual flash from "full stack" to
+        // "split" happens within the same frame, so the operator
+        // never sees a regular drag start.
+        BeginDragFrom( idx, slot, splitMode: false );
     }
 
     private void BeginDragFrom( int idx, MirageInventorySlot slot, bool splitMode )
