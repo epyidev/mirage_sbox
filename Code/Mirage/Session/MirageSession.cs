@@ -168,16 +168,31 @@ public sealed class MirageSession : GameObjectSystem<MirageSession>, ISceneStart
 	{
 		try
 		{
-			await MirageApiClient.GetOrCreatePlayerAsync( steamId );
+			var info = await MirageApiClient.GetOrCreatePlayerAsync( steamId );
 			if ( !string.IsNullOrEmpty( ip ) )
 			{
 				await MirageApiClient.RecordPlayerSeenAsync( steamId, ip, displayName );
 			}
+
+			// Stamp the persistent Mirage id onto PlayerData so the HUD
+			// can render it and lookup helpers can match it. Run on the
+			// main thread because Mirage state is touched.
+			await GameTask.MainThread();
+			ApplyMirageId( steamId, info?.Id ?? 0 );
 		}
 		catch ( Exception ex )
 		{
 			Log.Warning( $"[Mirage] Failed to track OOC profile for {steamId}: {ex.Message}" );
 		}
+	}
+
+	private static void ApplyMirageId( long steamId, int mirageId )
+	{
+		if ( mirageId <= 0 ) return;
+		var pd = PlayerData.All.FirstOrDefault( p => p.SteamId == steamId );
+		if ( pd is null ) return;
+		if ( pd.MirageId == mirageId ) return;
+		pd.MirageId = mirageId;
 	}
 
 	[Rpc.Host]

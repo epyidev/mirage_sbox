@@ -9,6 +9,14 @@
 public sealed partial class PlayerData
 {
 	/// <summary>
+	/// Short numeric player handle minted by the Mirage API (auto-incremented
+	/// on first connection) and stable across sessions. This is what the
+	/// HUD displays and what staff commands reference: <c>/give 42 ammo_9 30</c>
+	/// rather than a 17-digit Steam id. 0 means "not loaded yet".
+	/// </summary>
+	[Sync( SyncFlags.FromHost )] public int MirageId { get; set; }
+
+	/// <summary>
 	/// Id of the RP character the player is currently controlling. Null while
 	/// the character selection screen is open.
 	/// </summary>

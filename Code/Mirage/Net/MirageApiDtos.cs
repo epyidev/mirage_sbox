@@ -126,6 +126,12 @@ public sealed class MirageCharacterCreateRequest
 /// </summary>
 public sealed class MiragePlayerInfo
 {
+	/// <summary>
+	/// Short numeric handle minted by the database (auto-increment).
+	/// Stable across sessions and used as the public-facing player id in
+	/// staff commands and HUD overlays.
+	/// </summary>
+	[JsonPropertyName( "id" )] public int Id { get; set; }
 	[JsonPropertyName( "steamId" )] public string SteamId { get; set; }
 	[JsonPropertyName( "displayName" )] public string DisplayName { get; set; }
 	[JsonPropertyName( "createdAt" )] public string CreatedAt { get; set; }

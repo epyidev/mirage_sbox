@@ -66,6 +66,13 @@ MirageHealthHud
         justify-content: center;
         gap: $mirage-space-1;
 
+        .name-row
+        {
+            flex-direction: row;
+            align-items: baseline;
+            gap: $mirage-space-2;
+        }
+
         .name
         {
             color: $mirage-text-primary;
@@ -74,6 +81,17 @@ MirageHealthHud
             letter-spacing: $mirage-letter-tight;
             white-space: nowrap;
             overflow: hidden;
+        }
+
+        // Persistent Mirage player id, displayed as "#42" next to the
+        // character name. Muted so it reads as metadata rather than
+        // competing with the RP name.
+        .player-id
+        {
+            color: $mirage-text-muted;
+            font-size: $mirage-font-xs;
+            font-weight: 700;
+            letter-spacing: $mirage-letter-wide;
         }
 
         .bar-row

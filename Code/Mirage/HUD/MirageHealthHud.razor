@@ -20,7 +20,13 @@
             </div>
 
             <div class="info">
-                <Label class="name" Text="@_displayName" />
+                <div class="name-row">
+                    <Label class="name" Text="@_displayName" />
+                    @if ( _mirageId > 0 )
+                    {
+                        <Label class="player-id" Text="@($"#{_mirageId}")" />
+                    }
+                </div>
 
                 <div class="bar-row">
                     <div class="row-bar">
@@ -54,6 +60,7 @@
     // refresh the UI any time the visible value would actually move.
     private bool _visible;
     private long _steamId;
+    private int _mirageId;
     private string _displayName = "";
     private int _hp;
     private int _hpPercent;
@@ -74,6 +81,7 @@
         var nextVisible = hasCharacter && !_player.WantsHideHud;
 
         var nextSteamId = _player.SteamId;
+        var nextMirageId = pd?.MirageId ?? 0;
         var nextName = pd?.FullName ?? "";
         var nextHp = (int)Math.Ceiling( _player.Health );
         var maxHp = _player.MaxHealth <= 0 ? 100f : _player.MaxHealth;
@@ -86,6 +94,7 @@
 
         var changed = nextVisible != _visible
             || nextSteamId != _steamId
+            || nextMirageId != _mirageId
             || nextName != _displayName
             || nextHp != _hp
             || nextHpPercent != _hpPercent
@@ -99,6 +108,7 @@
 
         _visible = nextVisible;
         _steamId = nextSteamId;
+        _mirageId = nextMirageId;
         _displayName = nextName;
         _hp = nextHp;
         _hpPercent = nextHpPercent;
@@ -120,6 +130,7 @@
     protected override int BuildHash() => System.HashCode.Combine(
         _visible,
         _steamId,
+        _mirageId,
         _displayName,
         _hp,
         _hpPercent,
