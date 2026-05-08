@@ -171,19 +171,25 @@ MirageInventoryPanel
         }
 
         // Stack count badge: same corner-continuation treatment as the
-        // hotbar so the inventory and hotbar read the same way.
+        // hotbar so the inventory and hotbar read the same way. Top
+        // and left borders only, the cell's own bottom and right
+        // borders complete the frame.
         .cell-count
         {
             position: absolute;
-            right: -$mirage-border-width;
-            bottom: -$mirage-border-width;
-            padding: 2px 6px;
+            right: 0;
+            bottom: 0;
+            height: 20px;
+            min-width: 24px;
+            padding: 0 6px;
             color: $mirage-text-primary;
             font-size: $mirage-font-xs;
-            font-weight: 800;
-            line-height: 1;
-            background-color: rgba( 0, 0, 0, 0.88 );
-            border: $mirage-border-width solid $mirage-border-soft;
+            font-weight: 700;
+            line-height: 20px;
+            text-align: center;
+            background-color: rgba( 0, 0, 0, 0.65 );
+            border-top: $mirage-border-width solid $mirage-border-soft;
+            border-left: $mirage-border-width solid $mirage-border-soft;
             pointer-events: none;
             z-index: 3;
         }
