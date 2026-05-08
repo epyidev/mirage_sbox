@@ -13,7 +13,6 @@ namespace Sandbox.Mirage;
 public static class CommandRegistry
 {
 	private static readonly Dictionary<string, CommandSpec> _root = new( StringComparer.OrdinalIgnoreCase );
-	private static bool _initialized;
 
 	public static void Register( CommandSpec spec )
 	{
@@ -30,10 +29,15 @@ public static class CommandRegistry
 		}
 	}
 
+	/// <summary>
+	/// Rebuilds the command tree from <see cref="MirageCommands.Register"/> on
+	/// every call. Cheap (a handful of dictionary inserts) and resilient to
+	/// the s&amp;box hot reload preserving a stale <c>_initialized</c> flag,
+	/// so a freshly added command always shows up without a full restart.
+	/// </summary>
 	public static void EnsureInitialized()
 	{
-		if ( _initialized ) return;
-		_initialized = true;
+		_root.Clear();
 		MirageCommands.Register();
 	}
 
