@@ -8,8 +8,9 @@ namespace Sandbox.Mirage;
 /// Server-side coordinator for the Mirage character lifecycle. Hooks into the
 /// connect / spawn / disconnect events to:
 /// 1. ensure the OOC <c>players</c> row exists and IP history is updated,
-/// 2. park freshly connected players in a high-altitude limbo until they pick
-///    a character (so the selection UI shows over an empty sky background),
+/// 2. park freshly connected players at the configured character-select spot
+///    with their <c>Body</c> renderer disabled, so they exist as a frozen,
+///    invisible placeholder until they pick a character,
 /// 3. fan client requests (list / create / select) through to the API and
 ///    deliver results back via filtered broadcasts.
 ///
@@ -101,11 +102,41 @@ public sealed class MirageSession : GameObjectSystem<MirageSession>, ISceneStart
 		if ( e?.PlayerData is null ) return;
 		if ( e.PlayerData.HasActiveCharacter ) return;
 
-		// Park the player at the limbo altitude so the character selection UI
-		// is shown over an empty sky background while they pick or create one.
-		var t = e.SpawnLocation;
-		var limbo = new Vector3( t.Position.x, t.Position.y, MirageConVars.SpawnLimboHeight );
-		e.SpawnLocation = t.WithPosition( limbo );
+		// Park the player at the configured character-select spot. Per-client
+		// freeze (PlayerController.UseInputControls) and per-client camera
+		// override happen on the player itself; host-side body hiding kicks
+		// in on the post-spawn step below.
+		e.SpawnLocation = new Transform(
+			MirageConVars.CharacterSelectPlayerPosition,
+			Rotation.FromYaw( MirageConVars.CharacterSelectPlayerYaw )
+		);
+	}
+
+	void Global.IPlayerEvents.OnPlayerSpawned( Player player )
+	{
+		if ( !Networking.IsHost ) return;
+		if ( player is null ) return;
+
+		ApplyLimboVisibility( player );
+	}
+
+	/// <summary>
+	/// Host-side. Hide the player body GameObject while the player has no
+	/// active character. The Enabled flag replicates through the network
+	/// model so every client also sees them as not present.
+	/// </summary>
+	internal static void ApplyLimboVisibility( Player player )
+	{
+		if ( player is null ) return;
+		var pd = player.PlayerData;
+		if ( pd is null ) return;
+		if ( !player.Body.IsValid() ) return;
+
+		var visible = pd.HasActiveCharacter;
+		if ( player.Body.Enabled != visible )
+		{
+			player.Body.Enabled = visible;
+		}
 	}
 
 	private static async Task TrackOocAsync( long steamId, string ip, string displayName )
@@ -248,6 +279,7 @@ public sealed class MirageSession : GameObjectSystem<MirageSession>, ISceneStart
 			{
 				var target = ResolveCharacterSpawn( pick );
 				player.MirageTeleport( target.Position, target.Rotation.Angles() );
+				ApplyLimboVisibility( player );
 			}
 		}
 		catch ( Exception ex )

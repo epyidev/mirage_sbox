@@ -29,6 +29,17 @@ public sealed partial class Player
 		camera.FovAxis = CameraComponent.Axis.Vertical;
 		camera.FieldOfView = Screen.CreateVerticalFieldOfView( Preferences.FieldOfView, 9.0f / 16.0f );
 
+		// Mirage: while the local player has no active character, freeze the
+		// camera onto the configured spectator spot. Skip the rest of the
+		// camera setup chain so view-bobbing, seated logic and gameplay HUD
+		// do not run for a player that is not really there yet.
+		if ( PlayerData is { HasActiveCharacter: false } )
+		{
+			camera.WorldPosition = MirageConVars.CharacterSelectCameraPosition;
+			camera.WorldRotation = Rotation.From( MirageConVars.CharacterSelectCameraAngles );
+			return;
+		}
+
 		Local.IPlayerEvents.Post( x => x.OnCameraSetup( camera ) );
 
 		ApplyMovementCameraEffects( camera );

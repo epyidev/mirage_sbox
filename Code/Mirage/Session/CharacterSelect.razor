@@ -159,6 +159,10 @@
     {
         var visible = ShouldBeVisible();
         SetClass( "open", visible );
+        // Acts as a modal: cursor visible, gameplay actions cleared so the
+        // player cannot move, fire, switch slots, etc. while the selection
+        // screen is on top of the limbo state.
+        MirageModalLock.SetActive( visible );
 
         if ( !visible )
         {

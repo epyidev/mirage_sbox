@@ -23,7 +23,6 @@ public static class MirageBootConfig
 		public string ApiUrl { get; set; }
 		public string ApiToken { get; set; }
 		public int? ApiTimeoutMs { get; set; }
-		public float? SpawnLimboHeight { get; set; }
 	}
 
 	/// <summary>
@@ -63,11 +62,6 @@ public static class MirageBootConfig
 				MirageConVars.ApiTimeoutMs = timeout;
 			}
 
-			if ( cfg.SpawnLimboHeight is { } limbo && MirageConVars.SpawnLimboHeight == 4096f )
-			{
-				MirageConVars.SpawnLimboHeight = limbo;
-			}
-
 			Log.Info( $"[Mirage] Applied boot config from FileSystem.Data/{FileName}." );
 		}
 		catch ( Exception ex )
@@ -82,8 +76,7 @@ public static class MirageBootConfig
 		{
 			ApiUrl = "http://localhost:8080",
 			ApiToken = "REPLACE_WITH_BEARER_TOKEN",
-			ApiTimeoutMs = 5000,
-			SpawnLimboHeight = 4096f
+			ApiTimeoutMs = 5000
 		};
 		FileSystem.Data.WriteJson( FileName, template );
 	}
