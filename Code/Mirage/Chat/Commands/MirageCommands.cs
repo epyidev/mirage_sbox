@@ -67,5 +67,21 @@ public static class MirageCommands
 			Permission = "command.give",
 			Handler = MirageInventoryCommands.HandleClear
 		} );
+
+		CommandRegistry.Register( new CommandSpec
+		{
+			Name = "relog",
+			Description = "Sauvegarde ton personnage et retourne à la sélection",
+			Permission = "command.relog",
+			Handler = MirageSessionCommands.HandleRelog
+		} );
+
+		CommandRegistry.Register( new CommandSpec
+		{
+			Name = "saveallcharacters",
+			Description = "Force la sauvegarde de tous les personnages connectés",
+			Permission = "command.saveallcharacters",
+			Handler = MirageSessionCommands.HandleSaveAllCharacters
+		} );
 	}
 }
