@@ -9,7 +9,7 @@
       {
         "__type": "Sandbox.ModelRenderer",
         "__guid": "2eaca292-0272-40b9-9f8d-f499a4b9904c",
-        "BodyGroups": 1,
+        "BodyGroups": 18446744073709551615,
         "CreateAttachments": false,
         "MaterialGroup": null,
         "MaterialOverride": null,
@@ -819,7 +819,7 @@
   "ResourceVersion": 1,
   "__references": [
     "facepunch.smoke001#45285",
-    "fish.old_red_lada#88974",
+    "fish.old_red_lada#105281",
     "vidyacontent.model-cctaxiwheel#85175"
   ],
   "__version": 1
