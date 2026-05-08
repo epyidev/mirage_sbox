@@ -26,6 +26,16 @@ public static class MirageVehicleSpawner
 	public const string MirageVehicleTag = "mirage_vehicle";
 
 	/// <summary>
+	/// Host-side registry of every Mirage-spawned vehicle still alive.
+	/// We do not rely on a scene-wide tag scan because freshly spawned
+	/// objects can land under a parent (e.g. the s&amp;box system root)
+	/// that <see cref="Scene.GetAllObjects(bool)"/> does not always
+	/// recurse into. Keeping the registry next to the spawn / destroy
+	/// path keeps lookups O(1) and self-consistent.
+	/// </summary>
+	private static readonly List<GameObject> _registered = new();
+
+	/// <summary>
 	/// Host-only. Spawn the prefab referenced by <paramref name="model"/>
 	/// at a sensible position in front of <paramref name="player"/>,
 	/// give the spawning player ownership and return the new GameObject.
@@ -87,8 +97,10 @@ public static class MirageVehicleSpawner
 		Ownable.Set( go, player.Network.Owner );
 		go.NetworkSpawn( false, player.Network.Owner );
 
+		_registered.Add( go );
+
 		var tagsList = string.Join( ", ", go.Tags );
-		Log.Info( $"[Mirage] Vehicle '{model.Id}' spawned successfully (guid={go.Id}, tags=[{tagsList}], parent={go.Parent?.Name ?? "<scene root>"})." );
+		Log.Info( $"[Mirage] Vehicle '{model.Id}' spawned successfully (guid={go.Id}, tags=[{tagsList}], parent={go.Parent?.Name ?? "<scene root>"}), registry={_registered.Count}." );
 		return go;
 	}
 
@@ -121,12 +133,7 @@ public static class MirageVehicleSpawner
 		var origin = player.WorldPosition;
 		var radiusSq = radius * radius;
 		var spawned = AllSpawned().ToList();
-		Log.Info( $"[Mirage] DespawnInRadius: scene contains {spawned.Count} mirage_vehicle object(s). Origin={origin}, radius={radius}." );
-		foreach ( var go in spawned )
-		{
-			var d = (go.WorldPosition - origin).Length;
-			Log.Info( $"[Mirage]   - {go.Name} at {go.WorldPosition} ({d:F0} units away)." );
-		}
+		Log.Info( $"[Mirage] DespawnInRadius: registry contains {spawned.Count} vehicle(s). Origin={origin}, radius={radius}." );
 
 		var hits = spawned
 			.Where( go => go.IsValid() && (go.WorldPosition - origin).LengthSquared <= radiusSq )
@@ -134,27 +141,24 @@ public static class MirageVehicleSpawner
 
 		foreach ( var go in hits )
 		{
+			Log.Info( $"[Mirage]   despawning {go.Name} at {go.WorldPosition}." );
 			go.Destroy();
 		}
+		_registered.RemoveAll( go => !go.IsValid() );
 		return hits.Count;
 	}
 
 	/// <summary>
-	/// Every Mirage-spawned vehicle in the active scene. Cheap because
-	/// the engine indexes objects by tag.
+	/// Every Mirage-spawned vehicle currently alive on the host. Pulled
+	/// from the in-process registry; stale entries (destroyed elsewhere)
+	/// are pruned on the fly.
 	/// </summary>
 	public static IEnumerable<GameObject> AllSpawned()
 	{
-		// Walk the scene root chain manually so disabled / freshly
-		// spawned children that may not yet be reachable through
-		// GetAllObjects show up too. Tag presence is the only filter.
-		var scene = Game.ActiveScene;
-		if ( scene is null ) yield break;
-		foreach ( var go in scene.GetAllObjects( true ) )
+		_registered.RemoveAll( go => !go.IsValid() );
+		foreach ( var go in _registered )
 		{
-			if ( !go.IsValid() ) continue;
-			if ( !go.Tags.Has( MirageVehicleTag ) ) continue;
-			yield return go;
+			if ( go.IsValid() ) yield return go;
 		}
 	}
 
