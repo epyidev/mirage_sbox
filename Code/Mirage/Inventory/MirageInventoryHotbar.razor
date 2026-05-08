@@ -41,7 +41,7 @@
             </div>
             @if ( !empty && slot.Count > 1 )
             {
-                <Label class="cell-count" Text="@slot.Count.ToString()" />
+                <Label class="cell-count" Text="@($"x{slot.Count}")" />
             }
         </div>
     }

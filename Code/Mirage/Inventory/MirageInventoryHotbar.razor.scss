@@ -86,28 +86,20 @@ MirageInventoryHotbar
             }
         }
 
-        // Stack count badge sits inside the cell, flush against the
-        // bottom-right corner. Only the top and left edges have a
-        // border (same width and colour as the cell), so they read as
-        // an extension of the cell's own frame: the cell's existing
-        // bottom and right borders close off the badge naturally with
-        // no doubled lines or visible seams.
+        // Stack count: bare floating text in the bottom-right corner,
+        // no box, no border. A thick text-shadow keeps it readable
+        // against busy icons or transparent slots without competing
+        // visually with the cell frame.
         .cell-count
         {
             position: absolute;
-            right: 0;
-            bottom: 0;
-            height: 20px;
-            min-width: 24px;
-            padding: 0 6px;
+            right: 5px;
+            bottom: 3px;
             color: $mirage-text-primary;
-            font-size: $mirage-font-xs;
-            font-weight: 700;
-            line-height: 20px;
-            text-align: center;
-            background-color: rgba( 0, 0, 0, 0.65 );
-            border-top: $mirage-border-width solid $mirage-border-soft;
-            border-left: $mirage-border-width solid $mirage-border-soft;
+            font-size: $mirage-font-sm;
+            font-weight: 800;
+            line-height: 1;
+            text-shadow: 0px 1px 3px rgba( 0, 0, 0, 0.95 );
             pointer-events: none;
             z-index: 3;
         }
