@@ -68,6 +68,27 @@ public static class MirageInventoryService
 		inv?.BroadcastSnapshot();
 	}
 
+	/// <summary>
+	/// Host-only entry the items browser uses for its inline "Donner" button.
+	/// Re-checks the same permission as the chat <c>/give</c> command so the
+	/// browser cannot bypass it.
+	/// </summary>
+	[Rpc.Host]
+	public static void RpcGiveSelf( string itemId, int count )
+	{
+		var caller = Rpc.Caller;
+		if ( caller is null ) return;
+		if ( !PermissionsSystem.Current.Has( caller, "command.give" ) ) return;
+		if ( count <= 0 ) count = 1;
+
+		var (player, inv) = ResolveCallerInventory();
+		if ( inv is null || player is null ) return;
+		if ( !MirageItems.IsKnown( itemId ) ) return;
+
+		inv.Add( itemId, count );
+		MirageInventoryEquip.ApplyEquip( player, inv );
+	}
+
 	private static (Player, MirageInventory) ResolveCallerInventory()
 	{
 		var caller = Rpc.Caller;

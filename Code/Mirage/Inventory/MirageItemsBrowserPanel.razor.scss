@@ -1,0 +1,87 @@
+// @author Epyi
+
+@import "/Mirage/UI/Theme/MirageTheme.scss";
+
+MirageItemsBrowserPanel
+{
+    .search
+    {
+        flex-direction: column;
+        gap: $mirage-space-1;
+        flex-shrink: 0;
+        padding-bottom: $mirage-space-2;
+        border-bottom: 1px solid $mirage-border-soft;
+    }
+
+    .list
+    {
+        flex-direction: column;
+        gap: $mirage-space-1;
+        padding-top: $mirage-space-2;
+        flex-shrink: 0;
+    }
+
+    .row
+    {
+        flex-direction: row;
+        align-items: center;
+        gap: $mirage-space-3;
+        padding: $mirage-space-2 $mirage-space-3;
+        background-color: rgba( 255, 255, 255, 0.03 );
+        border: 1px solid $mirage-border-soft;
+        flex-shrink: 0;
+        transition: border-color $mirage-transition-fast;
+
+        &:hover
+        {
+            border-color: $mirage-border-strong;
+        }
+
+        .badge
+        {
+            width: 32px;
+            height: 32px;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba( 255, 255, 255, 0.06 );
+            border: 1px solid $mirage-border-soft;
+            color: $mirage-text-primary;
+            font-weight: 800;
+            font-size: $mirage-font-md;
+            flex-shrink: 0;
+        }
+
+        .info
+        {
+            flex: 1 1 0;
+            flex-direction: column;
+            gap: 2px;
+
+            .row-id
+            {
+                color: $mirage-text-muted;
+                font-size: $mirage-font-xs;
+                font-weight: 700;
+                letter-spacing: $mirage-letter-wide;
+            }
+
+            .row-label
+            {
+                color: $mirage-text-primary;
+                font-size: $mirage-font-md;
+                font-weight: 600;
+            }
+
+            .row-meta
+            {
+                color: $mirage-text-secondary;
+                font-size: $mirage-font-xs;
+            }
+        }
+
+        MirageButton
+        {
+            flex-shrink: 0;
+        }
+    }
+}

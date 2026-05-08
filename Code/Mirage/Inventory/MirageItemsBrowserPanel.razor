@@ -1,0 +1,116 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@using Sandbox.Mirage
+@using Sandbox.Mirage.UI
+@inherits PanelComponent
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-items-browser">
+
+    <MirageModalFrame Title="Catalogue d'items" Open="@MirageItemsBrowserState.IsOpen" OnClose="@Close" Width="@(MirageModalFrame.FrameWidth.Medium)">
+        <Body>
+
+            <div class="search">
+                <MirageTextInput @ref="_search"
+                                 Placeholder="Rechercher par id, nom ou catégorie..."
+                                 MaxLength="@(64)"
+                                 OnChange="@OnQueryChange" />
+                <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Muted)" Text="@($"{Filtered.Count} résultat(s) sur {MirageItems.All.Count}")" />
+            </div>
+
+            <div class="list">
+                @foreach ( var item in Filtered )
+                {
+                    var captured = item;
+                    <div class="row">
+                        <div class="badge"><Label Text="@GetBadge( captured )" /></div>
+                        <div class="info">
+                            <Label class="row-id" Text="@captured.Id" />
+                            <Label class="row-label" Text="@captured.Label" />
+                            <Label class="row-meta" Text="@($"{captured.Category} · {captured.Weight}g · stack {captured.MaxStack}{(captured.IsWeapon ? " · arme" : "")}")" />
+                        </div>
+                        <MirageButton Text="Donner 1" Variant="@(MirageButton.ButtonVariant.Primary)" Size="@(MirageButton.ButtonSize.Small)" ClickAction="@(() => GiveOne( captured.Id ))" />
+                    </div>
+                }
+                @if ( Filtered.Count == 0 )
+                {
+                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Body)" Color="@(MirageLabel.LabelColor.Secondary)" Align="@(MirageLabel.LabelAlign.Center)" Text="Aucun item ne correspond à ta recherche." />
+                }
+            </div>
+
+        </Body>
+    </MirageModalFrame>
+
+</root>
+
+@code
+{
+    private MirageTextInput _search;
+    private string _query = "";
+    private List<MirageItem> _filtered;
+
+    protected override void OnStart()
+    {
+        base.OnStart();
+        MirageItemsBrowserState.Reset();
+    }
+
+    protected override void OnUpdate()
+    {
+        var open = MirageItemsBrowserState.IsOpen;
+        MirageModalLock.SetActive( open );
+        if ( !open ) { _query = ""; _filtered = null; }
+    }
+
+    private List<MirageItem> Filtered
+    {
+        get
+        {
+            if ( _filtered is not null ) return _filtered;
+            var q = (_query ?? "").Trim();
+            if ( q.Length == 0 ) { _filtered = MirageItems.All.ToList(); return _filtered; }
+            _filtered = MirageItems.All
+                .Where( i => Match( i, q ) )
+                .ToList();
+            return _filtered;
+        }
+    }
+
+    private static bool Match( MirageItem i, string query )
+    {
+        if ( i.Id.Contains( query, StringComparison.OrdinalIgnoreCase ) ) return true;
+        if ( !string.IsNullOrEmpty( i.Label ) && i.Label.Contains( query, StringComparison.OrdinalIgnoreCase ) ) return true;
+        if ( !string.IsNullOrEmpty( i.Category ) && i.Category.Contains( query, StringComparison.OrdinalIgnoreCase ) ) return true;
+        return false;
+    }
+
+    private void OnQueryChange( string text )
+    {
+        _query = text ?? "";
+        _filtered = null;
+        StateHasChanged();
+    }
+
+    private void GiveOne( string itemId )
+    {
+        if ( string.IsNullOrEmpty( itemId ) ) return;
+        MirageInventoryService.RpcGiveSelf( itemId, 1 );
+    }
+
+    private void Close()
+    {
+        MirageItemsBrowserState.SetOpen( false );
+        StateHasChanged();
+    }
+
+    private static string GetBadge( MirageItem item )
+    {
+        var src = item.Label ?? item.Id ?? "?";
+        return src.Length == 0 ? "?" : src.Substring( 0, 1 ).ToUpperInvariant();
+    }
+
+    protected override int BuildHash() => System.HashCode.Combine( MirageItemsBrowserState.IsOpen, _query, Filtered?.Count );
+}

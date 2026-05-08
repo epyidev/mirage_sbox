@@ -58,14 +58,15 @@ public static class MirageInventoryCommands
 		}
 	}
 
+	/// <summary>
+	/// `/items` opens the catalogue browser panel on the caller's client
+	/// instead of dumping the whole list into the chat (illisible past a
+	/// dozen entries). Permission-gated like /give since the panel can
+	/// also call RpcGiveSelf inline.
+	/// </summary>
 	public static void HandleItems( CommandContext ctx )
 	{
-		var lines = MirageItems.All
-			.Select( i => $"{i.Id} ({i.Label}, {i.Weight}g, max stack {i.MaxStack})" )
-			.ToList();
-		if ( lines.Count == 0 ) { ctx.Reply( "Aucun item enregistré." ); return; }
-		ctx.Reply( "Items disponibles :" );
-		foreach ( var line in lines ) ctx.Reply( $"  {line}" );
+		MirageItemsBrowserBridge.OpenForCaller( ctx.Caller );
 	}
 
 	public static void HandleClear( CommandContext ctx )
