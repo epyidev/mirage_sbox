@@ -528,13 +528,11 @@ public sealed class PlayerInventory : Component, Local.IPlayerEvents
 
 	public void OnControl()
 	{
-		if ( Input.Pressed( "drop" ) )
-		{
-			if ( ActiveWeapon.IsValid() )
-				DropActiveWeapon();
-
-			return;
-		}
+		// Mirage owns drop handling now: MirageInventoryHotbar listens for
+		// the "Drop" action and routes it through MirageInventoryService so
+		// the data slot is removed in lock step with the world-side
+		// carryable. The legacy direct DropActiveWeapon() shortcut is gone
+		// on purpose; do not reintroduce it here.
 
 		if ( ActiveWeapon.IsValid() && !ActiveWeapon.IsProxy )
 			ActiveWeapon.OnPlayerUpdate( Player );

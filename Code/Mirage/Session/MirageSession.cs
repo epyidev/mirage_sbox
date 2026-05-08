@@ -118,6 +118,18 @@ public sealed class MirageSession : GameObjectSystem<MirageSession>, ISceneStart
 		if ( player is null ) return;
 
 		ApplyLimboVisibility( player );
+		EnsureMirageInventory( player );
+	}
+
+	private static void EnsureMirageInventory( Player player )
+	{
+		// Player has [RequireComponent(MirageInventory)] so the engine
+		// attaches one automatically. We just clear the legacy default
+		// loadout so the new system starts from a known empty state on
+		// every fresh spawn.
+		var inv = player.GetComponent<MirageInventory>();
+		if ( inv is null ) return;
+		MirageInventoryEquip.ApplyEquip( player, inv );
 	}
 
 	void Global.IPlayerEvents.OnPlayerDamaging( PlayerDamageEvent e )

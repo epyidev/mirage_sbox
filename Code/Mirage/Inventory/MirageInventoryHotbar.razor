@@ -1,0 +1,105 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@using Sandbox.Mirage
+@using Sandbox.Mirage.UI
+@inherits PanelComponent
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-hotbar @(_isHidden ? "mirage-hotbar--hidden" : "")">
+
+    @for ( int i = 0; i < MirageInventory.HotbarColumns; i++ )
+    {
+        var idx = i;
+        var slot = _inventory?.Slot( idx );
+        var item = slot?.Item;
+        var selected = _inventory?.SelectedSlot == idx;
+        <div class="cell @(selected ? "cell--selected" : "") @(slot is null || slot.IsEmpty ? "cell--empty" : "")"
+             @onclick="@(() => OnCellClick( idx ))">
+            <Label class="cell-key" Text="@((idx + 1).ToString())" />
+            @if ( slot is not null && !slot.IsEmpty )
+            {
+                <Label class="cell-letter" Text="@GetItemBadge( item, slot.ItemId )" />
+                @if ( slot.Count > 1 )
+                {
+                    <Label class="cell-count" Text="@slot.Count.ToString()" />
+                }
+                <Label class="cell-name" Text="@(item?.Label ?? slot.ItemId)" />
+            }
+        </div>
+    }
+
+</root>
+
+@code
+{
+    private MirageInventory _inventory;
+    private int _renderedVersion = -1;
+    private bool _isHidden;
+
+    protected override void OnUpdate()
+    {
+        _inventory ??= MirageInventory.ForLocalPlayer();
+        if ( _inventory is null )
+        {
+            // Player not yet spawned (character select). Hide the hotbar.
+            if ( !_isHidden ) { _isHidden = true; StateHasChanged(); }
+            return;
+        }
+
+        var pd = _inventory.GameObject?.GetComponentInParent<Player>()?.PlayerData;
+        var hide = pd is null || !pd.HasActiveCharacter;
+        if ( hide != _isHidden )
+        {
+            _isHidden = hide;
+            StateHasChanged();
+        }
+
+        if ( _renderedVersion != _inventory.Version )
+        {
+            _renderedVersion = _inventory.Version;
+            StateHasChanged();
+        }
+
+        HandleKeys();
+    }
+
+    private void HandleKeys()
+    {
+        if ( _inventory is null ) return;
+        if ( _isHidden ) return;
+        // Skip key handling while a Mirage modal eats inputs (chat, panel, ...).
+        if ( MirageInventoryPanelState.IsOpen ) { /* still allow numbers, see below */ }
+
+        for ( int i = 0; i < MirageInventory.HotbarColumns; i++ )
+        {
+            var action = "Slot" + (i + 1);
+            if ( Input.Pressed( action ) )
+            {
+                MirageInventoryService.RpcSelectSlot( i );
+            }
+        }
+
+        if ( Input.Pressed( "Drop" ) )
+        {
+            var sel = _inventory.SelectedSlot;
+            if ( sel >= 0 ) MirageInventoryService.RpcDropSlot( sel, 0 );
+        }
+    }
+
+    private void OnCellClick( int index )
+    {
+        MirageInventoryService.RpcSelectSlot( index );
+    }
+
+    private static string GetItemBadge( MirageItem item, string fallbackId )
+    {
+        var label = item?.Label ?? fallbackId;
+        if ( string.IsNullOrEmpty( label ) ) return "?";
+        return label.Substring( 0, 1 ).ToUpperInvariant();
+    }
+
+    protected override int BuildHash() => System.HashCode.Combine( _inventory?.Version, _inventory?.SelectedSlot, _isHidden );
+}

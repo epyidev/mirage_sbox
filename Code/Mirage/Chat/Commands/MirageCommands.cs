@@ -42,5 +42,30 @@ public static class MirageCommands
 				MirageCoordsBridge.OpenForCaller( ctx.Caller );
 			}
 		} );
+
+		CommandRegistry.Register( new CommandSpec
+		{
+			Name = "give",
+			Description = "Donne un item au joueur courant",
+			Permission = "command.give",
+			UsageHint = "Usage : /give <itemId> [count].",
+			Handler = MirageInventoryCommands.HandleGive
+		} );
+
+		CommandRegistry.Register( new CommandSpec
+		{
+			Name = "items",
+			Description = "Liste les items disponibles",
+			Permission = "command.give",
+			Handler = MirageInventoryCommands.HandleItems
+		} );
+
+		CommandRegistry.Register( new CommandSpec
+		{
+			Name = "clearinv",
+			Description = "Vide ton inventaire",
+			Permission = "command.give",
+			Handler = MirageInventoryCommands.HandleClear
+		} );
 	}
 }

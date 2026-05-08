@@ -1,0 +1,173 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@using Sandbox.Mirage
+@using Sandbox.Mirage.UI
+@inherits PanelComponent
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-inventory-panel @(MirageInventoryPanelState.IsOpen ? "open" : "")">
+
+    <div class="backdrop" @onclick="@Close"></div>
+
+    <div class="frame">
+
+        <div class="frame-header">
+            <MirageLabel Variant="@(MirageLabel.LabelVariant.Heading)" Text="Inventaire" />
+            <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Muted)" Text="@TopHint" />
+        </div>
+
+        <div class="grid">
+            @for ( int row = 0; row < MirageInventory.SlotCount / MirageInventory.HotbarColumns; row++ )
+            {
+                <div class="row @(row == 0 ? "row--hotbar" : "")">
+                    @for ( int col = 0; col < MirageInventory.HotbarColumns; col++ )
+                    {
+                        var idx = row * MirageInventory.HotbarColumns + col;
+                        var captured = idx;
+                        var slot = _inventory?.Slot( idx );
+                        var item = slot?.Item;
+                        var selected = _inventory?.SelectedSlot == idx && row == 0;
+                        var picked = _pickupSource == idx;
+                        <div class="cell @(selected ? "cell--selected" : "") @(slot is null || slot.IsEmpty ? "cell--empty" : "") @(picked ? "cell--picked" : "")"
+                             @onclick="@(() => OnSlotClick( captured ))"
+                             @onmouseover="@(() => OnSlotHover( captured ))">
+                            <Label class="cell-key" Text="@(row == 0 ? (col + 1).ToString() : "")" />
+                            @if ( slot is not null && !slot.IsEmpty )
+                            {
+                                <Label class="cell-letter" Text="@GetItemBadge( item, slot.ItemId )" />
+                                @if ( slot.Count > 1 )
+                                {
+                                    <Label class="cell-count" Text="@slot.Count.ToString()" />
+                                }
+                                <Label class="cell-name" Text="@(item?.Label ?? slot.ItemId)" />
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="actions">
+            @if ( _hoverSlot >= 0 && !( _inventory?.Slot( _hoverSlot )?.IsEmpty ?? true ) )
+            {
+                @{ var hovered = _inventory.Slot( _hoverSlot ); var hoveredItem = hovered.Item; }
+                <div class="hover-info">
+                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Subtitle)" Text="@(hoveredItem?.Label ?? hovered.ItemId)" />
+                    @if ( !string.IsNullOrEmpty( hoveredItem?.Description ) )
+                    {
+                        <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Secondary)" Text="@hoveredItem.Description" />
+                    }
+                    <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Muted)" Text="@($"x{hovered.Count} / {hoveredItem?.Weight ?? 0}g pièce")" />
+                </div>
+                <MirageButton Text="Lâcher" Variant="@(MirageButton.ButtonVariant.Danger)" Size="@(MirageButton.ButtonSize.Small)" ClickAction="@(() => DropSlot( _hoverSlot ))" />
+            }
+            <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Color="@(MirageLabel.LabelColor.Muted)" Text="Clic pour prendre puis cliquer un autre slot pour déplacer ou empiler. Tab pour fermer." />
+        </div>
+
+    </div>
+
+</root>
+
+@code
+{
+    private MirageInventory _inventory;
+    private int _renderedVersion = -1;
+    private int _hoverSlot = -1;
+    private int _pickupSource = -1;
+
+    private string TopHint => _pickupSource >= 0 ? "Choisis une destination..." : "Tab pour fermer.";
+
+    protected override void OnStart()
+    {
+        base.OnStart();
+        MirageInventoryPanelState.Reset();
+    }
+
+    protected override void OnUpdate()
+    {
+        _inventory ??= MirageInventory.ForLocalPlayer();
+
+        // Tab toggles the panel. Bound to "Inventory" in Input.config.
+        if ( _inventory is not null && Input.Pressed( "Inventory" ) )
+        {
+            MirageInventoryPanelState.Toggle();
+        }
+
+        var open = MirageInventoryPanelState.IsOpen;
+        SetClass( "open", open );
+        MirageModalLock.SetActive( open );
+
+        if ( !open )
+        {
+            if ( _pickupSource != -1 ) _pickupSource = -1;
+            return;
+        }
+
+        if ( _inventory is not null && _renderedVersion != _inventory.Version )
+        {
+            _renderedVersion = _inventory.Version;
+            StateHasChanged();
+        }
+    }
+
+    private void Close()
+    {
+        MirageInventoryPanelState.SetOpen( false );
+        StateHasChanged();
+    }
+
+    private void OnSlotClick( int idx )
+    {
+        if ( _inventory is null ) return;
+        if ( _pickupSource < 0 )
+        {
+            // Pick up: only if the slot has something.
+            var slot = _inventory.Slot( idx );
+            if ( slot is null || slot.IsEmpty ) return;
+            _pickupSource = idx;
+            StateHasChanged();
+            return;
+        }
+
+        if ( _pickupSource == idx )
+        {
+            _pickupSource = -1;
+            StateHasChanged();
+            return;
+        }
+
+        MirageInventoryService.RpcMoveSlot( _pickupSource, idx );
+        _pickupSource = -1;
+        StateHasChanged();
+    }
+
+    private void OnSlotHover( int idx )
+    {
+        _hoverSlot = idx;
+        StateHasChanged();
+    }
+
+    private void DropSlot( int idx )
+    {
+        MirageInventoryService.RpcDropSlot( idx, 0 );
+        if ( _pickupSource == idx ) _pickupSource = -1;
+    }
+
+    private static string GetItemBadge( MirageItem item, string fallbackId )
+    {
+        var label = item?.Label ?? fallbackId;
+        if ( string.IsNullOrEmpty( label ) ) return "?";
+        return label.Substring( 0, 1 ).ToUpperInvariant();
+    }
+
+    protected override int BuildHash() => System.HashCode.Combine(
+        MirageInventoryPanelState.IsOpen,
+        _inventory?.Version,
+        _inventory?.SelectedSlot,
+        _hoverSlot,
+        _pickupSource
+    );
+}

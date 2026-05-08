@@ -41,7 +41,7 @@
           "__guid": "b8908627-9bb6-45c0-a569-f7b2f4178cdd",
           "__version": 2,
           "Flags": 0,
-          "Name": "Inventory",
+          "Name": "Mirage Hotbar",
           "Position": "0,0,0",
           "Rotation": "0,0,0,1",
           "Scale": "1,1,1",
@@ -54,7 +54,7 @@
           "OwnerTransfer": 1,
           "Components": [
             {
-              "__type": "Sandbox.UI.Inventory.Inventory",
+              "__type": "Sandbox.Mirage.UI.MirageInventoryHotbar",
               "__guid": "914de9bf-f622-410e-9e7d-d4f931dbaf6c",
               "__enabled": true,
               "Flags": 0,
@@ -63,8 +63,38 @@
               "OnComponentEnabled": null,
               "OnComponentFixedUpdate": null,
               "OnComponentStart": null,
-              "OnComponentUpdate": null,
-              "SwitchSound": "sounds/ui/ui.weapon.switch.sound"
+              "OnComponentUpdate": null
+            }
+          ],
+          "Children": []
+        },
+        {
+          "__guid": "7d3a1b00-c3f5-4a01-9b21-1a2b3c4d5ed0",
+          "__version": 2,
+          "Flags": 0,
+          "Name": "Mirage Inventory Panel",
+          "Position": "0,0,0",
+          "Rotation": "0,0,0,1",
+          "Scale": "1,1,1",
+          "Tags": "",
+          "Enabled": true,
+          "NetworkMode": 2,
+          "NetworkFlags": 0,
+          "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
+          "OwnerTransfer": 1,
+          "Components": [
+            {
+              "__type": "Sandbox.Mirage.UI.MirageInventoryPanel",
+              "__guid": "7d3a1b00-c3f5-4a01-9b21-1a2b3c4d5ed1",
+              "__enabled": true,
+              "Flags": 0,
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null
             }
           ],
           "Children": []
