@@ -12,7 +12,7 @@
 
     <div class="backdrop" @onclick="@Close" @onmouseup="@OnBackdropMouseUp"></div>
 
-    <div class="frame" @ref="_frame" @onmouseup="@OnFrameMouseUp">
+    <div class="frame" @onmouseup="@OnFrameMouseUp">
 
         <div class="frame-header">
             <MirageLabel Variant="@(MirageLabel.LabelVariant.Heading)" Text="Inventaire" />
@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <div class="grid">
+        <div class="grid" @ref="_grid">
             @for ( int row = 0; row < MirageInventory.SlotCount / MirageInventory.HotbarColumns; row++ )
             {
                 <div class="row @(row == 0 ? "row--hotbar" : "")">
@@ -52,7 +52,6 @@
                         var dragging = _dragSource == idx;
                         var dropTarget = IsDragging && _dropTarget == idx && _dropTarget != _dragSource;
                         <div class="cell @(selected ? "cell--selected" : "") @(empty ? "cell--empty" : "") @(dragging ? "cell--dragging" : "") @(dropTarget ? "cell--drop-target" : "")"
-                             @ref="@(p => _cellPanels[captured] = p)"
                              @onmousedown="@(() => OnSlotMouseDown( captured ))">
                             <div class="cell-top">
                                 <Label class="cell-key" Text="@(row == 0 ? (col + 1).ToString() : "")" />
@@ -83,7 +82,7 @@
 
     @if ( IsDragging )
     {
-        <div class="drag-visual" @ref="_dragVisual">
+        <div class="drag-visual" @ref="_dragVisual" style="left: @(_dragX)px; top: @(_dragY)px;">
             <Label class="drag-letter" Text="@_dragBadge" />
             @if ( _dragCount > 1 )
             {
@@ -92,20 +91,17 @@
         </div>
     }
 
-    @if ( !IsDragging && _tooltipSlot >= 0 )
+    @if ( !IsDragging && _hasTooltipItem )
     {
         @{ var tipSlot = _inventory?.Slot( _tooltipSlot ); var tipItem = tipSlot?.Item; }
-        @if ( tipSlot is not null && !tipSlot.IsEmpty )
-        {
-            <div class="slot-tooltip" @ref="_tooltip">
-                <Label class="tooltip-name" Text="@(tipItem?.Label ?? tipSlot.ItemId)" />
-                @if ( !string.IsNullOrEmpty( tipItem?.Description ) )
-                {
-                    <Label class="tooltip-desc" Text="@tipItem.Description" />
-                }
-                <Label class="tooltip-meta" Text="@($"x{tipSlot.Count} · {tipItem?.Weight ?? 0}g pièce")" />
-            </div>
-        }
+        <div class="slot-tooltip" @ref="_tooltip" style="left: @(_tooltipX)px; top: @(_tooltipY)px;">
+            <Label class="tooltip-name" Text="@(tipItem?.Label ?? tipSlot?.ItemId)" />
+            @if ( !string.IsNullOrEmpty( tipItem?.Description ) )
+            {
+                <Label class="tooltip-desc" Text="@tipItem.Description" />
+            }
+            <Label class="tooltip-meta" Text="@($"x{tipSlot?.Count} · {tipItem?.Weight ?? 0}g pièce")" />
+        </div>
     }
 
 </root>
@@ -115,20 +111,25 @@
     private MirageInventory _inventory;
     private int _renderedVersion = -1;
 
-    private Panel _frame;
-    private readonly Panel[] _cellPanels = new Panel[MirageInventory.SlotCount];
+    // Refs into the rendered tree.
+    private Panel _grid;
+    private Panel _dragVisual;
+    private Panel _tooltip;
 
     // Drag state
     private int _dragSource = -1;
     private string _dragBadge;
     private int _dragCount;
-    private Panel _dragVisual;
+    private float _dragX, _dragY;
     private bool IsDragging => _dragSource >= 0;
 
     // Hit-test cache
     private int _dropTarget = -1;
     private int _tooltipSlot = -1;
-    private Panel _tooltip;
+    private float _tooltipX, _tooltipY;
+    private bool _hasTooltipItem;
+
+    private const float DragVisualSize = 84f;
 
     protected override void OnStart()
     {
@@ -152,7 +153,7 @@
         if ( !open )
         {
             CancelDrag();
-            if ( _tooltipSlot != -1 ) { _tooltipSlot = -1; StateHasChanged(); }
+            if ( _hasTooltipItem ) { _tooltipSlot = -1; _hasTooltipItem = false; StateHasChanged(); }
             return;
         }
 
@@ -162,22 +163,51 @@
             StateHasChanged();
         }
 
-        // Refresh cursor-based state every frame: which slot is hovered (for
-        // tooltip) and which slot is under the cursor while dragging (for
-        // drop-target highlight). One pass over the slot rects, cheap.
-        var mousePos = Mouse.Position;
-        var newHover = HitTestSlot( mousePos );
+        // Update cursor-driven state every frame.
+        var mouse = Mouse.Position;
+        var hover = HitTestSlot( mouse );
+        var scale = Panel.ScaleFromScreen;
+
         if ( IsDragging )
         {
-            if ( newHover != _dropTarget ) { _dropTarget = newHover; StateHasChanged(); }
-            if ( _tooltipSlot != -1 ) { _tooltipSlot = -1; StateHasChanged(); }
-            UpdateDragVisual( mousePos );
+            if ( hover != _dropTarget ) { _dropTarget = hover; StateHasChanged(); }
+            if ( _hasTooltipItem ) { _tooltipSlot = -1; _hasTooltipItem = false; StateHasChanged(); }
+
+            _dragX = mouse.x * scale - DragVisualSize / 2f;
+            _dragY = mouse.y * scale - DragVisualSize / 2f;
+            if ( _dragVisual is not null )
+            {
+                _dragVisual.Style.Left = Length.Pixels( _dragX );
+                _dragVisual.Style.Top = Length.Pixels( _dragY );
+            }
         }
         else
         {
-            if ( newHover != _tooltipSlot ) { _tooltipSlot = newHover; StateHasChanged(); }
             if ( _dropTarget != -1 ) { _dropTarget = -1; StateHasChanged(); }
-            UpdateTooltipPosition( mousePos );
+
+            var nextHasItem = false;
+            if ( hover >= 0 )
+            {
+                var s = _inventory?.Slot( hover );
+                nextHasItem = s is not null && !s.IsEmpty;
+            }
+            if ( hover != _tooltipSlot || nextHasItem != _hasTooltipItem )
+            {
+                _tooltipSlot = hover;
+                _hasTooltipItem = nextHasItem;
+                StateHasChanged();
+            }
+
+            if ( _hasTooltipItem )
+            {
+                _tooltipX = mouse.x * scale + 18f;
+                _tooltipY = mouse.y * scale + 18f;
+                if ( _tooltip is not null )
+                {
+                    _tooltip.Style.Left = Length.Pixels( _tooltipX );
+                    _tooltip.Style.Top = Length.Pixels( _tooltipY );
+                }
+            }
         }
     }
 
@@ -188,8 +218,6 @@
         StateHasChanged();
     }
 
-    // -------- Drag and drop interactions --------
-
     private void OnSlotMouseDown( int idx )
     {
         if ( _inventory is null ) return;
@@ -198,17 +226,24 @@
         _dragSource = idx;
         _dragBadge = GetItemBadge( slot.Item, slot.ItemId );
         _dragCount = slot.Count;
+        // Pre-position the floating preview at the cursor so the first
+        // rendered frame already shows it where it should be, no top-left
+        // flash.
+        var scale = Panel.ScaleFromScreen;
+        var mouse = Mouse.Position;
+        _dragX = mouse.x * scale - DragVisualSize / 2f;
+        _dragY = mouse.y * scale - DragVisualSize / 2f;
         _tooltipSlot = -1;
+        _hasTooltipItem = false;
         StateHasChanged();
     }
 
     private void OnFrameMouseUp()
     {
-        // Slot mousedown captures the mouse so mouseup always lands on the
-        // source slot, never on the target. We hit-test the cursor against
-        // every slot's screen rect to figure out where the operator
-        // actually wants to drop.
         if ( !IsDragging ) return;
+        // Slot mousedown captures the mouse so mouseup always lands on the
+        // source slot. We hit-test the cursor against the grid's cell rects
+        // to figure out where the operator actually wants to drop.
         var target = HitTestSlot( Mouse.Position );
         if ( target >= 0 && target != _dragSource )
         {
@@ -219,9 +254,6 @@
 
     private void OnBackdropMouseUp()
     {
-        // Mouseup outside the frame entirely: drop the dragged stack into
-        // the world. Backdrop is a sibling of the frame so this only fires
-        // when the cursor is actually outside the panel.
         if ( !IsDragging ) return;
         MirageInventoryService.RpcDropSlot( _dragSource, 0 );
         CancelDrag();
@@ -239,29 +271,26 @@
 
     private int HitTestSlot( Vector2 mouse )
     {
-        for ( int i = 0; i < _cellPanels.Length; i++ )
+        if ( _grid is null || !_grid.IsValid() ) return -1;
+        var idx = 0;
+        var rowCount = MirageInventory.SlotCount / MirageInventory.HotbarColumns;
+        for ( int r = 0; r < rowCount; r++ )
         {
-            var p = _cellPanels[i];
-            if ( p is null || !p.IsValid() ) continue;
-            if ( p.Box.Rect.IsInside( mouse ) ) return i;
+            var rowPanel = _grid.GetChild( r );
+            if ( rowPanel is null )
+            {
+                idx += MirageInventory.HotbarColumns;
+                continue;
+            }
+            for ( int c = 0; c < MirageInventory.HotbarColumns; c++ )
+            {
+                var cellPanel = rowPanel.GetChild( c );
+                if ( cellPanel is not null && cellPanel.IsValid() && cellPanel.Box.Rect.IsInside( mouse ) )
+                    return idx;
+                idx++;
+            }
         }
         return -1;
-    }
-
-    private void UpdateDragVisual( Vector2 mouse )
-    {
-        if ( _dragVisual is null ) return;
-        var scale = Panel.ScaleFromScreen;
-        _dragVisual.Style.Left = Length.Pixels( mouse.x * scale - 24 );
-        _dragVisual.Style.Top = Length.Pixels( mouse.y * scale - 24 );
-    }
-
-    private void UpdateTooltipPosition( Vector2 mouse )
-    {
-        if ( _tooltip is null ) return;
-        var scale = Panel.ScaleFromScreen;
-        _tooltip.Style.Left = Length.Pixels( mouse.x * scale + 18 );
-        _tooltip.Style.Top = Length.Pixels( mouse.y * scale + 18 );
     }
 
     private static string GetItemBadge( MirageItem item, string fallbackId )
@@ -277,6 +306,7 @@
         _inventory?.SelectedSlot,
         _tooltipSlot,
         _dropTarget,
-        _dragSource
+        _dragSource,
+        _hasTooltipItem
     );
 }
