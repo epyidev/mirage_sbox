@@ -14,7 +14,7 @@ namespace Sandbox.Mirage;
 /// </summary>
 public sealed class MirageDroppedItem : Component, Component.IPressable
 {
-	private const string DefaultBagModel = "models/citizen_props/trashbag02.vmdl";
+	private const string DefaultBagModel = "models/citizen_props/cardboardbox01.vmdl";
 
 	[Sync( SyncFlags.FromHost )] public string ItemId { get; set; }
 	[Sync( SyncFlags.FromHost )] public int Count { get; set; }
@@ -163,11 +163,10 @@ public sealed class MirageDroppedItem : Component, Component.IPressable
 		var renderer = go.AddComponent<ModelRenderer>();
 		try { renderer.Model = Model.Load( DefaultBagModel ); } catch { }
 
-		// Trashbag is roughly 30x30x40 cm in world units, the collider
-		// hugs that volume instead of the previous oversized 24-cube
-		// crate fallback.
+		// Cardboard box, sized for a portable parcel rather than a full
+		// shipping crate.
 		var collider = go.AddComponent<BoxCollider>();
-		collider.Scale = new Vector3( 14f, 14f, 18f );
+		collider.Scale = new Vector3( 16f, 16f, 14f );
 
 		var rb = go.AddComponent<Rigidbody>();
 		rb.MassOverride = 2f;
