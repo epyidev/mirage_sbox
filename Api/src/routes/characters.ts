@@ -11,9 +11,11 @@ import * as accountRepo from '../repositories/accountRepository.js';
 import * as characterRepo from '../repositories/characterRepository.js';
 import type { CharacterRow } from '../repositories/characterRepository.js';
 import * as inventoryRepo from '../repositories/inventoryRepository.js';
+import * as characterService from '../services/characterService.js';
 import { accountIdSchema, accountUpdateSchema } from '../schemas/account.js';
 import {
 	characterDetailSchema,
+	characterSnapshotSchema,
 	characterUpdateSchema
 } from '../schemas/character.js';
 import { characterIdSchema, steamIdSchema } from '../schemas/common.js';
@@ -160,6 +162,27 @@ export const characterRoutes: FastifyPluginAsync = async (app) => {
 			await loadOwnedCharacter(fastify, req.params.steamId, req.params.characterId);
 			const affected = await inventoryRepo.clearSlot(req.params.characterId, req.params.slot);
 			if (affected === 0) throw fastify.httpErrors.notFound('Inventory slot empty.');
+			return reply.status(204).send(null);
+		}
+	);
+
+	// Atomic full-state save. The host posts this every 10 minutes and on
+	// disconnect / character switch / admin /saveallcharacters. One MariaDB
+	// transaction wraps position + vitals + every wallet + the entire
+	// inventory replacement, so a partial failure keeps the previous
+	// snapshot rather than half-writing a row.
+	fastify.post(
+		'/players/:steamId/characters/:characterId/snapshot',
+		{
+			schema: {
+				params: characterParams,
+				body: characterSnapshotSchema,
+				response: { 204: z.null() }
+			}
+		},
+		async (req, reply) => {
+			await loadOwnedCharacter(fastify, req.params.steamId, req.params.characterId);
+			await characterService.saveSnapshot(req.params.characterId, req.body);
 			return reply.status(204).send(null);
 		}
 	);

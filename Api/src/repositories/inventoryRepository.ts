@@ -59,6 +59,35 @@ export async function clearSlot(
 	return result.affectedRows;
 }
 
+/**
+ * Replace the entire inventory for a character in one shot. Wipes every
+ * existing row then bulk-inserts the new ones. Always called from within
+ * a transaction (snapshot save) so a failure does not leave the
+ * inventory in a half-written state.
+ */
+export async function replaceAll(
+	characterId: string,
+	entries: InventoryEntry[],
+	conn: PoolConnection
+): Promise<void> {
+	await conn.query<ResultSetHeader>(
+		'DELETE FROM character_inventory WHERE character_id = ?',
+		[characterId]
+	);
+	if (entries.length === 0) return;
+	const placeholders = entries.map(() => '(?, ?, ?, ?, ?)').join(', ');
+	const params: unknown[] = [];
+	for (const entry of entries) {
+		const meta = entry.metadata == null ? null : JSON.stringify(entry.metadata);
+		params.push(characterId, entry.slot, entry.itemId, entry.quantity, meta);
+	}
+	await conn.query<ResultSetHeader>(
+		`INSERT INTO character_inventory (character_id, slot, item_id, quantity, metadata)
+		 VALUES ${placeholders}`,
+		params
+	);
+}
+
 function parseMetadata(value: unknown): Record<string, unknown> | null {
 	if (value == null) return null;
 	let parsed: unknown = value;
