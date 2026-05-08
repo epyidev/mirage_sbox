@@ -167,12 +167,16 @@ public sealed class MirageDroppedItem : Component, Component.IPressable
 		var renderer = go.AddComponent<ModelRenderer>();
 		try { renderer.Model = Model.Load( DefaultBagModel ); } catch { }
 
-		// The collider scales with WorldScale (0.45 above), so the value
-		// here is sized generously: an effective ~22-25cm hitbox lands
-		// well past the visual edges, which gives a forgiving aim cone
-		// for the pickup raycast without making the parcel feel bulky.
+		// The cardboardbox visual is roughly a cube, so the collider is
+		// kept cubic too. Scale runs through WorldScale (0.45 above),
+		// giving an effective ~22.5cm cube which matches the parcel and
+		// still leaves a forgiving aim cone for the pickup raycast.
+		// Center lifts the box by half its height so the collider sits
+		// entirely above the GameObject origin (the model's base pivot),
+		// which keeps the parcel flush with the floor instead of floating.
 		var collider = go.AddComponent<BoxCollider>();
-		collider.Scale = new Vector3( 50f, 50f, 40f );
+		collider.Scale = new Vector3( 50f, 50f, 50f );
+		collider.Center = new Vector3( 0f, 0f, 25f );
 
 		var rb = go.AddComponent<Rigidbody>();
 		rb.MassOverride = 1.5f;
