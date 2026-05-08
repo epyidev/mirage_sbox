@@ -63,7 +63,6 @@
                                     if ( !string.IsNullOrEmpty( item?.Image ) )
                                     {
                                         <div class="cell-icon-stack">
-                                            <div class="cell-icon cell-icon--glow" style="background-image: url(@item.Image);"></div>
                                             <div class="cell-icon" style="background-image: url(@item.Image);"></div>
                                         </div>
                                     }
@@ -91,7 +90,6 @@
             @if ( !string.IsNullOrEmpty( _dragImage ) )
             {
                 <div class="drag-icon-stack">
-                    <div class="drag-icon drag-icon--glow" style="background-image: url(@_dragImage);"></div>
                     <div class="drag-icon" style="background-image: url(@_dragImage);"></div>
                 </div>
             }

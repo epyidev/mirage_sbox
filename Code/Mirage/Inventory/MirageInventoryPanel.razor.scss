@@ -197,10 +197,13 @@ MirageInventoryPanel
             font-size: $mirage-font-xl;
             font-weight: 800;
 
-            // Two-layer icon stack: a blurred + brightened copy sits
-            // behind the sharp icon to create a soft glow halo around
-            // the silhouette. The stack is 90% of the cell-letter, so
-            // icons feel a touch smaller and breathe inside the cell.
+            // 90% icon container so the silhouette breathes inside the
+            // cell. filter-drop-shadow is alpha-aware: it reads the
+            // PNG's transparency mask and draws a soft glow shaped
+            // like the icon outline. No tiling artifacts (a regular
+            // filter: blur() on a duplicated background-image layer
+            // would re-sample beyond the element bounds and ghost the
+            // image on the edges).
             .cell-icon-stack
             {
                 position: relative;
@@ -218,12 +221,7 @@ MirageInventoryPanel
                 background-size: contain;
                 background-repeat: no-repeat;
                 background-position: center;
-            }
-
-            .cell-icon--glow
-            {
-                filter: blur( 8px ) brightness( 1.5 );
-                opacity: 0.85;
+                filter-drop-shadow: 0px 0px 8px rgba( 255, 240, 220, 0.75 );
             }
         }
 
@@ -262,9 +260,8 @@ MirageInventoryPanel
         pointer-events: none;
         z-index: 400;
 
-        // Drag preview mirrors the cell exactly: same 90% stack with a
-        // blurred+brightened copy behind the sharp icon for the same
-        // glow halo as the source slot.
+        // Drag preview mirrors the cell exactly: same 90% icon
+        // container, same alpha-aware drop-shadow glow.
         .drag-icon-stack
         {
             position: relative;
@@ -283,12 +280,7 @@ MirageInventoryPanel
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-        }
-
-        .drag-icon--glow
-        {
-            filter: blur( 8px ) brightness( 1.5 );
-            opacity: 0.85;
+            filter-drop-shadow: 0px 0px 8px rgba( 255, 240, 220, 0.75 );
         }
 
         .drag-letter
