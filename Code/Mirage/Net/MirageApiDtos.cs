@@ -21,7 +21,13 @@ public sealed class MiragePosition
 /// `characterSummarySchema`. BIGINT ids round-trip as strings to stay safe past
 /// the JS 53-bit number range, matching the API contract.
 /// </summary>
-public sealed class MirageCharacterSummary
+/// <remarks>
+/// Not <c>sealed</c> on purpose: <see cref="MirageCharacterDetail"/> extends
+/// it with the inventory and wallet payload returned by the full character
+/// GET. If a future DTO needs the same identity fields, derive from this
+/// instead of duplicating them.
+/// </remarks>
+public class MirageCharacterSummary
 {
 	[JsonPropertyName( "id" )] public string Id { get; set; }
 	[JsonPropertyName( "steamId" )] public string SteamId { get; set; }
