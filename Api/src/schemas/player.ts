@@ -25,7 +25,16 @@ export const knownIpEntrySchema = z.object({
 
 export type KnownIpEntry = z.infer<typeof knownIpEntrySchema>;
 
+/**
+ * Short numeric identifier minted by the database (auto-increment) and
+ * stable across sessions. Used as the public-facing player handle in
+ * staff commands ("/give 42 ammo_9 30") and rendered in the HUD so admins
+ * never have to copy a Steam id around.
+ */
+export const playerIdSchema = z.number().int().positive();
+
 export const playerSchema = z.object({
+	id: playerIdSchema,
 	steamId: z.string(),
 	displayName: z.string(),
 	knownIps: z.array(knownIpEntrySchema),

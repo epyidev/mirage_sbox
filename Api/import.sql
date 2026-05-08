@@ -12,12 +12,14 @@
 -- Import once into an empty database, then start the API.
 
 CREATE TABLE IF NOT EXISTS players (
+	id              INT UNSIGNED    NOT NULL AUTO_INCREMENT,
 	steam_id        BIGINT UNSIGNED NOT NULL,
 	display_name    VARCHAR(64)     NOT NULL DEFAULT '',
 	known_ips       JSON            NOT NULL DEFAULT (JSON_ARRAY()),
 	created_at      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (steam_id),
+	PRIMARY KEY (id),
+	UNIQUE KEY uniq_players_steam_id (steam_id),
 	CONSTRAINT chk_players_known_ips_array CHECK (JSON_TYPE(known_ips) = 'ARRAY')
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4

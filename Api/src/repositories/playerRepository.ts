@@ -8,6 +8,7 @@ import { pool, withTransaction } from '../db/pool.js';
 import type { KnownIpEntry, Player } from '../schemas/player.js';
 
 export interface PlayerRow {
+	id: number;
 	steam_id: string;
 	display_name: string;
 	known_ips: KnownIpEntry[];
@@ -78,6 +79,7 @@ export async function recordIp(steamId: string, ip: string): Promise<void> {
 
 export function rowToPlayer(row: PlayerRow): Player {
 	return {
+		id: Number(row.id),
 		steamId: row.steam_id,
 		displayName: row.display_name,
 		knownIps: row.known_ips,
