@@ -10,6 +10,10 @@
 
 <root class="mirage-hotbar @(_isHidden ? "mirage-hotbar--hidden" : "")">
 
+    <div class="hotbar-announce @(_announceVisible ? "is-visible" : "")">
+        <Label Text="@_announceText" />
+    </div>
+
     @for ( int i = 0; i < MirageInventory.HotbarColumns; i++ )
     {
         var idx = i;
@@ -21,10 +25,6 @@
              @onclick="@(() => OnCellClick( idx ))">
             <div class="cell-top">
                 <Label class="cell-key" Text="@((idx + 1).ToString())" />
-                @if ( !empty && slot.Count > 1 )
-                {
-                    <Label class="cell-count" Text="@slot.Count.ToString()" />
-                }
             </div>
             <div class="cell-letter">
                 @if ( !empty )
@@ -39,12 +39,10 @@
                     }
                 }
             </div>
-            <div class="cell-name">
-                @if ( !empty )
-                {
-                    <Label Text="@(item?.Label ?? slot.ItemId)" />
-                }
-            </div>
+            @if ( !empty && slot.Count > 1 )
+            {
+                <Label class="cell-count" Text="@slot.Count.ToString()" />
+            }
         </div>
     }
 
@@ -55,6 +53,14 @@
     private MirageInventory _inventory;
     private int _renderedVersion = -1;
     private bool _isHidden;
+
+    // Minecraft-style item-name announcement that shows above the hotbar
+    // for a short window after a slot switch and fades out.
+    private const float AnnounceHoldSeconds = 1.6f;
+    private string _announceText = "";
+    private bool _announceVisible;
+    private RealTimeUntil _announceUntil;
+    private int _lastAnnouncedSlot = -2;
 
     protected override void OnUpdate()
     {
@@ -79,7 +85,60 @@
             StateHasChanged();
         }
 
+        UpdateAnnouncement();
+
         HandleKeys();
+    }
+
+    /// <summary>
+    /// Watch the selected slot and trigger the floating item-name banner
+    /// every time the selection moves to a different slot. The banner is
+    /// kept visible for <see cref="AnnounceHoldSeconds"/> seconds, then
+    /// the CSS opacity transition fades it out.
+    /// </summary>
+    private void UpdateAnnouncement()
+    {
+        if ( _isHidden )
+        {
+            if ( _announceVisible )
+            {
+                _announceVisible = false;
+                StateHasChanged();
+            }
+            return;
+        }
+
+        var current = _inventory.SelectedSlot;
+        if ( current != _lastAnnouncedSlot )
+        {
+            _lastAnnouncedSlot = current;
+            var slot = _inventory.Slot( current );
+            var item = slot?.Item;
+            // Empty or unknown slot: hide the announcement instead of
+            // flashing a blank pill on screen.
+            if ( slot is null || slot.IsEmpty || item is null )
+            {
+                _announceVisible = false;
+                _announceText = "";
+            }
+            else
+            {
+                _announceText = item.Label ?? slot.ItemId ?? "";
+                _announceVisible = true;
+                _announceUntil = AnnounceHoldSeconds;
+            }
+            StateHasChanged();
+            return;
+        }
+
+        // Hold window expired: drop the visible class so the CSS
+        // transition fades the banner out. The element stays in the
+        // tree so the fade-out actually plays.
+        if ( _announceVisible && _announceUntil )
+        {
+            _announceVisible = false;
+            StateHasChanged();
+        }
     }
 
     private void HandleKeys()
@@ -131,5 +190,5 @@
         return label.Substring( 0, 1 ).ToUpperInvariant();
     }
 
-    protected override int BuildHash() => System.HashCode.Combine( _inventory?.Version, _inventory?.SelectedSlot, _isHidden );
+    protected override int BuildHash() => System.HashCode.Combine( _inventory?.Version, _inventory?.SelectedSlot, _isHidden, _announceVisible, _announceText );
 }

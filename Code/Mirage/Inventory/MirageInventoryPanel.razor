@@ -56,10 +56,6 @@
                              @onmousedown="@(() => OnSlotMouseDown( captured ))">
                             <div class="cell-top">
                                 <Label class="cell-key" Text="@(row == 0 ? (col + 1).ToString() : "")" />
-                                @if ( !empty && slot.Count > 1 )
-                                {
-                                    <Label class="cell-count" Text="@slot.Count.ToString()" />
-                                }
                             </div>
                             <div class="cell-letter">
                                 @if ( !empty )
@@ -74,12 +70,10 @@
                                     }
                                 }
                             </div>
-                            <div class="cell-name">
-                                @if ( !empty )
-                                {
-                                    <Label Text="@(item?.Label ?? slot.ItemId)" />
-                                }
-                            </div>
+                            @if ( !empty && slot.Count > 1 )
+                            {
+                                <Label class="cell-count" Text="@slot.Count.ToString()" />
+                            }
                         </div>
                     }
                 </div>

@@ -21,26 +21,61 @@ MirageInventoryHotbar
         pointer-events: none;
     }
 
+    // Floating item-name label sitting just above the row of cells.
+    // Mirrors Minecraft's hotbar behaviour: appears on slot switch and
+    // fades out on its own. No box, no border, just text on a thick
+    // dropshadow so it reads against any backdrop. The element stays in
+    // the DOM at opacity 0 the rest of the time so the fade-out
+    // transition actually plays when is-visible drops.
+    .hotbar-announce
+    {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX( -50% );
+        margin-bottom: $mirage-space-3;
+        color: $mirage-text-primary;
+        font-size: $mirage-font-lg;
+        font-weight: 700;
+        letter-spacing: $mirage-letter-wide;
+        text-transform: uppercase;
+        text-shadow: 0px 2px 6px rgba( 0, 0, 0, 0.95 );
+        opacity: 0;
+        pointer-events: none;
+        white-space: nowrap;
+        transition: opacity 0.45s ease-in-out;
+
+        &.is-visible { opacity: 1; }
+    }
+
     .cell
     {
         pointer-events: auto;
+        position: relative;
         flex-direction: column;
         align-items: stretch;
         width: 64px;
         height: 64px;
-        padding: $mirage-space-1;
         background-color: rgba( 0, 0, 0, 0.55 );
         border: $mirage-border-width solid $mirage-border-soft;
         backdrop-filter: blur( 6px );
         cursor: pointer;
         transition: border-color $mirage-transition-fast, background-color $mirage-transition-fast;
 
+        // Slot key + stack count are floated as a corner overlay so they
+        // do not compete with the icon for vertical space. The icon's
+        // own container then gets the entire cell, which keeps the
+        // image visually centred in the slot instead of biased low.
         .cell-top
         {
+            position: absolute;
+            top: 3px;
+            left: 4px;
+            right: 4px;
             flex-direction: row;
-            justify-content: space-between;
             align-items: flex-start;
-            flex-shrink: 0;
+            pointer-events: none;
+            z-index: 2;
 
             .cell-key
             {
@@ -49,16 +84,27 @@ MirageInventoryHotbar
                 font-weight: 700;
                 letter-spacing: $mirage-letter-wide;
             }
+        }
 
-            .cell-count
-            {
-                color: $mirage-text-primary;
-                font-size: $mirage-font-xs;
-                font-weight: 700;
-                background-color: rgba( 0, 0, 0, 0.65 );
-                padding: 1px 4px;
-                border: 1px solid $mirage-border-soft;
-            }
+        // Stack count badge in the bottom-right corner. Negative offsets
+        // line its border up flush with the cell's border so the badge
+        // reads as a continuation of the same edge rather than a
+        // floating pill. Padding and font are sized so a 2- or 3-digit
+        // count fits without crowding the cell.
+        .cell-count
+        {
+            position: absolute;
+            right: -$mirage-border-width;
+            bottom: -$mirage-border-width;
+            padding: 2px 6px;
+            color: $mirage-text-primary;
+            font-size: $mirage-font-xs;
+            font-weight: 800;
+            line-height: 1;
+            background-color: rgba( 0, 0, 0, 0.88 );
+            border: $mirage-border-width solid $mirage-border-soft;
+            pointer-events: none;
+            z-index: 3;
         }
 
         .cell-letter
@@ -66,14 +112,15 @@ MirageInventoryHotbar
             flex: 1 1 0;
             align-items: center;
             justify-content: center;
+            padding: 6px;
             color: $mirage-text-primary;
             font-size: $mirage-font-xl;
             font-weight: 800;
 
-            // PNG icon when the item has one. Stretched to fill the
-            // available square so silhouettes stay readable in the small
-            // hotbar cell, kept inside the box with background-size:
-            // contain to preserve the aspect ratio of the source art.
+            // PNG icon when the item has one. The container fills the
+            // whole cell so contain-sized icons end up perfectly
+            // centred, a bit of inner padding keeps the silhouette off
+            // the border.
             .cell-icon
             {
                 width: 100%;
@@ -82,18 +129,6 @@ MirageInventoryHotbar
                 background-repeat: no-repeat;
                 background-position: center;
             }
-        }
-
-        .cell-name
-        {
-            flex-shrink: 0;
-            justify-content: center;
-            color: $mirage-text-secondary;
-            font-size: 9px;
-            font-weight: 600;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
         }
 
         &.cell--empty
