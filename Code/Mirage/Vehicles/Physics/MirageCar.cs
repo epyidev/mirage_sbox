@@ -66,6 +66,7 @@ public sealed class MirageCar : Component, IPlayerControllable
 	// car would shoot forward "by itself" the instant we enter.
 	private bool _inputArmed;
 	private bool _wasOccupied;
+	private int _diagFrames;
 	private const float InputArmThreshold = 0.05f;
 
 	protected override void OnEnabled()
@@ -112,8 +113,25 @@ public sealed class MirageCar : Component, IPlayerControllable
 		{
 			_inputArmed = false;
 			_currentTorque = 0f;
+			Log.Info( $"[Mirage] MirageCar: now occupied. Resetting input arm + torque. IsProxy={IsProxy}, Network.Owner={Network.Owner?.DisplayName ?? "<none>"}" );
 		}
 		_wasOccupied = occupied;
+
+		// Throttled diagnostic so we can see whether the runaway
+		// throttle comes from input or from stale torque.
+		if ( occupied )
+		{
+			_diagFrames++;
+			if ( _diagFrames >= 30 )
+			{
+				_diagFrames = 0;
+				Log.Info( $"[Mirage] MirageCar tick: armed={_inputArmed} input={Input.AnalogMove} throttle={ThrottleInput:F2} steer={SteerInput:F2} torque={_currentTorque:F0} vel={Rigidbody?.Velocity}" );
+			}
+		}
+		else
+		{
+			_diagFrames = 0;
+		}
 
 		if ( !occupied )
 		{
