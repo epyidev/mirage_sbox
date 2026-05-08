@@ -46,6 +46,11 @@ public static class MirageInventoryService
 		var slot = inv.Slot( slotIndex );
 		if ( slot is null || slot.IsEmpty ) return;
 
+		// Sync the active weapon's live ClipContents back into slot
+		// metadata BEFORE we snapshot it for the world drop, so a partial
+		// magazine survives onto the dropped pickup.
+		MirageInventoryEquip.PersistActiveAmmo( player, inv );
+
 		// Capture every field BEFORE the slot gets cleared by RemoveAt,
 		// otherwise the spawn path below would see null id / metadata.
 		var item = slot.Item;
@@ -67,6 +72,28 @@ public static class MirageInventoryService
 	{
 		var (_, inv) = ResolveCallerInventory();
 		inv?.BroadcastSnapshot();
+	}
+
+	/// <summary>
+	/// Host-only. Consume <paramref name="count"/> units of <paramref name="itemId"/>
+	/// from the caller's inventory, used by <see cref="MirageWeaponBridge"/>
+	/// when the local player reloads a weapon and pulls cartridges from the
+	/// matching ammo item stack. The host is authoritative on what is left
+	/// in the inventory; the client will get the new snapshot through
+	/// <see cref="MirageInventory.BroadcastSnapshot"/>.
+	/// </summary>
+	[Rpc.Host]
+	public static void RpcConsumeAmmo( string itemId, int count )
+	{
+		if ( string.IsNullOrEmpty( itemId ) || count <= 0 ) return;
+		var (_, inv) = ResolveCallerInventory();
+		if ( inv is null ) return;
+		// Only ammo items can be consumed through this entry point. A
+		// misconfigured or hostile client trying to drain something else
+		// (a weapon, a burger) is silently ignored.
+		var def = MirageItems.Find( itemId );
+		if ( def is null || !string.Equals( def.Category, "ammo", StringComparison.OrdinalIgnoreCase ) ) return;
+		inv.ConsumeById( itemId, count );
 	}
 
 	/// <summary>

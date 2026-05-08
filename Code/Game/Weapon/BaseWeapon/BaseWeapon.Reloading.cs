@@ -109,7 +109,11 @@ public partial class BaseWeapon
 
 					ViewModel?.RunEvent<ViewModel>( x => x.OnIncrementalReload() );
 
-					ReserveAmmo -= available;
+					// Mirage path consumes inventory ammo items host-side.
+					// Upstream path drains the per-weapon / shared pool via
+					// the ReserveAmmo setter.
+					if ( !Sandbox.Mirage.MirageWeaponBridge.TryConsumeReserve( this, available ) )
+						ReserveAmmo -= available;
 					ClipContents += available;
 				}
 			}

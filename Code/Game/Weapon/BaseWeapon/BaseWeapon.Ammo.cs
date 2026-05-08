@@ -18,7 +18,13 @@ public partial class BaseWeapon
 	/// <summary>
 	/// The default amount of bullets in a weapon's magazine on pickup.
 	/// </summary>
-	[Property, Feature( "Ammo" ), ShowIf( nameof( UsesClips ), true )] public int ClipContents { get; set; } = 20;
+	/// <remarks>
+	/// Mirage edit: synced from the owning client (player) so the host can
+	/// observe the live magazine count without an extra RPC round trip and
+	/// persist it into the equipped slot's metadata when the operator
+	/// switches hotbar slots.
+	/// </remarks>
+	[Property, Feature( "Ammo" ), ShowIf( nameof( UsesClips ), true ), Sync] public int ClipContents { get; set; } = 20;
 
 	/// <summary>
 	/// The ammo resource this weapon uses for its reserve pool.
@@ -39,13 +45,21 @@ public partial class BaseWeapon
 	private int _maxReserveAmmo = 120;
 
 	/// <summary>
-	/// The current reserve ammo. When <see cref="AmmoType"/> is set this proxies to the player's
-	/// <see cref="AmmoInventory"/>; otherwise it is stored directly on the weapon.
+	/// The current reserve ammo. Mirage path: when the operator holds this
+	/// weapon through their <see cref="Sandbox.Mirage.MirageInventory"/>
+	/// hotbar slot, reserve = number of matching ammo items in the
+	/// inventory. The setter is a no-op on that path because consumption
+	/// goes through <see cref="Sandbox.Mirage.MirageWeaponBridge.TryConsumeReserve"/>
+	/// (host-authoritative). Upstream path (no Mirage inventory): falls back
+	/// to the original AmmoInventory pool / per-weapon counter.
 	/// </summary>
 	[Property, Feature( "Ammo" )] public int ReserveAmmo
 	{
 		get
 		{
+			if ( Sandbox.Mirage.MirageWeaponBridge.TryGetReserve( this, out var mirage ) )
+				return mirage;
+
 			if ( AmmoType is not null )
 				return GetAmmoInventory()?.GetAmmo( AmmoType ) ?? 0;
 
@@ -53,6 +67,12 @@ public partial class BaseWeapon
 		}
 		set
 		{
+			// Mirage owns the reserve through inventory items. The reload
+			// loop already calls TryConsumeReserve directly, so this setter
+			// short-circuits when the bridge resolves.
+			if ( Sandbox.Mirage.MirageWeaponBridge.ResolveAmmoTypeId( this ) is not null )
+				return;
+
 			if ( AmmoType is not null )
 			{
 				GetAmmoInventory()?.SetAmmo( AmmoType, value );
@@ -158,5 +178,18 @@ public partial class BaseWeapon
 		var toAdd = Math.Min( count, space );
 		_reserveAmmo += toAdd;
 		return toAdd;
+	}
+
+	/// <summary>
+	/// Mirage hook. Sent by the host to the owning client when a weapon is
+	/// equipped through the Mirage hotbar so the magazine count saved on
+	/// the slot is restored on the local carryable. Required because the
+	/// <see cref="ClipContents"/> field is owner-authoritative (default
+	/// <c>[Sync]</c>) and the host cannot write to it directly.
+	/// </summary>
+	[Rpc.Owner]
+	public void RpcMirageSetClipContents( int value )
+	{
+		ClipContents = Math.Clamp( value, 0, ClipMaxSize );
 	}
 }

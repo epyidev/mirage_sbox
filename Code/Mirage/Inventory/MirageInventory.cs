@@ -155,6 +155,54 @@ public sealed class MirageInventory : Component
 	public int FreeWeightGrams => Math.Max( 0, MaxWeightGrams - CurrentWeightGrams );
 
 	/// <summary>
+	/// Total number of units of <paramref name="itemId"/> across every slot.
+	/// Used by the weapon system to compute reserve ammo from inventory items
+	/// (e.g. how many <c>ammo_9</c> the operator carries).
+	/// </summary>
+	public int CountById( string itemId )
+	{
+		if ( string.IsNullOrEmpty( itemId ) ) return 0;
+		EnsureSlots();
+		var total = 0;
+		for ( int i = 0; i < SlotCount; i++ )
+		{
+			var slot = _slots[i];
+			if ( slot.IsEmpty ) continue;
+			if ( !string.Equals( slot.ItemId, itemId, StringComparison.OrdinalIgnoreCase ) ) continue;
+			total += slot.Count;
+		}
+		return total;
+	}
+
+	/// <summary>
+	/// Host-only. Remove up to <paramref name="count"/> units of
+	/// <paramref name="itemId"/> by walking slots in order, draining each
+	/// matching stack until the request is satisfied or no stack is left.
+	/// Returns the number of units actually consumed.
+	/// </summary>
+	public int ConsumeById( string itemId, int count )
+	{
+		Assert.True( Networking.IsHost, "MirageInventory.ConsumeById must run on the host" );
+		if ( string.IsNullOrEmpty( itemId ) || count <= 0 ) return 0;
+		EnsureSlots();
+		var consumed = 0;
+		var changed = false;
+		for ( int i = 0; i < SlotCount && consumed < count; i++ )
+		{
+			var slot = _slots[i];
+			if ( slot.IsEmpty ) continue;
+			if ( !string.Equals( slot.ItemId, itemId, StringComparison.OrdinalIgnoreCase ) ) continue;
+			var take = Math.Min( slot.Count, count - consumed );
+			slot.Count -= take;
+			if ( slot.Count <= 0 ) slot.Clear();
+			consumed += take;
+			changed = true;
+		}
+		if ( changed ) BroadcastSnapshot();
+		return consumed;
+	}
+
+	/// <summary>
 	/// Host-only. Remove up to <paramref name="count"/> units from
 	/// <paramref name="slotIndex"/>. Returns how many were actually removed.
 	/// Empties the slot when count drops to 0.
