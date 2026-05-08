@@ -167,8 +167,12 @@ public sealed class MirageDroppedItem : Component, Component.IPressable
 		var renderer = go.AddComponent<ModelRenderer>();
 		try { renderer.Model = Model.Load( DefaultBagModel ); } catch { }
 
+		// The collider scales with WorldScale (0.45 above), so the value
+		// here is sized generously: an effective ~22-25cm hitbox lands
+		// well past the visual edges, which gives a forgiving aim cone
+		// for the pickup raycast without making the parcel feel bulky.
 		var collider = go.AddComponent<BoxCollider>();
-		collider.Scale = new Vector3( 16f, 16f, 14f );
+		collider.Scale = new Vector3( 50f, 50f, 40f );
 
 		var rb = go.AddComponent<Rigidbody>();
 		rb.MassOverride = 1.5f;
