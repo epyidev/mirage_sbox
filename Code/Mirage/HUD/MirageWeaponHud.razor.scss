@@ -5,12 +5,16 @@
 MirageWeaponHud
 {
     position: absolute;
-    bottom: $mirage-space-3;
-    right: $mirage-space-3;
+    bottom: $mirage-space-5;
+    right: $mirage-space-5;
     flex-direction: row;
     align-items: center;
     gap: $mirage-space-3;
-    padding: $mirage-space-2 $mirage-space-3;
+    // Vertical padding gives the tall mag digit (xxl = 36px) enough
+    // room above the baseline; without this the top of glyphs like
+    // "8" or "0" gets clipped by the panel border.
+    padding: $mirage-space-3 $mirage-space-4;
+    min-height: 64px;
     background-color: rgba( 0, 0, 0, 0.55 );
     border: $mirage-border-width solid $mirage-border-soft;
     backdrop-filter: blur( 8px );
@@ -31,7 +35,11 @@ MirageWeaponHud
     .ammo-block
     {
         flex-direction: row;
-        align-items: baseline;
+        // Center on the row instead of aligning to the typographic
+        // baseline. baseline alignment combined with line-height: 1
+        // pushed the tall mag character above the panel's content
+        // box, so the top half of the digit was getting cut off.
+        align-items: center;
         gap: 2px;
 
         .ammo-mag
@@ -39,7 +47,6 @@ MirageWeaponHud
             color: $mirage-text-primary;
             font-size: $mirage-font-xxl;
             font-weight: 800;
-            line-height: 1;
         }
 
         .ammo-sep

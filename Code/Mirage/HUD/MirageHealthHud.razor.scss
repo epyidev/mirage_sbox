@@ -5,8 +5,8 @@
 MirageHealthHud
 {
     position: absolute;
-    bottom: $mirage-space-3;
-    left: $mirage-space-3;
+    bottom: $mirage-space-5;
+    left: $mirage-space-5;
     flex-direction: column;
     align-items: stretch;
     gap: $mirage-space-1;
@@ -36,7 +36,7 @@ MirageHealthHud
 
         .row-bar
         {
-            width: 180px;
+            width: 200px;
             height: 8px;
             background-color: rgba( 0, 0, 0, 0.65 );
             border: 1px solid $mirage-border-soft;
@@ -45,7 +45,12 @@ MirageHealthHud
             .row-fill
             {
                 height: 100%;
-                transition: width $mirage-transition-fast, background-color $mirage-transition-fast;
+                // Blood red for the HP bar, kept dark and slightly
+                // desaturated so the HUD does not feel like a garish
+                // arcade overlay. The drop is animated so a sudden hit
+                // visibly shrinks the bar instead of jumping.
+                background-color: rgba( 132, 22, 22, 0.95 );
+                transition: width 0.18s ease-out;
             }
         }
 
@@ -59,16 +64,11 @@ MirageHealthHud
             flex-shrink: 0;
         }
 
-        // Health states. Mirage palette stays muted, the only colour
-        // shifts are status-driven so the operator notices low HP at a
-        // glance without the bar competing with the rest of the HUD.
-        &.bar--ok .row-fill   { background-color: $mirage-success; }
-        &.bar--mid .row-fill  { background-color: $mirage-warning; }
-        &.bar--low .row-fill  { background-color: $mirage-danger; }
-
-        .bar--ok > .row-fill   { background-color: $mirage-success; }
-        .bar--mid > .row-fill  { background-color: $mirage-warning; }
-        .bar--low > .row-fill  { background-color: $mirage-danger; }
-        .bar--armour > .row-fill { background-color: $mirage-info; }
+        // Armour: keep the cool blue tint to read as a different
+        // resource than HP at a glance.
+        .bar--armour > .row-fill
+        {
+            background-color: rgba( 70, 140, 200, 0.95 );
+        }
     }
 }

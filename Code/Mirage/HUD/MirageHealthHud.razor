@@ -13,19 +13,18 @@
 <root class="mirage-health-hud">
 
     @{
-        var hp = (int)_player.Health;
+        var hp = (int)Math.Ceiling( _player.Health );
         var max = _player.MaxHealth <= 0 ? 100 : (int)_player.MaxHealth;
         var hpFrac = max <= 0 ? 0f : Math.Clamp( _player.Health / max, 0f, 1f );
-        var hpClass = hpFrac < 0.25f ? "bar--low" : hpFrac < 0.55f ? "bar--mid" : "bar--ok";
         var hpPercent = (int)( hpFrac * 100f );
-        var armour = (int)_player.Armour;
+        var armour = (int)Math.Ceiling( _player.Armour );
         var armourFrac = Math.Clamp( _player.Armour / 100f, 0f, 1f );
         var armourPercent = (int)( armourFrac * 100f );
     }
 
     <div class="row">
         <Label class="row-key" Text="HP" />
-        <div class="row-bar @hpClass">
+        <div class="row-bar">
             <div class="row-fill" style="width: @(hpPercent)%;"></div>
         </div>
         <Label class="row-value" Text="@hp.ToString()" />
@@ -47,15 +46,36 @@
 @code
 {
     private Player _player;
+    private float _renderedHp = -1f;
+    private float _renderedArmour = -1f;
+    private bool _renderedHidden;
 
     protected override void OnUpdate()
     {
         _player = Player.FindLocalPlayer();
+        if ( !_player.IsValid() ) return;
+
+        // Health and Armour are floats synced from the host. We re-render
+        // any time the visible value would change (rounded ceiling), so a
+        // single point of damage is reflected immediately. BuildHash is
+        // not enough on its own here: the engine only diffs identical
+        // hashes, but we want the bar width transition to start from the
+        // exact moment the player took damage.
+        var hidden = _player.WantsHideHud;
+        if ( Math.Abs( _player.Health - _renderedHp ) > 0.05f
+            || Math.Abs( _player.Armour - _renderedArmour ) > 0.05f
+            || hidden != _renderedHidden )
+        {
+            _renderedHp = _player.Health;
+            _renderedArmour = _player.Armour;
+            _renderedHidden = hidden;
+            StateHasChanged();
+        }
     }
 
     protected override int BuildHash()
     {
         if ( !_player.IsValid() ) return 0;
-        return System.HashCode.Combine( _player.WantsHideHud, (int)_player.Health, (int)_player.MaxHealth, (int)_player.Armour );
+        return System.HashCode.Combine( _player.WantsHideHud, _player.Health, _player.MaxHealth, _player.Armour );
     }
 }
