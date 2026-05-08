@@ -89,7 +89,13 @@
     protected override void OnUpdate()
     {
         _player = Player.FindLocalPlayer();
-        _inventory ??= MirageInventory.ForLocalPlayer();
+        // Re-resolve when invalid: a death/respawn destroys the
+        // previous MirageInventory and ??= would keep returning the
+        // dead reference, leaving the HUD blank forever.
+        if ( !_inventory.IsValid() )
+        {
+            _inventory = MirageInventory.ForLocalPlayer();
+        }
     }
 
     protected override int BuildHash()

@@ -66,8 +66,19 @@
 
     protected override void OnUpdate()
     {
-        _inventory ??= MirageInventory.ForLocalPlayer();
-        if ( _inventory is null )
+        // Re-resolve on every frame the cache is invalid: after a
+        // death/respawn the old MirageInventory component is destroyed
+        // along with the previous player GameObject, but the cached
+        // reference stays non-null until garbage collection. ??= would
+        // never refresh, so the hotbar would stay hidden forever
+        // (and the player would have to reconnect to fix it).
+        if ( !_inventory.IsValid() )
+        {
+            _inventory = MirageInventory.ForLocalPlayer();
+            _renderedVersion = -1;
+            _lastAnnouncedSlot = -2;
+        }
+        if ( !_inventory.IsValid() )
         {
             if ( !_isHidden ) { _isHidden = true; StateHasChanged(); }
             return;

@@ -154,9 +154,17 @@
 
     protected override void OnUpdate()
     {
-        _inventory ??= MirageInventory.ForLocalPlayer();
+        // Re-resolve when invalid: after a death/respawn the old
+        // MirageInventory is destroyed alongside the previous player
+        // GameObject. The cached field stays non-null but unusable, so
+        // ??= alone would never refresh.
+        if ( !_inventory.IsValid() )
+        {
+            _inventory = MirageInventory.ForLocalPlayer();
+            _renderedVersion = -1;
+        }
 
-        if ( _inventory is not null && Input.Pressed( "Inventory" ) )
+        if ( _inventory.IsValid() && Input.Pressed( "Inventory" ) )
         {
             MirageInventoryPanelState.Toggle();
         }
