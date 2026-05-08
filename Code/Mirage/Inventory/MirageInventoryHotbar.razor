@@ -29,7 +29,14 @@
             <div class="cell-letter">
                 @if ( !empty )
                 {
-                    <Label Text="@GetItemBadge( item, slot.ItemId )" />
+                    if ( !string.IsNullOrEmpty( item?.Image ) )
+                    {
+                        <div class="cell-icon" style="background-image: url(@item.Image);"></div>
+                    }
+                    else
+                    {
+                        <Label Text="@GetItemBadge( item, slot.ItemId )" />
+                    }
                 }
             </div>
             <div class="cell-name">

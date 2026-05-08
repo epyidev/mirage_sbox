@@ -178,6 +178,18 @@ MirageInventoryPanel
             color: $mirage-text-primary;
             font-size: $mirage-font-xl;
             font-weight: 800;
+
+            // PNG icon when the item has one. background-size: contain
+            // keeps the source art's aspect ratio and avoids stretching
+            // (a horizontal weapon silhouette stays horizontal).
+            .cell-icon
+            {
+                width: 100%;
+                height: 100%;
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
         }
 
         .cell-name
@@ -228,6 +240,17 @@ MirageInventoryPanel
             color: $mirage-text-primary;
             font-size: $mirage-font-xxl;
             font-weight: 800;
+        }
+
+        // Same icon treatment as the cell so the lifted preview matches
+        // the cell it came out of pixel-for-pixel.
+        .drag-icon
+        {
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         .drag-count

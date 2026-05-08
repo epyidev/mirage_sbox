@@ -24,7 +24,7 @@ public static class MirageItems
 	/// from the new code instead of silently serving stale entries (e.g. an
 	/// old WeaponPrefab path renamed since the last reload).
 	/// </summary>
-	private const int CatalogueVersion = 2;
+	private const int CatalogueVersion = 3;
 	private static int _builtVersion = -1;
 
 	private static void EnsureBuilt()
@@ -69,6 +69,10 @@ public static class MirageItems
 
 	private static void Build()
 	{
+		// All icon paths point to PNG files under Assets/UI/items/. Items
+		// without a matching image fall back to the first letter of their
+		// label in the inventory cell.
+
 		// ---- Generic / RP fluff items ----
 		Add( new MirageItem
 		{
@@ -77,6 +81,7 @@ public static class MirageItems
 			Weight = 115,
 			MaxStack = 20,
 			Category = "consumable",
+			Image = "ui/items/bandage.png",
 			Description = "Soigne légèrement les blessures."
 		} );
 
@@ -87,6 +92,7 @@ public static class MirageItems
 			Weight = 220,
 			MaxStack = 5,
 			Category = "consumable",
+			Image = "ui/items/burger.png",
 			Description = "Un bon vieux burger graisseux."
 		} );
 
@@ -96,7 +102,8 @@ public static class MirageItems
 			Label = "Bouteille d'eau",
 			Weight = 500,
 			MaxStack = 5,
-			Category = "consumable"
+			Category = "consumable",
+			Image = "ui/items/water.png"
 		} );
 
 		Add( new MirageItem
@@ -105,7 +112,8 @@ public static class MirageItems
 			Label = "Téléphone",
 			Weight = 190,
 			MaxStack = 1,
-			Category = "tool"
+			Category = "tool",
+			Image = "ui/items/phone.png"
 		} );
 
 		Add( new MirageItem
@@ -114,7 +122,8 @@ public static class MirageItems
 			Label = "Crochet",
 			Weight = 160,
 			MaxStack = 5,
-			Category = "tool"
+			Category = "tool",
+			Image = "ui/items/lockpick.png"
 		} );
 
 		Add( new MirageItem
@@ -123,7 +132,8 @@ public static class MirageItems
 			Label = "Argent",
 			Weight = 0,
 			MaxStack = 999_999,
-			Category = "currency"
+			Category = "currency",
+			Image = "ui/items/money.png"
 		} );
 
 		Add( new MirageItem
@@ -132,7 +142,8 @@ public static class MirageItems
 			Label = "Ferraille",
 			Weight = 80,
 			MaxStack = 100,
-			Category = "material"
+			Category = "material",
+			Image = "ui/items/scrapmetal.png"
 		} );
 
 		Add( new MirageItem
@@ -141,21 +152,25 @@ public static class MirageItems
 			Label = "Carte d'identité",
 			Weight = 5,
 			MaxStack = 1,
-			Category = "document"
+			Category = "document",
+			Image = "ui/items/identification.png"
 		} );
 
 		// ---- Weapons bound to the existing Sandbox carryables ----
-		// WeaponPrefab paths must match the actual prefab files under
+		// Weapon item ids are prefixed with "weapon_" so any reader can
+		// tell at a glance that the slot holds an armed item. WeaponPrefab
+		// paths must still match the actual prefab files under
 		// Assets/weapons/, including the capital folder names. Equipping
 		// these from the hotbar still gives the operator a fully usable
 		// Sandbox weapon with the original behaviour, animation, etc.
 		Add( new MirageItem
 		{
-			Id = "colt1911",
+			Id = "weapon_colt1911",
 			Label = "Colt 1911",
 			Weight = 1100,
 			MaxStack = 1,
 			Category = "weapon",
+			Image = "ui/items/weapon_colt1911.png",
 			WeaponPrefab = "weapons/Colt1911/colt1911.prefab",
 			DefaultMetadata = new Dictionary<string, string>
 			{
@@ -166,11 +181,12 @@ public static class MirageItems
 
 		Add( new MirageItem
 		{
-			Id = "glock",
+			Id = "weapon_glock",
 			Label = "Glock",
 			Weight = 900,
 			MaxStack = 1,
 			Category = "weapon",
+			Image = "ui/items/weapon_glock.png",
 			WeaponPrefab = "weapons/Glock/glock.prefab",
 			DefaultMetadata = new Dictionary<string, string>
 			{
@@ -181,11 +197,12 @@ public static class MirageItems
 
 		Add( new MirageItem
 		{
-			Id = "mp5",
+			Id = "weapon_mp5",
 			Label = "MP5",
 			Weight = 2400,
 			MaxStack = 1,
 			Category = "weapon",
+			Image = "ui/items/weapon_mp5.png",
 			WeaponPrefab = "weapons/Mp5/mp5.prefab",
 			DefaultMetadata = new Dictionary<string, string>
 			{
@@ -196,11 +213,12 @@ public static class MirageItems
 
 		Add( new MirageItem
 		{
-			Id = "shotgun",
+			Id = "weapon_shotgun",
 			Label = "Fusil à pompe",
 			Weight = 3200,
 			MaxStack = 1,
 			Category = "weapon",
+			Image = "ui/items/weapon_shotgun.png",
 			WeaponPrefab = "weapons/Shotgun/shotgun.prefab",
 			DefaultMetadata = new Dictionary<string, string>
 			{
@@ -211,11 +229,12 @@ public static class MirageItems
 
 		Add( new MirageItem
 		{
-			Id = "m4a1",
+			Id = "weapon_m4a1",
 			Label = "M4A1",
 			Weight = 3800,
 			MaxStack = 1,
 			Category = "weapon",
+			Image = "ui/items/weapon_m4a1.png",
 			WeaponPrefab = "weapons/M4a1/m4a1.prefab",
 			DefaultMetadata = new Dictionary<string, string>
 			{
@@ -226,11 +245,12 @@ public static class MirageItems
 
 		Add( new MirageItem
 		{
-			Id = "sniper",
+			Id = "weapon_sniper",
 			Label = "Fusil de précision",
 			Weight = 4500,
 			MaxStack = 1,
 			Category = "weapon",
+			Image = "ui/items/weapon_sniper.png",
 			WeaponPrefab = "weapons/Sniper/sniper.prefab",
 			DefaultMetadata = new Dictionary<string, string>
 			{
@@ -241,11 +261,12 @@ public static class MirageItems
 
 		Add( new MirageItem
 		{
-			Id = "rpg",
+			Id = "weapon_rpg",
 			Label = "Lance-roquettes",
 			Weight = 6000,
 			MaxStack = 1,
 			Category = "weapon",
+			Image = "ui/items/weapon_rpg.png",
 			WeaponPrefab = "weapons/Rpg/rpg.prefab",
 			DefaultMetadata = new Dictionary<string, string>
 			{
@@ -256,21 +277,23 @@ public static class MirageItems
 
 		Add( new MirageItem
 		{
-			Id = "crowbar",
+			Id = "weapon_crowbar",
 			Label = "Pied-de-biche",
 			Weight = 1200,
 			MaxStack = 1,
 			Category = "weapon",
+			Image = "ui/items/weapon_crowbar.png",
 			WeaponPrefab = "weapons/Crowbar/crowbar.prefab"
 		} );
 
 		Add( new MirageItem
 		{
-			Id = "grenade",
+			Id = "weapon_grenade",
 			Label = "Grenade",
 			Weight = 400,
 			MaxStack = 5,
 			Category = "weapon",
+			Image = "ui/items/weapon_grenade.png",
 			WeaponPrefab = "weapons/Grenade/grenade.prefab"
 		} );
 
@@ -301,6 +324,7 @@ public static class MirageItems
 			Weight = 800,
 			MaxStack = 1,
 			Category = "tool",
+			Image = "ui/items/camera.png",
 			WeaponPrefab = "weapons/Camera/camera.prefab"
 		} );
 	}

@@ -49,6 +49,15 @@ MirageItemsBrowserPanel
             font-weight: 800;
             font-size: $mirage-font-md;
             flex-shrink: 0;
+
+            .badge-icon
+            {
+                width: 100%;
+                height: 100%;
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
         }
 
         .info

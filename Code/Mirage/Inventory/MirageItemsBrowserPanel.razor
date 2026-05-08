@@ -26,7 +26,16 @@
                 {
                     var captured = item;
                     <div class="row">
-                        <div class="badge"><Label Text="@GetBadge( captured )" /></div>
+                        <div class="badge">
+                            @if ( !string.IsNullOrEmpty( captured.Image ) )
+                            {
+                                <div class="badge-icon" style="background-image: url(@captured.Image);"></div>
+                            }
+                            else
+                            {
+                                <Label Text="@GetBadge( captured )" />
+                            }
+                        </div>
                         <div class="info">
                             <Label class="row-id" Text="@captured.Id" />
                             <Label class="row-label" Text="@captured.Label" />

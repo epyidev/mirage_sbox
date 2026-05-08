@@ -64,7 +64,14 @@
                             <div class="cell-letter">
                                 @if ( !empty )
                                 {
-                                    <Label Text="@GetItemBadge( item, slot.ItemId )" />
+                                    if ( !string.IsNullOrEmpty( item?.Image ) )
+                                    {
+                                        <div class="cell-icon" style="background-image: url(@item.Image);"></div>
+                                    }
+                                    else
+                                    {
+                                        <Label Text="@GetItemBadge( item, slot.ItemId )" />
+                                    }
                                 }
                             </div>
                             <div class="cell-name">
@@ -84,7 +91,14 @@
     @if ( IsDragging )
     {
         <div class="drag-visual" @ref="_dragVisual" style="left: @(_dragX)px; top: @(_dragY)px;">
-            <Label class="drag-letter" Text="@_dragBadge" />
+            @if ( !string.IsNullOrEmpty( _dragImage ) )
+            {
+                <div class="drag-icon" style="background-image: url(@_dragImage);"></div>
+            }
+            else
+            {
+                <Label class="drag-letter" Text="@_dragBadge" />
+            }
             @if ( _dragCount > 1 )
             {
                 <Label class="drag-count" Text="@_dragCount.ToString()" />
@@ -121,6 +135,7 @@
     // Drag state
     private int _dragSource = -1;
     private string _dragBadge;
+    private string _dragImage;
     private int _dragCount;
     private float _dragX, _dragY;
     private bool IsDragging => _dragSource >= 0;
@@ -226,6 +241,7 @@
         if ( slot is null || slot.IsEmpty ) return;
         _dragSource = idx;
         _dragBadge = GetItemBadge( slot.Item, slot.ItemId );
+        _dragImage = slot.Item?.Image;
         _dragCount = slot.Count;
         var scale = Panel.ScaleFromScreen;
         var mouse = Mouse.Position;
@@ -273,6 +289,7 @@
         if ( _dragSource < 0 && _dropTarget < 0 ) return;
         _dragSource = -1;
         _dragBadge = null;
+        _dragImage = null;
         _dragCount = 0;
         _dropTarget = -1;
         StateHasChanged();

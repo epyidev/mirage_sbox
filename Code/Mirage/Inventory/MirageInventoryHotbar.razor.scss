@@ -69,6 +69,19 @@ MirageInventoryHotbar
             color: $mirage-text-primary;
             font-size: $mirage-font-xl;
             font-weight: 800;
+
+            // PNG icon when the item has one. Stretched to fill the
+            // available square so silhouettes stay readable in the small
+            // hotbar cell, kept inside the box with background-size:
+            // contain to preserve the aspect ratio of the source art.
+            .cell-icon
+            {
+                width: 100%;
+                height: 100%;
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
         }
 
         .cell-name
