@@ -1,0 +1,70 @@
+@*
+    @author Epyi
+
+    Standard chrome for a Mirage modal: a backdrop, a centered frame, a
+    MirageHeader, and a MirageScrollPanel sized to fill the rest of the
+    frame's height. This is the canonical layout that
+    MirageUiDemo / MiragePermissionsEditor / MirageCoordsPanel all need,
+    bundled into a single component so a new modal becomes a single
+    `<MirageModalFrame Title="..." Open="@..." OnClose="@..."> ... </MirageModalFrame>`
+    wrapper, with no risk of getting the flex sizing wrong and clipping
+    content.
+*@
+@using Sandbox
+@using Sandbox.UI
+@inherits Panel
+@namespace Sandbox.Mirage.UI
+
+<root class="mirage-modal-frame @(Open ? "open" : "") mirage-modal-frame--@(Width.ToString().ToLower())">
+
+    <div class="backdrop" @onclick="@OnBackdropClick"></div>
+
+    <div class="frame">
+
+        @if ( !string.IsNullOrEmpty( Title ) )
+        {
+            <MirageHeader Title="@Title" Closable="@(true)" OnClose="@RaiseClose" />
+        }
+
+        <MirageScrollPanel>
+            <Body>
+                @Body
+            </Body>
+        </MirageScrollPanel>
+
+    </div>
+
+</root>
+
+@code
+{
+    public enum FrameWidth { Narrow, Medium, Wide }
+
+    /// <summary>Title shown in the frame header. Header is hidden if null/empty.</summary>
+    [Parameter] public string Title { get; set; }
+
+    /// <summary>Whether the frame is currently visible. Add the .open class when true.</summary>
+    [Parameter] public bool Open { get; set; }
+
+    /// <summary>Frame width preset. Narrow ~ 520px, Medium ~ 720px, Wide ~ 1100px.</summary>
+    [Parameter] public FrameWidth Width { get; set; } = FrameWidth.Medium;
+
+    /// <summary>If true, clicking outside the frame triggers <see cref="OnClose"/>.</summary>
+    [Parameter] public bool DismissOnBackdrop { get; set; } = true;
+
+    /// <summary>Fired when the operator closes the frame from the header X or the backdrop.</summary>
+    [Parameter] public Action OnClose { get; set; }
+
+    /// <summary>Frame body. Rendered inside a MirageScrollPanel.</summary>
+    [Parameter] public RenderFragment Body { get; set; }
+
+    private void OnBackdropClick()
+    {
+        if ( DismissOnBackdrop ) RaiseClose();
+    }
+
+    private void RaiseClose()
+    {
+        OnClose?.Invoke();
+    }
+}

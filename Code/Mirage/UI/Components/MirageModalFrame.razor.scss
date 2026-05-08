@@ -1,0 +1,70 @@
+// @author Epyi
+
+@import "/Mirage/UI/Theme/MirageTheme.scss";
+
+MirageModalFrame
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity $mirage-transition;
+    z-index: 200;
+    font-family: $mirage-font-family;
+
+    &.open
+    {
+        pointer-events: all;
+        opacity: 1;
+    }
+
+    .backdrop
+    {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba( 0, 0, 0, 0.55 );
+        backdrop-filter: blur( 6px );
+    }
+
+    .frame
+    {
+        @include mirage-surface-elevated;
+        flex-direction: column;
+        align-items: stretch;
+        max-width: 92%;
+        height: 86%;
+        z-index: 1;
+    }
+
+    &.mirage-modal-frame--narrow .frame { width: 520px; }
+    &.mirage-modal-frame--medium .frame { width: 720px; }
+    &.mirage-modal-frame--wide   .frame { width: 1100px; }
+
+    MirageHeader
+    {
+        flex-shrink: 0;
+    }
+
+    MirageScrollPanel
+    {
+        flex-grow: 1;
+        min-height: 0;
+        width: 100%;
+
+        .mirage-scroll-viewport
+        {
+            flex-direction: column;
+            align-items: stretch;
+            padding: $mirage-space-4 $mirage-space-5;
+            gap: $mirage-space-3;
+        }
+    }
+}

@@ -8,15 +8,10 @@
 @inherits PanelComponent
 @namespace Sandbox.Mirage.UI
 
-<root class="mirage-coords-panel @(MirageCoordsState.IsOpen ? "open" : "")">
+<root class="mirage-coords-panel">
 
-    <div class="backdrop" @onclick="@Close"></div>
-
-    <div class="frame">
-
-        <MirageHeader Title="Mes coordonnées" Closable="@(true)" OnClose="@Close" />
-
-        <div class="body">
+    <MirageModalFrame Title="Mes coordonnées" Open="@MirageCoordsState.IsOpen" OnClose="@Close" Width="@(MirageModalFrame.FrameWidth.Medium)">
+        <Body>
 
             <div class="section">
                 <MirageLabel Variant="@(MirageLabel.LabelVariant.Eyebrow)" Color="@(MirageLabel.LabelColor.Secondary)" Text="POSITION DU JOUEUR" />
@@ -49,16 +44,15 @@
                 @RenderRow( "Tout copier", _bundle, large: true )
             </div>
 
+        </Body>
+    </MirageModalFrame>
+
+    @if ( !string.IsNullOrEmpty( _toast ) )
+    {
+        <div class="toast">
+            <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Text="@_toast" />
         </div>
-
-        @if ( !string.IsNullOrEmpty( _toast ) )
-        {
-            <div class="toast">
-                <MirageLabel Variant="@(MirageLabel.LabelVariant.Caption)" Text="@_toast" />
-            </div>
-        }
-
-    </div>
+    }
 
 </root>
 
@@ -88,7 +82,6 @@
     protected override void OnUpdate()
     {
         var open = MirageCoordsState.IsOpen;
-        SetClass( "open", open );
         MirageModalLock.SetActive( open );
 
         if ( !open )
