@@ -59,6 +59,15 @@ public sealed class MirageCar : Component, IPlayerControllable
 	private RealTimeSince _timeSinceChairInput = 1f;
 	private const float ChairInputTimeout = 0.1f;
 
+	// "Input arming" state: we only start reading the analog stick
+	// once it has crossed back to neutral after the operator entered
+	// the seat. Without this, holding W to run into the car would keep
+	// the throttle pinned at full as soon as the seat is taken, so the
+	// car would shoot forward "by itself" the instant we enter.
+	private bool _inputArmed;
+	private bool _wasOccupied;
+	private const float InputArmThreshold = 0.05f;
+
 	protected override void OnEnabled()
 	{
 		_wheels = Components.GetAll<MirageWheel>( FindMode.EverythingInSelfAndDescendants ).ToList();
@@ -94,7 +103,19 @@ public sealed class MirageCar : Component, IPlayerControllable
 		// together guarantee the local update runs only on the driver
 		// who is currently in the seat.
 		var seat = GetComponent<MirageVehicleSeat>();
-		if ( seat is null || !seat.IsOccupied )
+		var occupied = seat is not null && seat.IsOccupied;
+
+		// Reset the input arming the first frame we become occupied
+		// so we ignore any keys still held from before the operator
+		// pressed E to enter the seat.
+		if ( occupied && !_wasOccupied )
+		{
+			_inputArmed = false;
+			_currentTorque = 0f;
+		}
+		_wasOccupied = occupied;
+
+		if ( !occupied )
 		{
 			ThrottleInput = 0f;
 			SteerInput = 0f;
@@ -102,15 +123,29 @@ public sealed class MirageCar : Component, IPlayerControllable
 			return;
 		}
 
-		// Hybrid input source: the chair-based ControlSystem path fills
-		// ThrottleInput/SteerInput via OnControl when a player is
-		// seated, refreshing _timeSinceChairInput on every fixed tick.
-		// If that silence stretches past ChairInputTimeout we assume
-		// no chair-driven input and read Input.AnalogMove directly
-		// (works because we know we're the seated driver).
+		// Read input from the seated driver. While the analog stick is
+		// still pushed from a key held during entry, keep both axes
+		// muted; once it returns to neutral we arm the controls and
+		// the next non-zero input drives normally.
+		var move = _timeSinceChairInput > ChairInputTimeout ? Input.AnalogMove : new Vector3( ThrottleInput, SteerInput, 0f );
+
+		if ( !_inputArmed )
+		{
+			if ( MathF.Abs( move.x ) < InputArmThreshold && MathF.Abs( move.y ) < InputArmThreshold )
+			{
+				_inputArmed = true;
+			}
+			else
+			{
+				ThrottleInput = 0f;
+				SteerInput = 0f;
+				ApplyDriveTick();
+				return;
+			}
+		}
+
 		if ( _timeSinceChairInput > ChairInputTimeout )
 		{
-			var move = Input.AnalogMove;
 			ThrottleInput = move.x;
 			SteerInput = move.y;
 		}
