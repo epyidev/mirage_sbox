@@ -135,32 +135,48 @@ public static class MirageItems
 		} );
 
 		// ---- Weapons bound to the existing Sandbox carryables ----
-		// The WeaponPrefab path is what PlayerInventory.Pickup expects, so
-		// equipping these from the hotbar still gives the operator a fully
-		// usable Sandbox weapon with the original behaviour, animation, etc.
+		// WeaponPrefab paths must match the actual prefab files under
+		// Assets/weapons/, including the capital folder names. Equipping
+		// these from the hotbar still gives the operator a fully usable
+		// Sandbox weapon with the original behaviour, animation, etc.
 		Add( new MirageItem
 		{
-			Id = "pistol",
-			Label = "Pistolet",
+			Id = "colt1911",
+			Label = "Colt 1911",
 			Weight = 1100,
 			MaxStack = 1,
 			Category = "weapon",
-			WeaponPrefab = "weapons/pistol/pistol.prefab",
+			WeaponPrefab = "weapons/Colt1911/colt1911.prefab",
 			DefaultMetadata = new Dictionary<string, string>
 			{
-				["ammo"] = "12",
+				["ammo"] = "7",
 				["durability"] = "100"
 			}
 		} );
 
 		Add( new MirageItem
 		{
-			Id = "smg",
-			Label = "SMG",
+			Id = "glock",
+			Label = "Glock",
+			Weight = 900,
+			MaxStack = 1,
+			Category = "weapon",
+			WeaponPrefab = "weapons/Glock/glock.prefab",
+			DefaultMetadata = new Dictionary<string, string>
+			{
+				["ammo"] = "17",
+				["durability"] = "100"
+			}
+		} );
+
+		Add( new MirageItem
+		{
+			Id = "mp5",
+			Label = "MP5",
 			Weight = 2400,
 			MaxStack = 1,
 			Category = "weapon",
-			WeaponPrefab = "weapons/smg/smg.prefab",
+			WeaponPrefab = "weapons/Mp5/mp5.prefab",
 			DefaultMetadata = new Dictionary<string, string>
 			{
 				["ammo"] = "30",
@@ -175,7 +191,7 @@ public static class MirageItems
 			Weight = 3200,
 			MaxStack = 1,
 			Category = "weapon",
-			WeaponPrefab = "weapons/shotgun/shotgun.prefab",
+			WeaponPrefab = "weapons/Shotgun/shotgun.prefab",
 			DefaultMetadata = new Dictionary<string, string>
 			{
 				["ammo"] = "8",
@@ -185,12 +201,12 @@ public static class MirageItems
 
 		Add( new MirageItem
 		{
-			Id = "rifle",
-			Label = "Fusil d'assaut",
+			Id = "m4a1",
+			Label = "M4A1",
 			Weight = 3800,
 			MaxStack = 1,
 			Category = "weapon",
-			WeaponPrefab = "weapons/rifle/rifle.prefab",
+			WeaponPrefab = "weapons/M4a1/m4a1.prefab",
 			DefaultMetadata = new Dictionary<string, string>
 			{
 				["ammo"] = "30",
@@ -200,12 +216,62 @@ public static class MirageItems
 
 		Add( new MirageItem
 		{
+			Id = "sniper",
+			Label = "Fusil de précision",
+			Weight = 4500,
+			MaxStack = 1,
+			Category = "weapon",
+			WeaponPrefab = "weapons/Sniper/sniper.prefab",
+			DefaultMetadata = new Dictionary<string, string>
+			{
+				["ammo"] = "5",
+				["durability"] = "100"
+			}
+		} );
+
+		Add( new MirageItem
+		{
+			Id = "rpg",
+			Label = "Lance-roquettes",
+			Weight = 6000,
+			MaxStack = 1,
+			Category = "weapon",
+			WeaponPrefab = "weapons/Rpg/rpg.prefab",
+			DefaultMetadata = new Dictionary<string, string>
+			{
+				["ammo"] = "1",
+				["durability"] = "100"
+			}
+		} );
+
+		Add( new MirageItem
+		{
+			Id = "crowbar",
+			Label = "Pied-de-biche",
+			Weight = 1200,
+			MaxStack = 1,
+			Category = "weapon",
+			WeaponPrefab = "weapons/Crowbar/crowbar.prefab"
+		} );
+
+		Add( new MirageItem
+		{
+			Id = "grenade",
+			Label = "Grenade",
+			Weight = 400,
+			MaxStack = 5,
+			Category = "weapon",
+			WeaponPrefab = "weapons/Grenade/grenade.prefab"
+		} );
+
+		Add( new MirageItem
+		{
 			Id = "physgun",
 			Label = "Physgun",
 			Weight = 1500,
 			MaxStack = 1,
 			Category = "tool",
-			WeaponPrefab = "weapons/physgun/physgun.prefab"
+			WeaponPrefab = "weapons/Physgun/physgun.prefab"
 		} );
 
 		Add( new MirageItem
@@ -215,7 +281,7 @@ public static class MirageItems
 			Weight = 1000,
 			MaxStack = 1,
 			Category = "tool",
-			WeaponPrefab = "weapons/toolgun/toolgun.prefab"
+			WeaponPrefab = "weapons/Toolgun/toolgun.prefab"
 		} );
 
 		Add( new MirageItem
@@ -225,7 +291,7 @@ public static class MirageItems
 			Weight = 800,
 			MaxStack = 1,
 			Category = "tool",
-			WeaponPrefab = "weapons/camera/camera.prefab"
+			WeaponPrefab = "weapons/Camera/camera.prefab"
 		} );
 	}
 }
