@@ -18,12 +18,22 @@ public static class MirageItems
 	private static Dictionary<string, MirageItem> _byId;
 	private static List<MirageItem> _ordered;
 
+	/// <summary>
+	/// Bumped manually whenever the build code below changes, so the static
+	/// cache that survives s&amp;box hot reloads gets discarded and rebuilt
+	/// from the new code instead of silently serving stale entries (e.g. an
+	/// old WeaponPrefab path renamed since the last reload).
+	/// </summary>
+	private const int CatalogueVersion = 2;
+	private static int _builtVersion = -1;
+
 	private static void EnsureBuilt()
 	{
-		if ( _byId is not null ) return;
+		if ( _byId is not null && _builtVersion == CatalogueVersion ) return;
 		_byId = new Dictionary<string, MirageItem>( StringComparer.OrdinalIgnoreCase );
 		_ordered = new List<MirageItem>();
 		Build();
+		_builtVersion = CatalogueVersion;
 	}
 
 	private static void Add( MirageItem item )
