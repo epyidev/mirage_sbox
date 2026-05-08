@@ -1,0 +1,74 @@
+// @author Epyi
+
+@import "/Mirage/UI/Theme/MirageTheme.scss";
+
+MirageHealthHud
+{
+    position: absolute;
+    bottom: $mirage-space-3;
+    left: $mirage-space-3;
+    flex-direction: column;
+    align-items: stretch;
+    gap: $mirage-space-1;
+    pointer-events: none;
+    z-index: 30;
+    font-family: $mirage-font-family;
+
+    .row
+    {
+        flex-direction: row;
+        align-items: center;
+        gap: $mirage-space-2;
+        padding: $mirage-space-1 $mirage-space-2;
+        background-color: rgba( 0, 0, 0, 0.55 );
+        border: $mirage-border-width solid $mirage-border-soft;
+        backdrop-filter: blur( 8px );
+
+        .row-key
+        {
+            color: $mirage-text-muted;
+            font-size: $mirage-font-xs;
+            font-weight: 700;
+            letter-spacing: $mirage-letter-wide;
+            width: 32px;
+            flex-shrink: 0;
+        }
+
+        .row-bar
+        {
+            width: 180px;
+            height: 8px;
+            background-color: rgba( 0, 0, 0, 0.65 );
+            border: 1px solid $mirage-border-soft;
+            flex-shrink: 0;
+
+            .row-fill
+            {
+                height: 100%;
+                transition: width $mirage-transition-fast, background-color $mirage-transition-fast;
+            }
+        }
+
+        .row-value
+        {
+            color: $mirage-text-primary;
+            font-size: $mirage-font-md;
+            font-weight: 700;
+            min-width: 36px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        // Health states. Mirage palette stays muted, the only colour
+        // shifts are status-driven so the operator notices low HP at a
+        // glance without the bar competing with the rest of the HUD.
+        &.bar--ok .row-fill   { background-color: $mirage-success; }
+        &.bar--mid .row-fill  { background-color: $mirage-warning; }
+        &.bar--low .row-fill  { background-color: $mirage-danger; }
+
+        .bar--ok > .row-fill   { background-color: $mirage-success; }
+        .bar--mid > .row-fill  { background-color: $mirage-warning; }
+        .bar--low > .row-fill  { background-color: $mirage-danger; }
+        .bar--armour > .row-fill { background-color: $mirage-info; }
+    }
+}

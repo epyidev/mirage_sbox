@@ -1,0 +1,78 @@
+// @author Epyi
+
+@import "/Mirage/UI/Theme/MirageTheme.scss";
+
+MirageWeaponHud
+{
+    position: absolute;
+    bottom: $mirage-space-3;
+    right: $mirage-space-3;
+    flex-direction: row;
+    align-items: center;
+    gap: $mirage-space-3;
+    padding: $mirage-space-2 $mirage-space-3;
+    background-color: rgba( 0, 0, 0, 0.55 );
+    border: $mirage-border-width solid $mirage-border-soft;
+    backdrop-filter: blur( 8px );
+    pointer-events: none;
+    z-index: 30;
+    font-family: $mirage-font-family;
+
+    .weapon-icon
+    {
+        width: 64px;
+        height: 48px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        flex-shrink: 0;
+    }
+
+    .ammo-block
+    {
+        flex-direction: row;
+        align-items: baseline;
+        gap: 2px;
+
+        .ammo-mag
+        {
+            color: $mirage-text-primary;
+            font-size: $mirage-font-xxl;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .ammo-sep
+        {
+            color: $mirage-text-muted;
+            font-size: $mirage-font-lg;
+            font-weight: 700;
+            padding: 0 4px;
+        }
+
+        .ammo-reserve
+        {
+            color: $mirage-text-secondary;
+            font-size: $mirage-font-lg;
+            font-weight: 600;
+        }
+
+        // Drop the magazine number into the danger palette when the
+        // operator is one click away from a dry fire. Reserve stays the
+        // same colour so the contrast points at the part that matters.
+        &.is-low .ammo-mag
+        {
+            color: $mirage-danger;
+        }
+    }
+
+    .weapon-name
+    {
+        color: $mirage-text-muted;
+        font-size: $mirage-font-xs;
+        font-weight: 700;
+        letter-spacing: $mirage-letter-wide;
+        text-transform: uppercase;
+        margin-left: $mirage-space-2;
+    }
+}

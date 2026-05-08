@@ -1,0 +1,82 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@using Sandbox.Mirage
+@inherits PanelComponent
+@namespace Sandbox.Mirage.UI
+
+@if ( !_player.IsValid() || _player.WantsHideHud )
+    return;
+
+@{
+    var slot = _inventory?.Slot( _inventory?.SelectedSlot ?? -1 );
+    var item = slot?.Item;
+    if ( item is null || string.IsNullOrEmpty( item.WeaponPrefab ) )
+        return;
+
+    var legacy = _player.GetComponent<PlayerInventory>();
+    var weapon = legacy?.ActiveWeapon as BaseWeapon;
+    if ( weapon is null || !weapon.UsesAmmo )
+        return;
+
+    var clip = weapon.UsesClips ? weapon.ClipContents : 0;
+    var clipMax = weapon.UsesClips ? weapon.ClipMaxSize : 0;
+    var reserve = !string.IsNullOrEmpty( item.WeaponAmmoType )
+        ? _inventory.CountById( item.WeaponAmmoType )
+        : weapon.ReserveAmmo;
+
+    var lowClass = weapon.UsesClips && clipMax > 0 && clip <= Math.Max( 1, clipMax / 4 ) ? "is-low" : "";
+}
+
+<root class="mirage-weapon-hud">
+
+    @if ( !string.IsNullOrEmpty( item.Image ) )
+    {
+        <div class="weapon-icon" style="background-image: url(@item.Image);"></div>
+    }
+
+    <div class="ammo-block @lowClass">
+        @if ( weapon.UsesClips )
+        {
+            <Label class="ammo-mag" Text="@clip.ToString()" />
+            <Label class="ammo-sep" Text="/" />
+            <Label class="ammo-reserve" Text="@reserve.ToString()" />
+        }
+        else
+        {
+            <Label class="ammo-mag" Text="@reserve.ToString()" />
+        }
+    </div>
+
+    <Label class="weapon-name" Text="@item.Label" />
+
+</root>
+
+@code
+{
+    private Player _player;
+    private MirageInventory _inventory;
+
+    protected override void OnUpdate()
+    {
+        _player = Player.FindLocalPlayer();
+        _inventory ??= MirageInventory.ForLocalPlayer();
+    }
+
+    protected override int BuildHash()
+    {
+        if ( !_player.IsValid() ) return 0;
+        var legacy = _player.GetComponent<PlayerInventory>();
+        var weapon = legacy?.ActiveWeapon as BaseWeapon;
+        var slot = _inventory?.Slot( _inventory?.SelectedSlot ?? -1 );
+        return System.HashCode.Combine(
+            _player.WantsHideHud,
+            _inventory?.Version,
+            weapon?.ClipContents,
+            weapon?.UsesAmmo,
+            slot?.ItemId
+        );
+    }
+}

@@ -1,0 +1,61 @@
+@*
+    @author Epyi
+*@
+@using Sandbox
+@using Sandbox.UI
+@using Sandbox.Mirage
+@inherits PanelComponent
+@namespace Sandbox.Mirage.UI
+
+@if ( !_player.IsValid() || _player.WantsHideHud )
+    return;
+
+<root class="mirage-health-hud">
+
+    @{
+        var hp = (int)_player.Health;
+        var max = _player.MaxHealth <= 0 ? 100 : (int)_player.MaxHealth;
+        var hpFrac = max <= 0 ? 0f : Math.Clamp( _player.Health / max, 0f, 1f );
+        var hpClass = hpFrac < 0.25f ? "bar--low" : hpFrac < 0.55f ? "bar--mid" : "bar--ok";
+        var hpPercent = (int)( hpFrac * 100f );
+        var armour = (int)_player.Armour;
+        var armourFrac = Math.Clamp( _player.Armour / 100f, 0f, 1f );
+        var armourPercent = (int)( armourFrac * 100f );
+    }
+
+    <div class="row">
+        <Label class="row-key" Text="HP" />
+        <div class="row-bar @hpClass">
+            <div class="row-fill" style="width: @(hpPercent)%;"></div>
+        </div>
+        <Label class="row-value" Text="@hp.ToString()" />
+    </div>
+
+    @if ( armour > 0 )
+    {
+        <div class="row row--armour">
+            <Label class="row-key" Text="ARM" />
+            <div class="row-bar bar--armour">
+                <div class="row-fill" style="width: @(armourPercent)%;"></div>
+            </div>
+            <Label class="row-value" Text="@armour.ToString()" />
+        </div>
+    }
+
+</root>
+
+@code
+{
+    private Player _player;
+
+    protected override void OnUpdate()
+    {
+        _player = Player.FindLocalPlayer();
+    }
+
+    protected override int BuildHash()
+    {
+        if ( !_player.IsValid() ) return 0;
+        return System.HashCode.Combine( _player.WantsHideHud, (int)_player.Health, (int)_player.MaxHealth, (int)_player.Armour );
+    }
+}
